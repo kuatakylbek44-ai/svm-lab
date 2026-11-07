@@ -1,0 +1,38 @@
+SVM LAB — САЙТТЫҢ ТОЛЫҚ КОДЫ
+
+1. ZIP архивін толық шығарып ал.
+2. SVM_LAB папкасын VS Code бағдарламасында аш.
+3. Сайтты ашудың екі жолы:
+
+   A) Live Server орнатылған болса:
+      dist/index.html файлын оң жақ батырмамен бас → Open with Live Server.
+
+   Ә) Python орнатылған болса:
+      SVM_LAB папкасында терминал ашып, орында:
+      py -m http.server 8000 --bind 127.0.0.1 --directory dist
+      Содан кейін браузерде http://127.0.0.1:8000 аш.
+      Егер py командасы табылмаса, оның орнына python немесе python3 жаз.
+      Серверді тоқтату: Ctrl+C.
+
+Windows-та START_WINDOWS.bat файлын да қолдануға болады.
+HTML файлын жай екі рет басып ашқанда деректер жүктелмеуі мүмкін:
+сайтқа жергілікті HTTP сервер керек.
+
+ФАЙЛДАР
+• dist/index.html — алты бөлімнің HTML құрылымы.
+• dist/styles.css, dist/svm.css — дизайн және телефонға бейімделу.
+• dist/app.js — батырмалар, графиктер, қорғау мәтіндері.
+• dist/core.js — SVM шешім функциясы және Iris болжамы.
+• dist/data.json — оқытылған модельдер мен есептелген нәтижелер.
+• dist/icon.svg — сайт белгішесі.
+• dist/svm_iris.py — сабаққа арналған толық Python коды.
+• dist/SVM_Lab.ipynb — Google Colab-та ашылатын ноутбук.
+• generate_data.py — модельдерді қайта оқытып, data.json жасау.
+
+Сайтты іске қосуға scikit-learn орнату қажет емес: дайын data.json бар.
+Модельдерді қайта есептеу үшін:
+py -m pip install -r requirements.txt
+py generate_data.py
+
+Colab: File → Upload notebook → dist/SVM_Lab.ipynb файлын таңда.
+Сайттың толық жұмысы браузерде орындалады; бөлек backend жоқ.
