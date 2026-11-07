@@ -1,17 +1,22 @@
-# SVM LAB
+# ML LAB · Машиналық оқыту — Ақылбек & Алмас
 
-Kazakh six-section interactive learning site, inspired by the user's IRIS LAB.
+Static learning site for the Machine Learning course: a hub with student profiles,
+topics and datasets, plus interactive labs. Entry point: `dist/index.html`
+(the repository root redirects there for GitHub Pages).
 
-Static entry: `dist/index.html`. No remote runtime dependencies.
+## Structure
 
-Recompute numerical assets with Python 3, numpy and scikit-learn 1.8.0:
+- `dist/index.html` — hub: heroes, student profiles (`profiles.json`), topics, datasets.
+- `dist/svm.html` — SVM lab (6 chapters, Iris prediction, CV results).
+- `dist/penguins.html` — Palmer Penguins lab (Decision Tree, Random Forest, XGBoost, Regressor).
+- `dist/autompg.html` — Auto MPG regression lab (4 models, MAE/RMSE/R²).
+- `dist/unsupervised.html` — K-Means, PCA, DBSCAN, t-SNE lab (new.csv, 2240 customers).
+- `dist/imbalanced.html` — imbalanced-data lab (oversampling, SMOTE, class weights).
+- `dist/iris.html` — Iris dataset table with search, filter and CSV download.
 
-```sh
-python generate_data.py
-```
+Each page exists in Kazakh (`*.html`), Russian (`*.ru.html`) and English (`*.en.html`);
+`language.js` switches between them. Theme and full-screen controls come from `site-view.js`.
+All numerical results are precomputed in Python and replayed in the browser;
+notebooks, scripts and CSV/ZIP files are available from the labs.
 
-Student code: `dist/svm_iris.py`, plus `dist/SVM_Lab.ipynb`.
-
-The binary lab exports fitted SVC support vectors, dual coefficients and kernel parameters. Browser evaluation is exact for those fitted models; changing controls selects a precomputed fitted model. Iris inference implements sklearn/libsvm's three-class one-versus-one decision aggregation. Baseline test accuracy is 29/30. Five-fold CV on train selects C=1, gamma=0.1 in the configured grid, with CV accuracy .975 and held-out test accuracy 29/30. Test is never used for parameter selection.
-
-Validation: all 150 Iris predictions match sklearn, every synthetic kernel model reproduces its training accuracy, and the standalone student code was executed. Browser QA covers the six chapters, controls, confusion matrix, CV selection and dialogs.
+The site is a mirror of the published ML LAB build. Keep `dist/` as the served root.

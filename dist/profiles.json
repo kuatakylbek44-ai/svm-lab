@@ -1,0 +1,79 @@
+{
+  "akylbek": {
+    "name": "Ақылбек",
+    "fullName": "Қуат Ақылбек Мұратұлы",
+    "initials": "АҚ",
+    "photo": "assets/akylbek.jpeg",
+    "theme": "sage",
+    "role": "Теория және түсіндіру",
+    "sections": "1–3-бөлімдер",
+    "university": "Astana International University",
+    "program": "Есептеу техникасы және бағдарламалық қамтамасыз ету",
+    "course": "3-курс",
+    "group": "ВТиПО-24 А-3",
+    "gpa": "3.22",
+    "about": "Машиналық оқыту модельдерінің негізгі идеясын көрнекі графиктер арқылы түсіндіремін. SVM зертханасында әдістің логикасы, margin және kernel тақырыптарын таныстырамын.",
+    "contacts": [
+      {
+        "label": "Instagram",
+        "text": "@ayazbala__",
+        "href": "https://www.instagram.com/ayazbala__/"
+      },
+      {
+        "label": "Портфолио",
+        "text": "ayazbala · жеке сайт",
+        "href": "https://ayazbala-portfolio.kuatakylbek44.chatgpt.site/"
+      },
+      {
+        "label": "Email",
+        "text": null,
+        "href": null
+      },
+      {
+        "label": "Telegram",
+        "text": null,
+        "href": null
+      }
+    ],
+    "photoAlt": "Қуат Ақылбек Мұратұлының портреті"
+  },
+  "almas": {
+    "name": "Алмас",
+    "fullName": "Кобеев Алмас Болатович",
+    "initials": "АЛ",
+    "photo": "assets/brad-pitt.jpg",
+    "theme": "lavender",
+    "role": "Практика және талдау",
+    "sections": "4–6-бөлімдер",
+    "university": "Astana International University",
+    "program": "Есептеу техникасы және бағдарламалық қамтамасыз ету",
+    "course": "3-курс",
+    "group": "ВТиПО-24 А-3",
+    "gpa": "3.30",
+    "about": "Модельді оқыту, жаңа дерекке болжам жасау және нәтижені бағалау бөлімдерін таныстырамын. SVM зертханасында Python коды, метрикалар және параметр таңдау қадамдарын түсіндіремін.",
+    "contacts": [
+      {
+        "label": "Instagram",
+        "text": null,
+        "href": null
+      },
+      {
+        "label": "Email",
+        "text": null,
+        "href": null
+      },
+      {
+        "label": "Telegram",
+        "text": null,
+        "href": null
+      },
+      {
+        "label": "Телефон",
+        "text": null,
+        "href": null
+      }
+    ],
+    "photoAlt": "Алмастың аватары: Брэд Питт",
+    "photoCaption": "Аватар · Брэд Питт"
+  }
+}

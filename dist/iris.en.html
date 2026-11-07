@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f4f5ef">
+  <title>Iris dataset · ML LAB</title>
+  <meta name="description" content="Browse all 150 Iris rows, filter by species, sort measurements and download the CSV.">
+  <link rel="icon" href="hub-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="hub.css"><link rel="stylesheet" href="iris.css">
+  <script src="iris.en.js" defer></script>
+<link rel="stylesheet" href="language.css"><script src="language.js"></script><link rel="stylesheet" href="site-view.css"><script src="site-view.js"></script></head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><div class="header-inner">
+  <a class="brand" href="index.en.html" aria-label="ML LAB home"><span class="brand-symbol" aria-hidden="true"><i></i><i></i><i></i></span>ML<span>LAB</span></a>
+  <nav aria-label="Main navigation"><a href="index.en.html">Home</a><a href="index.en.html#team">About us</a><a href="index.en.html#topics">Topics</a><a href="iris.en.html" aria-current="page">Dataset</a></nav>
+  <span class="course-label"><i></i>Machine learning</span>
+</div></header>
+<main id="main" class="dataset-page wrap" tabindex="-1">
+  <a class="back-link" href="index.en.html#topics">← Back to course topics</a>
+  <section class="dataset-intro" aria-labelledby="datasetTitle">
+    <div><div class="eyebrow">ML LAB / EXPLORE THE DATA</div><h1 id="datasetTitle">Iris <em>dataset.</em></h1>
+    <p>Each row is one flower. The four measurements are the model inputs <b>X</b>, and the flower species is the target class <b>y</b>. Measurements are in centimetres.</p></div>
+    <a class="button primary" href="iris.csv" download="iris.csv">Download full CSV <span aria-hidden="true">↓</span></a>
+  </section>
+  <div class="dataset-stats" aria-label="Dataset at a glance">
+    <div><strong>150</strong><span>flowers</span></div><div><strong>4</strong><span>numeric features</span></div><div><strong>3</strong><span>flower species</span></div><div><strong>50</strong><span>per species</span></div>
+  </div>
+  <section class="data-panel" aria-labelledby="tableTitle">
+    <div class="data-panel-heading"><div><span class="eyebrow">DATA TABLE</span><h2 id="tableTitle">Compare the measurements.</h2></div><span class="data-unit">All measurements: cm</span></div>
+    <div class="data-controls">
+      <label class="search-field">Search<input id="search" type="search" placeholder="ID or flower species" autocomplete="off" disabled></label>
+      <label>Flower species<select id="species" disabled><option value="all">All species</option><option value="setosa">Setosa</option><option value="versicolor">Versicolor</option><option value="virginica">Virginica</option></select></label>
+      <label>Rows per page<select id="pageSize" disabled><option value="10">10 rows</option><option value="25" selected>25 rows</option><option value="50">50 rows</option><option value="150">All</option></select></label>
+      <button id="reset" class="reset-button" type="button" disabled>Reset ↺</button>
+    </div>
+    <p class="table-hint">Click a column heading to sort. On a phone, scroll the table horizontally.</p>
+    <div class="table-scroll" role="region" aria-label="Iris measurements table" tabindex="0">
+      <table id="irisTable"><caption class="visually-hidden">Four measurements and the true species of each Iris flower. ID is the original row number.</caption>
+        <thead><tr>
+          <th scope="col" aria-sort="ascending"><button data-sort="id" disabled>ID <span aria-hidden="true">↑</span></button></th>
+          <th scope="col"><button data-sort="0" disabled>Sepal length <small>sepal length</small><span aria-hidden="true">↕</span></button></th>
+          <th scope="col"><button data-sort="1" disabled>Sepal width <small>sepal width</small><span aria-hidden="true">↕</span></button></th>
+          <th scope="col"><button data-sort="2" disabled>Petal length <small>petal length</small><span aria-hidden="true">↕</span></button></th>
+          <th scope="col"><button data-sort="3" disabled>Petal width <small>petal width</small><span aria-hidden="true">↕</span></button></th>
+          <th scope="col"><button data-sort="species" disabled>Flower species <small>species / y</small><span aria-hidden="true">↕</span></button></th>
+        </tr></thead>
+        <tbody id="tableBody"><tr><td colspan="6" class="table-message">Loading the dataset…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="data-pagination"><p id="rowStatus" role="status" aria-live="polite">Loading…</p><div><button id="previous" type="button" disabled aria-label="Previous page">←</button><span id="pageStatus">1 / 1</span><button id="next" type="button" disabled aria-label="Next page">→</button></div></div>
+    <noscript><p class="table-message">Enable JavaScript to view the table. You can still download the data using the CSV button above.</p></noscript>
+  </section>
+  <section class="dataset-explainer" aria-label="How we use the data">
+    <div><span class="eyebrow">HOW TO READ THE TABLE</span><h2>Four features.<br><em>One flower species.</em></h2></div>
+    <div><p><b>Sepal</b> means the outer sepal of the flower; <b>petal</b> means a petal. We measure the length and width of each.</p><p><b>Setosa, versicolor, virginica</b> are the three classes. ID only identifies a row; it is not a model input feature.</p><a class="text-link" href="svm.en.html#4">Try SVM predictions with this data →</a></div>
+  </section>
+  <p class="dataset-source">Source: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.en.html" target="_blank" rel="noopener">scikit-learn · load_iris() ↗</a>. The table uses the same data as the SVM lab on this site. The CSV contains all 150 rows.</p>
+</main>
+<footer class="footer wrap"><a class="footer-brand" href="index.en.html">ML LAB</a><p>Akylbek & Almas · A Machine Learning course project</p><a href="#main">Back to top ↑</a></footer>
+</body></html>

@@ -1,0 +1,79 @@
+{
+  "akylbek": {
+    "name": "Акылбек",
+    "fullName": "Куат Акылбек Муратулы",
+    "initials": "АК",
+    "photo": "assets/akylbek.jpeg",
+    "theme": "sage",
+    "role": "Теория и объяснение",
+    "sections": "Разделы 1–3",
+    "university": "Astana International University",
+    "program": "Вычислительная техника и программное обеспечение",
+    "course": "3-й курс",
+    "group": "ВТиПО-24 А-3",
+    "gpa": "3.22",
+    "about": "Объясняю основные идеи машинного обучения с помощью наглядных графиков. В лаборатории SVM представляю логику метода, margin и kernel.",
+    "contacts": [
+      {
+        "label": "Instagram",
+        "text": "@ayazbala__",
+        "href": "https://www.instagram.com/ayazbala__/"
+      },
+      {
+        "label": "Портфолио",
+        "text": "ayazbala · личный сайт",
+        "href": "https://ayazbala-portfolio.kuatakylbek44.chatgpt.site/"
+      },
+      {
+        "label": "Email",
+        "text": null,
+        "href": null
+      },
+      {
+        "label": "Telegram",
+        "text": null,
+        "href": null
+      }
+    ],
+    "photoAlt": "Портрет Куат Акылбека Муратулы"
+  },
+  "almas": {
+    "name": "Алмас",
+    "fullName": "Кобеев Алмас Болатович",
+    "initials": "АЛ",
+    "photo": "assets/brad-pitt.jpg",
+    "theme": "lavender",
+    "role": "Практика и анализ",
+    "sections": "Разделы 4–6",
+    "university": "Astana International University",
+    "program": "Вычислительная техника и программное обеспечение",
+    "course": "3-й курс",
+    "group": "ВТиПО-24 А-3",
+    "gpa": "3.30",
+    "about": "Представляю обучение модели, прогноз для новых данных и оценку результатов. В лаборатории SVM объясняю код Python, метрики и подбор параметров.",
+    "contacts": [
+      {
+        "label": "Instagram",
+        "text": null,
+        "href": null
+      },
+      {
+        "label": "Email",
+        "text": null,
+        "href": null
+      },
+      {
+        "label": "Telegram",
+        "text": null,
+        "href": null
+      },
+      {
+        "label": "Телефон",
+        "text": null,
+        "href": null
+      }
+    ],
+    "photoAlt": "Аватар Алмаса: Брэд Питт",
+    "photoCaption": "Аватар · Брэд Питт"
+  }
+}

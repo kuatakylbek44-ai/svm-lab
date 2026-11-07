@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f4f5ef">
+  <title>Iris датасеті · ML LAB</title>
+  <meta name="description" content="Iris датасетінің барлық 150 жолын ашып қарау, гүл түрін сүзу, өлшемдерді сұрыптау және CSV файлын жүктеу.">
+  <link rel="icon" href="hub-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="hub.css"><link rel="stylesheet" href="iris.css">
+  <script src="iris.js" defer></script>
+<link rel="stylesheet" href="language.css"><script src="language.js"></script><link rel="stylesheet" href="site-view.css"><script src="site-view.js"></script></head>
+<body>
+<a class="skip" href="#main">Мазмұнға өту</a>
+<header class="header"><div class="header-inner">
+  <a class="brand" href="index.html" aria-label="ML LAB басты беті"><span class="brand-symbol" aria-hidden="true"><i></i><i></i><i></i></span>ML<span>LAB</span></a>
+  <nav aria-label="Негізгі мәзір"><a href="index.html">Басты бет</a><a href="index.html#team">Біз туралы</a><a href="index.html#topics">Тақырыптар</a><a href="iris.html" aria-current="page">Датасет</a></nav>
+  <span class="course-label"><i></i>Машиналық оқыту</span>
+</div></header>
+<main id="main" class="dataset-page wrap" tabindex="-1">
+  <a class="back-link" href="index.html#topics">← Оқу тақырыптарына оралу</a>
+  <section class="dataset-intro" aria-labelledby="datasetTitle">
+    <div><div class="eyebrow">ML LAB / ДЕРЕКТЕРМЕН ТАНЫСУ</div><h1 id="datasetTitle">Iris <em>датасеті.</em></h1>
+    <p>Әр жол — бір гүл. Төрт өлшем — модельдің кіріс деректері <b>X</b>, ал гүл түрі — болжауға арналған класс <b>y</b>. Өлшем бірлігі — сантиметр.</p></div>
+    <a class="button primary" href="iris.csv" download="iris.csv">Толық CSV жүктеу <span aria-hidden="true">↓</span></a>
+  </section>
+  <div class="dataset-stats" aria-label="Датасет туралы қысқаша мәлімет">
+    <div><strong>150</strong><span>гүл үлгісі</span></div><div><strong>4</strong><span>сандық белгі</span></div><div><strong>3</strong><span>гүл түрі</span></div><div><strong>50</strong><span>әр түрден</span></div>
+  </div>
+  <section class="data-panel" aria-labelledby="tableTitle">
+    <div class="data-panel-heading"><div><span class="eyebrow">ДЕРЕКТЕР КЕСТЕСІ</span><h2 id="tableTitle">Өлшемдерді салыстыр.</h2></div><span class="data-unit">Барлық өлшем: см</span></div>
+    <div class="data-controls">
+      <label class="search-field">Іздеу<input id="search" type="search" placeholder="ID немесе гүл түрі" autocomplete="off" disabled></label>
+      <label>Гүл түрі<select id="species" disabled><option value="all">Барлық түрі</option><option value="setosa">Setosa</option><option value="versicolor">Versicolor</option><option value="virginica">Virginica</option></select></label>
+      <label>Бір бетте<select id="pageSize" disabled><option value="10">10 жол</option><option value="25" selected>25 жол</option><option value="50">50 жол</option><option value="150">Барлығы</option></select></label>
+      <button id="reset" class="reset-button" type="button" disabled>Тазарту ↺</button>
+    </div>
+    <p class="table-hint">Сұрыптау үшін баған атауын бас. Телефонда кестені оңға жылжытуға болады.</p>
+    <div class="table-scroll" role="region" aria-label="Iris өлшемдерінің кестесі" tabindex="0">
+      <table id="irisTable"><caption class="visually-hidden">Iris гүлдерінің төрт өлшемі және нақты түрі. ID — жолдың бастапқы реттік нөмірі.</caption>
+        <thead><tr>
+          <th scope="col" aria-sort="ascending"><button data-sort="id" disabled>ID <span aria-hidden="true">↑</span></button></th>
+          <th scope="col"><button data-sort="0" disabled>Тостағанша ұзындығы <small>sepal length</small><span aria-hidden="true">↕</span></button></th>
+          <th scope="col"><button data-sort="1" disabled>Тостағанша ені <small>sepal width</small><span aria-hidden="true">↕</span></button></th>
+          <th scope="col"><button data-sort="2" disabled>Күлте ұзындығы <small>petal length</small><span aria-hidden="true">↕</span></button></th>
+          <th scope="col"><button data-sort="3" disabled>Күлте ені <small>petal width</small><span aria-hidden="true">↕</span></button></th>
+          <th scope="col"><button data-sort="species" disabled>Гүл түрі <small>species / y</small><span aria-hidden="true">↕</span></button></th>
+        </tr></thead>
+        <tbody id="tableBody"><tr><td colspan="6" class="table-message">Датасет жүктеліп жатыр…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="data-pagination"><p id="rowStatus" role="status" aria-live="polite">Жүктелуде…</p><div><button id="previous" type="button" disabled aria-label="Алдыңғы бет">←</button><span id="pageStatus">1 / 1</span><button id="next" type="button" disabled aria-label="Келесі бет">→</button></div></div>
+    <noscript><p class="table-message">Кестені ашу үшін JavaScript қосулы болуы керек. Деректерді жоғарыдағы CSV батырмасымен жүктей аласыз.</p></noscript>
+  </section>
+  <section class="dataset-explainer" aria-label="Деректерді қалай қолданамыз">
+    <div><span class="eyebrow">КЕСТЕНІ ҚАЛАЙ ОҚИМЫЗ?</span><h2>Төрт белгі.<br><em>Бір гүл түрі.</em></h2></div>
+    <div><p><b>Sepal</b> — гүлдің сыртқы тостағанша жапырақшасы, <b>petal</b> — күлте жапырақшасы. Екеуінің де ұзындығы мен ені өлшенеді.</p><p><b>Setosa, versicolor, virginica</b> — үш класс. ID тек жолды табуға арналған, модельдің кіріс белгісіне кірмейді.</p><a class="text-link" href="svm.html#4">Осы деректермен SVM болжамын көру →</a></div>
+  </section>
+  <p class="dataset-source">Дерек: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html" target="_blank" rel="noopener">scikit-learn · load_iris() ↗</a>. Кесте сайттағы SVM зертханасының деректерімен бірдей. CSV файлы барлық 150 жолды қамтиды.</p>
+</main>
+<footer class="footer wrap"><a class="footer-brand" href="index.html">ML LAB</a><p>Ақылбек & Алмас · «Машиналық оқыту» пәніне арналған жоба</p><a href="#main">Жоғарыға ↑</a></footer>
+</body></html>
