@@ -56,13 +56,14 @@
 .lesson-meta span{font-size:10px;color:var(--muted);border-left:1px solid #cdd8c8;padding-left:12px}
 .lesson-meta b{color:var(--ink);font-weight:500}
 .lesson-layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:35px;padding-top:34px;padding-bottom:20px;align-items:start}
+.lesson-layout>*{min-width:0}
 .lesson-toc{position:sticky;top:104px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px 20px}
 .lesson-toc .eyebrow{display:block;margin-bottom:14px}
 .lesson-toc a{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:11px;color:#55705c;border-bottom:1px solid #edf0e8}
 .lesson-toc a:last-child{border-bottom:0}
 .lesson-toc a:hover{color:var(--green)}
 .lesson-toc a span{font:12px Georgia,serif;color:#8e9f83}
-.lesson-body{display:grid;gap:16px}
+.lesson-body{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0}
 .lesson-slot{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:26px 28px;scroll-margin-top:104px}
 .slot-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
 .slot-head span{font:13px Georgia,serif;color:#8e9f83}
@@ -117,7 +118,7 @@ a.sroj-item:hover{background:#eef2e8;border-color:#c8d4c0}
 .flow-step span{font:11px Georgia,serif;color:#8e9f83}
 .flow-step b{display:block;font-size:13px;font-weight:500;letter-spacing:-.2px;margin-top:6px;color:#24463b}
 .flow-step small{display:block;font-size:9.5px;line-height:1.5;color:var(--muted);margin-top:5px}
-.code-card{border:1px solid #203a37;border-radius:10px;overflow:hidden;margin-top:14px;background:#192c2b}
+.code-card{border:1px solid #203a37;border-radius:10px;overflow:hidden;margin-top:14px;background:#192c2b;max-width:100%}
 .code-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 14px;background:#203a37;border-bottom:1px solid #2c4844}
 .code-bar span{font-size:10px;letter-spacing:.4px;color:#b9cfc2}
 .copy-btn{background:transparent;border:1px solid #42605a;border-radius:6px;color:#d7efdc;font-size:9.5px;padding:5px 10px;min-height:28px;transition:background .2s,border-color .2s}
@@ -143,4 +144,35 @@ a.sroj-item:hover{background:#eef2e8;border-color:#c8d4c0}
 .summary-list li:before{content:'';position:absolute;left:2px;top:9px;width:6px;height:6px;border-radius:50%;background:#8e9f83}
 @media(max-width:760px){.flow{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.flow{grid-template-columns:1fr}.lesson-block p,.summary-list li,.goal-list li{font-size:12px}.quiz-item{padding:15px}}
+/* Практика беттері */
+.practice-week-card{align-items:flex-start;min-height:96px}
+.practice-week-card .idx{padding-top:2px}
+.practice-card-meta{display:block;font-style:normal;font-size:8.5px;letter-spacing:.3px;color:#7b8e73;margin-top:7px}
+.practice-lab-head{display:flex;align-items:baseline;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-top:28px;padding-top:20px;border-top:1px solid var(--line)}
+.practice-lab-head .eyebrow{color:var(--green)}
+.practice-lab-head p{font-size:10px;color:var(--muted);line-height:1.7}
+.practice-grid.labs{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:14px}
+.practice-grid.labs .practice-card{min-height:78px;padding:15px 17px}
+.practice-grid.labs .practice-card b{font-size:13px}
+.practice-dataset{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;background:#f4f6ee;border:1px solid var(--line);border-radius:9px;padding:18px 20px}
+.practice-dataset b{display:block;font-size:15px;font-weight:500;letter-spacing:-.2px}
+.practice-dataset p{font-size:11.5px;line-height:1.85;color:#40584d;margin-top:7px;max-width:660px}
+.practice-dataset>span{flex-shrink:0;font-size:9px;color:#6d8065;border:1px solid #d7e0d0;background:#eef3e7;border-radius:20px;padding:5px 10px;white-space:nowrap}
+.practice-steps{margin:0;padding:0;list-style:none;display:grid;gap:10px;counter-reset:practice-step}
+.practice-steps li{position:relative;padding-left:34px;font-size:12.5px;line-height:1.85;color:#3f584d;counter-increment:practice-step}
+.practice-steps li:before{content:counter(practice-step,decimal-leading-zero);position:absolute;left:0;top:2px;font:12px Georgia,serif;color:#8e9f83}
+.practice-files{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.practice-file{display:flex;align-items:center;gap:12px;background:#f4f6ee;border:1px solid var(--line);border-radius:9px;padding:14px 15px;min-height:64px;transition:background .2s,border-color .2s}
+.practice-file:hover{background:#e9efe2;border-color:#c2d1b9}
+.practice-file-icon{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#e2eadb;color:var(--green);font-size:14px;flex-shrink:0}
+.practice-file b{display:block;font-size:11.5px;font-weight:500;line-height:1.45;overflow-wrap:anywhere}
+.practice-file small{display:block;font-size:9px;color:var(--muted);margin-top:4px}
+.practice-lab-card{display:flex;align-items:center;gap:15px;background:#eef2e8;border:1px solid var(--line);border-radius:10px;padding:18px 20px;min-height:78px;transition:background .2s,transform .2s}
+.practice-lab-card:hover{background:#e2eadb;transform:translateY(-2px)}
+.practice-lab-card b{display:block;font-size:15px;font-weight:500;letter-spacing:-.2px}
+.practice-lab-card small{display:block;font-size:9px;color:var(--muted);margin-top:5px;overflow-wrap:anywhere}
+.practice-lab-card .go{margin-left:auto;color:var(--green);font-size:16px}
+@media(max-width:1000px){.practice-grid.labs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.practice-files{grid-template-columns:1fr}.practice-dataset{flex-direction:column;gap:12px}.practice-dataset>span{white-space:normal}}
+@media(max-width:520px){.practice-grid.labs{grid-template-columns:1fr}.practice-lab-head{margin-top:22px}.practice-week-card{min-height:88px}}
 
