@@ -61,3 +61,25 @@
 .topic-title h4 {
   margin: 0;
 }
+
+.art-intro, .art-visualization { background: #ece9f0; }
+.art-pandas, .art-preprocessing { background: #e7eee8; }
+.topic-card:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .topic-art svg { transition: transform .45s ease; }
+  .topic-card:is(:hover, :focus-visible) .topic-art svg { transform: translateY(-3px) scale(1.045); }
+  .topic-card:is(:hover, :focus-visible) .topic-mark { animation: topic-mark-reveal .55s ease both; }
+  .topic-card:is(:hover, :focus-visible) .topic-mark:nth-child(2n) { animation-delay: .07s; }
+}
+
+@keyframes topic-mark-reveal {
+  from { opacity: .28; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topic-card:hover { transform: none; }
+  .topic-card:hover .auto-regression { animation: none; }
+  .topic-card:hover .auto-car { transform: none; transition: none; }
+}

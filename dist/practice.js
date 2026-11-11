@@ -104,10 +104,21 @@
   const steps = slotHTML(slots[2], 2, `<ol class="practice-steps">${content.steps.map(step => `<li>${esc(step)}</li>`).join('')}</ol>`);
   const code = slotHTML(slots[3], 3, `<p class="lesson-note">${esc(content.code.note)}</p><div class="code-card"><div class="code-bar"><span>${esc(content.code.title)}</span><button type="button" class="copy-btn">${L.copy}</button></div><pre><code>${esc(content.code.source)}</code></pre></div>`);
   const files = slotHTML(slots[4], 4, `<div class="practice-files">${content.files.map(file => `<a class="practice-file" href="${esc(file.href)}" download><span class="practice-file-icon" aria-hidden="true">↓</span><span><b>${esc(file.label)}</b><small>${esc(file.meta)}</small></span></a>`).join('')}</div>`);
-  const lab = slotHTML(slots[5], 5, content.lab ? `<a class="practice-lab-card" href="${esc(labHref(content.lab))}"><span><b>${L.practiceLab}</b><small>${esc(content.lab)}</small></span><span class="go">↗</span></a>` : `<p class="slot-empty">${esc(L.practiceNoLab)}</p>`);
+  const hasStarterLab = n <= 4;
+  const existingLab = content.lab
+    ? `<a class="practice-lab-card" href="${esc(labHref(content.lab))}"><span><b>${L.practiceLab}</b><small>${esc(content.lab)}</small></span><span class="go">↗</span></a>`
+    : '';
+  const lab = slotHTML(slots[5], 5, (hasStarterLab ? '<div id="starterLab"></div>' : '')
+    + existingLab + (!hasStarterLab && !existingLab ? `<p class="slot-empty">${esc(L.practiceNoLab)}</p>` : ''));
   const note = slotHTML(slots[6], 6, `<p class="lesson-note">${esc(content.note)}</p>`);
   contentHost.innerHTML = `<div class="lesson-layout wrap"><aside class="lesson-toc practice-toc" aria-label="${esc(L.practice)}"><span class="eyebrow">${L.practice.toUpperCase()}</span><div id="practiceToc"></div></aside><div class="lesson-body">${goals + dataset + steps + code + files + lab + note}</div></div>`;
   document.getElementById('practiceToc').innerHTML = slots.map((slot, i) => `<a href="#${slot.id}"><span>${String(i + 1).padStart(2, '0')}</span>${slot.title}</a>`).join('');
+  if (hasStarterLab) {
+    window.mountStarterLab(document.getElementById('starterLab'), n);
+    if (location.hash === '#lab') {
+      requestAnimationFrame(() => document.getElementById('lab').scrollIntoView());
+    }
+  }
 
   const copyBtn = document.querySelector('.copy-btn');
   const codeEl = document.querySelector('.code-card code');

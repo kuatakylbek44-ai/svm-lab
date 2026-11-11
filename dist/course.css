@@ -207,3 +207,71 @@ html[data-theme=dark] .course-meta b{color:#77d4ad}
 html[data-theme=dark] .course-meta span{color:#a3b8ac}
 html[data-theme=dark] .practice-note,html[data-theme=dark] .practice-lab-head p{color:#a3b8ac}
 
+
+.starter-instructions {
+  margin-bottom: 16px;
+  line-height: 1.65;
+}
+.starter-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 14px;
+}
+.starter-controls label {
+  display: block;
+  font-weight: 600;
+}
+.starter-controls input { accent-color: var(--green); }
+.starter-controls input[type="range"],
+.starter-controls select {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+}
+.starter-controls select {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+}
+.starter-controls output {
+  margin-inline-start: 4px;
+  color: var(--green);
+}
+.starter-controls .starter-checkbox {
+  align-self: end;
+  padding-block: 8px;
+}
+.starter-result {
+  border-inline-start: 3px solid var(--green);
+  padding: 8px 12px;
+  margin: 16px 0;
+  font-weight: 700;
+}
+.starter-chart {
+  display: block;
+  width: min(100%, 620px);
+  margin: 0 auto 16px;
+  color: var(--ink);
+}
+.starter-chart text { fill: currentColor; font-size: 12px; }
+.starter-table { overflow-x: auto; }
+.starter-table table { width: 100%; border-collapse: collapse; }
+.starter-table :is(th, td) {
+  text-align: start;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.starter-table th { color: var(--green); }
+.starter-table tr:last-child td { border-bottom: 0; }
+.practice-lab-card:not(:first-child) { margin-top: 14px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .starter-mark, .starter-table tbody { animation: starter-reveal .28s ease-out both; }
+}
+@keyframes starter-reveal {
+  from { opacity: .35; }
+  to { opacity: 1; }
+}
