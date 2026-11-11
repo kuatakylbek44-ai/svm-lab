@@ -1,0 +1,85 @@
+(() => {
+  'use strict';
+  const lang = document.documentElement.lang;
+  const index = { kk: 0, ru: 1, en: 2 }[lang] ?? 0;
+  const label = ['Түсіндірме', 'Объяснение', 'Explanation'][index];
+  const close = ['Жабу', 'Закрыть', 'Close'][index];
+  const guides = {
+    intro: [
+      'Оқу сағаты шекке тең немесе одан көп болса, болжам «өтті» болады. Дәлдік = дұрыс болжам саны / барлық болжам саны. Шекті 4-тен 9-ға жылжыт: жоғары шек өткен оқушыларды да «өтпеді» деп жіктей бастайды.',
+      'Число часов не ниже порога даёт прогноз «сдал». Точность = верные прогнозы / все прогнозы. Подними порог с 4 до 9: часть сдавших модель начнёт относить к несдавшим.',
+      'Hours at or above the threshold predict a pass. Accuracy is correct predictions divided by all predictions. Move the threshold from 4 to 9: students who passed start being classified as failures.'
+    ],
+    pandas: [
+      'DataFrame-де әр жол бір оқушыны, әр баған бір белгіні білдіреді. Сүзгі шектен төмен жолдарды алып тастайды, ал сұрыптау қалған жолдардың ретін ғана өзгертеді. Бір шекте сұрыптау бағанын ауыстырып, орташа балдың сақталатынын тексер.',
+      'Строка DataFrame — ученик, столбец — признак. Фильтр убирает строки ниже порога, а сортировка меняет только порядок. При фиксированном пороге смени столбец сортировки: средний балл останется прежним.',
+      'Each DataFrame row is a student and each column is a feature. A filter removes rows below the cutoff; sorting only reorders the remaining rows. Keep the cutoff fixed and change the sort column: the mean stays the same.'
+    ],
+    visualization: [
+      'Әр нүкте бір оқушыны көрсетеді, ал баған бірдей сағаттағы оқушылардың орташа балын көрсетеді. Pearson r +1-ге жақындаса, сызықтық байланыс оң, −1-ге жақындаса, теріс. Оқу сағатын ұйқы сағатына ауыстырып салыстыр.',
+      'Точка показывает одного ученика, столбец — средний балл для одного значения часов. Pearson r около +1 означает положительную линейную связь, около −1 — отрицательную. Сравни часы учёбы и сна.',
+      'A point represents one student; a bar shows the mean score for one hour value. Pearson r near +1 means a positive linear relationship, and near −1 means a negative one. Switch from study to sleep hours to compare.'
+    ],
+    preprocessing: [
+      'Орташа мен медиана бос ұяшықты толтырады, ал жолды алып тастау бақылау санын азайтады. Min–max формуласы (x − min) / (max − min). Масштабтауды қосып, ең кіші мән 0, ең үлкен мән 1 болғанын тексер.',
+      'Среднее и медиана заполняют пропуски, а удаление строк сокращает число наблюдений. Формула min–max: (x − min) / (max − min). Включи масштабирование и найди минимум 0 и максимум 1.',
+      'Mean and median imputation fill blanks, while dropping rows reduces the sample size. Min–max uses (x − min) / (max − min). Turn scaling on and look for a minimum of 0 and a maximum of 1.'
+    ],
+    linear: ['Регрессия санды болжайды. Қалдық — нақты мән мен болжамның айырмасы. MSE осы айырмаларды квадраттап орташалайды, сондықтан үлкен қателердің әсері артады.', 'Регрессия предсказывает число. Остаток — разность факта и прогноза. MSE усредняет квадраты остатков, усиливая влияние крупных ошибок.', 'Regression predicts a number. A residual is the actual value minus the prediction. MSE averages squared residuals, so large errors have more influence.'],
+    logistic: ['Сигмоида модельдің ұпайын 0 мен 1 арасындағы ықтималдыққа айналдырады. Iris белгілерін өзгертіп, қай кластың ықтималдығы басым болғанын қара.', 'Сигмоида превращает оценку модели в вероятность от 0 до 1. Измени признаки Iris и посмотри, вероятность какого класса стала наибольшей.', 'The sigmoid turns a model score into a probability between 0 and 1. Change the Iris features and compare which class has the highest probability.'],
+    evaluation: ['Модельді оқытуға қатыспаған дерекпен бағала. Precision болжанған оң нәтижелерді, recall нақты оң нәтижелерді негізге алады. Қате түрлерін confusion matrix арқылы салыстыр.', 'Оцени модель на данных вне обучения. Precision опирается на предсказанные положительные случаи, recall — на фактические. Сравни виды ошибок по матрице ошибок.', 'Evaluate on data held out from training. Precision uses predicted positives; recall uses actual positives. Compare error types in the confusion matrix.'],
+    knn: ['KNN ең жақын k нүктенің дауысына сүйенеді. k мәнін өзгертіп, көршілердің дауысы мен кросс-валидация нәтижесінің қалай ауысатынын қара.', 'KNN использует голосование k ближайших точек. Измени k и сравни голоса соседей и результат кросс-валидации.', 'KNN uses a vote among the k nearest points. Change k and compare the neighbors’ votes and the cross-validation result.'],
+    svm: ['Margin — шекара мен оған ең жақын нүктелер арасындағы аралық. C өскенде оқыту қателеріне айып күшейеді. Шекара зертханасында C-ні өзгертіп, тірек векторларын салыстыр.', 'Margin — отступ от границы до ближайших точек. При росте C ошибки обучения штрафуются сильнее. Измени C и сравни опорные векторы.', 'The margin is the distance from the boundary to the closest points. Larger C penalizes training errors more strongly. Change C and compare the support vectors.'],
+    penguins: ['Бір ағаш тармақтар арқылы шешім қабылдайды. Random Forest бірнеше ағаштың дауысын біріктіреді. Бір пингвиннің белгілерін өзгертіп, модельдердің болжамдарын салыстыр.', 'Одно дерево принимает решение по ветвям. Random Forest объединяет голоса деревьев. Измени признаки одного пингвина и сравни прогнозы моделей.', 'One tree makes decisions along branches. Random Forest combines votes from multiple trees. Change a penguin’s features and compare the models’ predictions.'],
+    autompg: ['MPG — отынның бір галлонына жүретін миль саны. Салмақты өзгертіп, модельдер берген болжамдарды салыстыр. RMSE үлкен қателерге MAE-ге қарағанда көбірек салмақ береді.', 'MPG — мили на галлон топлива. Измени вес и сравни прогнозы моделей. RMSE сильнее реагирует на крупные ошибки, чем MAE.', 'MPG means miles traveled per gallon of fuel. Change vehicle weight and compare predictions. RMSE gives large errors more weight than MAE.'],
+    unsupervised: ['K-Means нүктелерді ең жақын центрге бөледі. k мәнін өзгертіп, топтардың бөлінуін бақыла. PCA көп белгіні аз оське проекциялап, топтарды графикте көруге көмектеседі.', 'K-Means назначает точки ближайшему центру. Измени k и посмотри на разбиение. PCA проецирует признаки на меньшее число осей, чтобы показать группы.', 'K-Means assigns points to the nearest center. Change k and compare the grouping. PCA projects features onto fewer axes to make groups easier to visualize.'],
+    imbalanced: ['Сирек класс үшін accuracy жоғары болғанның өзінде recall төмен болуы мүмкін. Шекті төмендетіп, recall мен precision қалай өзгеретінін салыстыр.', 'У редкого класса recall может быть низким даже при высокой accuracy. Снизь порог и сравни изменения recall и precision.', 'A rare class can have low recall even when accuracy is high. Lower the threshold and compare changes in recall and precision.'],
+    neural: ['Softmax шығыс ұпайларын қосындысы 1 болатын ықтималдықтарға айналдырады. MNIST тәжірибесінде ең жоғары ықтималдық алған цифрды нақты белгімен салыстыр.', 'Softmax превращает выходные оценки в вероятности с суммой 1. В практике MNIST сравни цифру с наибольшей вероятностью и истинную метку.', 'Softmax converts output scores into probabilities that sum to 1. In the MNIST exercise, compare the highest-probability digit with the actual label.']
+  };
+
+  function button(topics) {
+    const trigger = document.createElement('button');
+    trigger.className = 'topic-guide-button';
+    trigger.type = 'button';
+    trigger.textContent = label + ' ↗';
+    trigger.setAttribute('aria-haspopup', 'dialog');
+    trigger.addEventListener('click', () => {
+      const dialog = document.createElement('dialog');
+      dialog.className = 'topic-guide-dialog';
+      dialog.setAttribute('aria-label', label);
+      const heading = document.createElement('h2');
+      heading.textContent = label;
+      dialog.append(heading);
+      topics.forEach(({ id, name }) => {
+        const title = document.createElement('h3');
+        title.textContent = name;
+        const description = document.createElement('p');
+        description.textContent = guides[id][index];
+        dialog.append(title, description);
+      });
+      const dismiss = document.createElement('button');
+      dismiss.className = 'topic-guide-button';
+      dismiss.textContent = close;
+      dismiss.addEventListener('click', () => dialog.close());
+      dialog.append(dismiss);
+      dialog.addEventListener('close', () => {
+        dialog.remove();
+        trigger.focus();
+      }, { once: true });
+      document.body.append(dialog);
+      dialog.showModal();
+      dismiss.focus();
+    });
+    return trigger;
+  }
+
+  window.TOPIC_GUIDE = { label, button, text: id => guides[id][index] };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const page = location.pathname.split('/').pop().replace(/(?:\.(?:ru|en))?(?:\.html)?$/, '');
+    const localLabs = { penguins: 'Palmer Penguins', autompg: 'Auto MPG', unsupervised: 'K-Means / PCA', imbalanced: ['Теңгерімсіз деректер', 'Дисбаланс классов', 'Imbalanced data'][index] };
+    if (Object.hasOwn(localLabs, page)) {
+      document.querySelector('.topbar')?.append(button([{ id: page, name: localLabs[page] }]));
+    }
+  });
+})();

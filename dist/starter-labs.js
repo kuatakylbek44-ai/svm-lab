@@ -35,8 +35,13 @@
   const range = (name, label, min, max, value) => `<label>${label} <output for="starter-${name}" data-value="${name}">${value}</output><input id="starter-${name}" type="range" name="${name}" min="${min}" max="${max}" value="${value}"></label>`;
   const select = (name, label, options) => `<label>${label}<select name="${name}">${options.map(([value, text]) => `<option value="${value}">${text}</option>`).join('')}</select></label>`;
   const checkbox = (name, label) => `<label class="starter-checkbox"><input type="checkbox" name="${name}"> ${label}</label>`;
-  const chart = (label, marks) => `<svg class="starter-chart" viewBox="0 0 420 185" role="img" aria-label="${label}"><path d="M30 18v136h370" fill="none" stroke="currentColor" opacity=".35"/>${marks}</svg>`;
-  const outcome = (summary, details) => ({ summary, details });
+  const chart = (label, marks) => `<svg class="starter-chart" viewBox="0 0 420 185" role="img" aria-label="${label}"><path d="M30 18v136h370" fill="none" stroke="currentColor" opacity=".45"/><path d="M30 34h370m-370 40h370m-370 40h370" fill="none" stroke="currentColor" opacity=".25" stroke-dasharray="4 5"/>${marks}</svg>`;
+  const bars = (rows, max, label) => chart(label, rows.map(({ id, value, filled }, i) => {
+    const x = 48 + i * 44;
+    const height = 120 * value / max;
+    return `<rect class="starter-mark" x="${x}" y="${154 - height}" width="27" height="${height}" rx="3" fill="${filled ? '#9b72db' : '#26866e'}"/><text x="${x + 13}" y="174" text-anchor="middle">${id}</text><text x="${x + 13}" y="${147 - height}" text-anchor="middle">${fmt(value)}</text>`;
+  }).join(''));
+  const outcome = (summary, details, insight) => ({ summary, details, insight });
 
   const labs = {
     1: {
@@ -60,6 +65,10 @@
         return outcome(summary, chart(summary, marks) + table(
           [labels.hours, labels.actual, labels.predicted, t('Тексеру', 'Проверка', 'Check')],
           results.map(row => [row.hours, row.actual ? labels.passed : labels.failed, row.predicted ? labels.passed : labels.failed, row.correct ? labels.correct : labels.wrong])
+        ), t(
+          `${results.length - correct} қате болжам бар. Қызыл нүктелер — болжамы нақты нәтижеге сай келмеген оқушылар.`,
+          `Ошибочных прогнозов: ${results.length - correct}. Красные точки показывают учеников, для которых прогноз не совпал с результатом.`,
+          `Incorrect predictions: ${results.length - correct}. Red points mark students whose prediction differs from their actual result.`
         ));
       }
     },
@@ -74,7 +83,12 @@
       render: ({ minimum, sort }) => {
         const rows = students.filter(row => row.score >= Number(minimum)).sort((a, b) => b[sort] - a[sort]);
         const summary = `${labels.rows}: ${rows.length}/${students.length} · ${labels.mean}: ${rows.length ? fmt(mean(rows.map(row => row.score))) : '—'}`;
-        return outcome(summary, table([labels.student, labels.hours, labels.sleep, labels.score], rows.map(row => [row.id, row.hours, row.sleep, row.score])));
+        const plot = rows.length ? bars(rows.map(row => ({ id: row.id, value: row.score })), 100, summary) : '';
+        return outcome(summary, plot + table([labels.student, labels.hours, labels.sleep, labels.score], rows.map(row => [row.id, row.hours, row.sleep, row.score])), t(
+          `Сүзгі ${students.length - rows.length} жолды алып тастады. Көлденең осьтегі сандар — қалған оқушылардың нөмірі.`,
+          `Фильтр исключил строк: ${students.length - rows.length}. Числа на горизонтальной оси — номера оставшихся учеников.`,
+          `Rows excluded by the filter: ${students.length - rows.length}. The horizontal axis shows the remaining student IDs.`
+        ));
       }
     },
     3: {
@@ -103,7 +117,9 @@
             const average = mean(students.filter(row => row[feature] === value).map(row => row.score));
             return `<rect class="starter-mark" x="${x(value) - 13}" y="${y(average)}" width="26" height="${154 - y(average)}" rx="4" fill="#8c69c5"><title>${value}: ${fmt(average)}</title></rect>`;
           }).join('');
-        return outcome(summary, chart(summary, ticks + marks));
+        return outcome(summary, chart(summary, ticks + marks), correlation < 0
+          ? t('Таңдалған белгі артқанда, бұл деректегі балл төмендеуге бейім. Корреляция себепті дәлелдемейді.', 'В этих данных при росте выбранного признака балл склонен снижаться. Корреляция не доказывает причину.', 'In this dataset, scores tend to fall as the selected feature rises. Correlation does not establish causation.')
+          : t('Таңдалған белгі артқанда, бұл деректегі балл өсуге бейім. Корреляция себепті дәлелдемейді.', 'В этих данных при росте выбранного признака балл склонен расти. Корреляция не доказывает причину.', 'In this dataset, scores tend to rise as the selected feature rises. Correlation does not establish causation.'));
       }
     },
     4: {
@@ -126,25 +142,42 @@
         const low = known[0];
         const high = known[known.length - 1];
         const summary = `${labels.rows}: ${rows.length}/${scores.length} · ${scale ? 'Min–max: 0–1' : `${low}–${high}`}`;
-        return outcome(summary, table([labels.student, labels.before, labels.after], rows.map(row => [
-          row.id, row.score ?? '—', fmt(scale ? (row.value - low) / (high - low) : row.value)
-        ])));
+        const processed = rows.map(row => ({ ...row, value: scale ? (row.value - low) / (high - low) : row.value, filled: row.score === null }));
+        const plot = bars(processed, scale ? 1 : 100, labels.after);
+        return outcome(summary, plot + table([labels.student, labels.before, labels.after], processed.map(row => [
+          row.id, row.score ?? '—', fmt(row.value)
+        ])), strategy === 'drop'
+          ? t('Бос мәні бар 2 жол алынып тасталды.', 'Удалены 2 строки с пропусками.', 'Two rows with missing values were removed.')
+          : t(`Күлгін бағандар — ${fmt(fill)} баллмен толтырылған екі ұяшық.`, `Фиолетовые столбцы — две ячейки, заполненные значением ${fmt(fill)}.`, `Purple bars mark the two cells filled with a score of ${fmt(fill)}.`));
       }
     }
   };
 
   window.mountStarterLab = (host, week) => {
     const lab = labs[week];
-    host.innerHTML = `<p class="starter-instructions">${lab.instructions}</p><form class="starter-controls">${lab.controls()}</form><p class="starter-result" role="status"></p><div class="starter-details"></div>`;
+    host.innerHTML = `<div class="starter-workbench">
+      <div class="starter-visual">
+        <h3>${t('Нәтиже', 'Результат', 'Result')}</h3>
+        <p class="starter-result" role="status"></p><div class="starter-details"></div>
+      </div>
+      <div class="starter-panel">
+        <h3>${t('Параметрлерді өзгерт', 'Измени параметры', 'Change the settings')}</h3>
+        <p class="starter-instructions">${lab.instructions}</p>
+        <form class="starter-controls">${lab.controls()}</form>
+        <p class="starter-insight"></p>
+      </div>
+    </div>`;
     const form = host.querySelector('form');
     const result = host.querySelector('.starter-result');
     const details = host.querySelector('.starter-details');
+    const insight = host.querySelector('.starter-insight');
     const update = () => {
       const values = Object.fromEntries(new FormData(form));
       host.querySelectorAll('output[data-value]').forEach(output => { output.value = values[output.dataset.value]; });
       const view = lab.render(values);
       result.textContent = view.summary;
       details.innerHTML = view.details;
+      insight.textContent = view.insight;
     };
     form.addEventListener('submit', event => event.preventDefault());
     form.addEventListener('input', update);

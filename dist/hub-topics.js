@@ -48,7 +48,7 @@
         desc: lecture.summary[languageIndex],
         label: topic.english,
         lab: labels[lang].practiceLab,
-        href: page('practice', week) + '#lab'
+        href: page('practice', week)
       };
     });
     const topicById = new Map([...starters, ...topics].map(topic => [topic.id, topic]));
@@ -77,7 +77,12 @@
           <div class="topic-grid">${cards.map(topic => renderCard(topic, starterPlots[topic.id])).join('')}</div>
         </section>`;
     });
-    document.getElementById('topicCards').innerHTML = sections.join('');
+    const host = document.getElementById('topicCards');
+    host.innerHTML = sections.join('');
+    host.querySelectorAll('.topic-group-links').forEach((links, index) => {
+      const ids = topicIdsByWeek[practice[index].n];
+      links.append(window.TOPIC_GUIDE.button(ids.map(id => topicById.get(id))));
+    });
     return orderedTopics;
   };
 })();

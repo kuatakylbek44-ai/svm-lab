@@ -1,0 +1,30 @@
+.topic-guide-button {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.topic-guide-button:hover { background: var(--soft); }
+.topic-guide-button:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.topic-group-links { align-items: center; }
+.topic-guide-dialog {
+  width: min(620px, calc(100% - 36px));
+  max-height: calc(100dvh - 36px);
+  padding: clamp(18px, 4vw, 32px);
+  margin: auto;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.topic-guide-dialog::backdrop { background: #0c1b15b3; }
+.topic-guide-dialog h2 { margin: 0 0 18px; }
+.topic-guide-dialog h3 { margin: 16px 0 6px; }
+.topic-guide-dialog p { line-height: 1.65; }
+.topic-guide-dialog > button { margin-top: 18px; }

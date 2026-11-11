@@ -275,3 +275,63 @@ html[data-theme=dark] .practice-note,html[data-theme=dark] .practice-lab-head p{
   from { opacity: .35; }
   to { opacity: 1; }
 }
+
+.starter-lab-page .lesson-hero {
+  padding-top: clamp(24px, 4vw, 56px);
+  padding-bottom: 18px;
+}
+.starter-lab-page .lesson-hero h1 { max-width: 23ch; }
+.starter-chapters {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 18px;
+}
+.starter-chapters a {
+  display: grid;
+  grid-template-columns: 2ch 1fr;
+  gap: 10px;
+  padding: 9px;
+  border-radius: 7px;
+  color: var(--ink);
+  line-height: 1.35;
+}
+.starter-chapters a:hover,
+.starter-chapters a[aria-current] { background: var(--soft); }
+.starter-chapters a span { color: var(--green); font-variant-numeric: tabular-nums; }
+.starter-workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 30%);
+  gap: 16px;
+  align-items: start;
+}
+.starter-visual, .starter-panel, .starter-explanation {
+  min-width: 0;
+  padding: clamp(12px, 2vw, 22px);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+}
+.starter-visual h3, .starter-panel h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+.starter-panel .starter-controls { grid-template-columns: 1fr; }
+.starter-insight, .starter-explanation {
+  margin-top: 16px;
+  line-height: 1.6;
+}
+.starter-insight {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  color: var(--ink);
+}
+.starter-explanation summary {
+  color: var(--green);
+  font-weight: 700;
+  cursor: pointer;
+}
+.starter-explanation p { margin-top: 8px; }
+@media (max-width: 900px) {
+  .starter-workbench { grid-template-columns: 1fr; }
+  .starter-panel { grid-row: 1; }
+}
