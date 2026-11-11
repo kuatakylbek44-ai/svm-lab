@@ -57,14 +57,14 @@
 .lesson-meta b{color:var(--ink);font-weight:500}
 .lesson-layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:35px;padding-top:34px;padding-bottom:20px;align-items:start}
 .lesson-layout>*{min-width:0}
-.lesson-toc{position:sticky;top:104px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px 20px}
+.lesson-toc{position:sticky;top:104px;background:#f4f6ee;border:1px solid var(--line);border-radius:12px;padding:22px 20px}
 .lesson-toc .eyebrow{display:block;margin-bottom:14px}
 .lesson-toc a{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:11px;color:#55705c;border-bottom:1px solid #edf0e8}
 .lesson-toc a:last-child{border-bottom:0}
 .lesson-toc a:hover{color:var(--green)}
 .lesson-toc a span{font:12px Georgia,serif;color:#8e9f83}
 .lesson-body{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0}
-.lesson-slot{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:26px 28px;scroll-margin-top:104px}
+.lesson-slot{background:#f7f9f2;border:1px solid var(--line);border-radius:12px;padding:26px 28px;scroll-margin-top:104px}
 .slot-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
 .slot-head span{font:13px Georgia,serif;color:#8e9f83}
 .slot-head h2{font-size:21px;font-weight:500;letter-spacing:-.5px}
@@ -106,7 +106,7 @@ a.sroj-item:hover{background:#eef2e8;border-color:#c8d4c0}
 .lesson-block .lesson-note{margin-top:16px;border-left:3px solid #c9a15f;background:#f7f2e6;border-radius:0 8px 8px 0;padding:14px 16px;font-size:11.5px;line-height:1.85;color:#6f5c35}
 .lesson-note{font-size:11.5px;line-height:1.85;color:#5d6f55;border-left:3px solid #c9a15f;background:#f7f2e6;border-radius:0 8px 8px 0;padding:14px 16px;margin-top:14px}
 .table-wrap{margin-top:15px;overflow-x:auto;border:1px solid var(--line);border-radius:9px}
-.lesson-table{width:100%;border-collapse:collapse;font-size:11px;min-width:540px;background:#fbfcf7}
+.lesson-table{width:100%;border-collapse:collapse;font-size:11px;min-width:540px;background:#f7f9f2}
 .lesson-table th{text-align:left;padding:11px 13px;background:#eef2e8;font-size:9.5px;letter-spacing:.5px;text-transform:uppercase;color:#4d655a;border-bottom:1px solid var(--line);white-space:nowrap}
 .lesson-table td{padding:11px 13px;border-bottom:1px solid #e7ece1;line-height:1.6;color:#40584d;vertical-align:top}
 .lesson-table tbody tr:last-child td{border-bottom:0}
@@ -127,7 +127,7 @@ a.sroj-item:hover{background:#eef2e8;border-color:#c8d4c0}
 .code-card code{font:inherit;color:inherit}
 .quiz-hint{font-size:10.5px;color:var(--muted);margin-bottom:14px}
 .quiz-list{display:grid;gap:12px}
-.quiz-item{border:1px solid var(--line);border-radius:10px;background:#fbfcf7;padding:18px 18px 16px}
+.quiz-item{border:1px solid var(--line);border-radius:10px;background:#f7f9f2;padding:18px 18px 16px}
 .quiz-q{font-size:13px;font-weight:500;line-height:1.6;letter-spacing:-.1px}
 .quiz-options{display:grid;gap:7px;margin-top:12px}
 .quiz-option{text-align:left;background:#f4f6ee;border:1px solid var(--line);border-radius:7px;padding:11px 14px;font-size:11.5px;line-height:1.5;min-height:42px;transition:background .2s,border-color .2s;color:#334f44}
@@ -175,4 +175,35 @@ a.sroj-item:hover{background:#eef2e8;border-color:#c8d4c0}
 @media(max-width:1000px){.practice-grid.labs{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.practice-files{grid-template-columns:1fr}.practice-dataset{flex-direction:column;gap:12px}.practice-dataset>span{white-space:normal}}
 @media(max-width:520px){.practice-grid.labs{grid-template-columns:1fr}.practice-lab-head{margin-top:22px}.practice-week-card{min-height:88px}}
+/* Курс/дәріс/практика беттері — басты беттегі «зерттеулер» палитрасына жақындату */
+body.lesson-page,body.course-page{background-color:var(--bg);background-image:linear-gradient(180deg,#eaf0e4 0,#f4f5ef 520px);background-repeat:no-repeat}
+html[data-theme=dark] body.lesson-page,html[data-theme=dark] body.course-page{background-image:linear-gradient(180deg,#162820 0,#101d19 520px)}
+html[data-theme=dark] :is(.course-meta,.structure-card,.lesson-toc,.lesson-slot,.sroj-panel,.practice-card,.practice-lab-card,.sroj-link,.lesson-nav a,.flow-step,.practice-dataset,.practice-file,.quiz-item,.quiz-option,.slot-empty,.sroj-item){background:#182923;border-color:var(--line)}
+html[data-theme=dark] :is(.practice-card:hover,.practice-lab-card:hover,.sroj-link:hover,a.sroj-item:hover,.lesson-nav a:hover,.practice-file:hover,.lecture-row:hover){background:#20372c}
+html[data-theme=dark] .lesson-table{background:#182923}
+html[data-theme=dark] .lesson-table th{background:#20372c;color:#b5f3d1;border-color:var(--line)}
+html[data-theme=dark] .lesson-table td{color:#cfe0d6;border-color:var(--line)}
+html[data-theme=dark] :is(.lesson-block+.lesson-block,.sroj-note,.quiz-score,.structure-card .state,.lesson-toc a,.lesson-meta span){border-color:var(--line)}
+html[data-theme=dark] :is(.goal-list li,.lesson-block p,.lesson-list li,.summary-list li,.practice-steps li,.practice-dataset p,.quiz-option,.flow-step b){color:#cfe0d6}
+html[data-theme=dark] :is(.structure-card .num,.lecture-num,.practice-card .idx,.sroj-link .idx,.practice-card-meta,.sroj-item b,.lesson-toc a span,.slot-head span,.flow-step span){color:#8fae9a}
+html[data-theme=dark] .lesson-toc a{color:#b5cbbd}
+html[data-theme=dark] .lesson-kicker .badge{color:#a3b8ac;border-color:var(--line)}
+html[data-theme=dark] .slot-empty{color:#a3b8ac}
+html[data-theme=dark] :is(.lesson-note,.lesson-block .lesson-note){background:#3a3020;color:#f1cc91;border-left-color:#c9a15f}
+html[data-theme=dark] .lesson-ready{color:#8fe0b1}
+html[data-theme=dark] .lesson-ready i{background:#77d4ad}
+html[data-theme=dark] .quiz-option:hover:not(:disabled){background:#284e3a;border-color:#3e7457}
+html[data-theme=dark] .quiz-option.correct{border-color:#3e7457;background:#284e3a;color:#b5f3d1}
+html[data-theme=dark] .quiz-option.wrong{border-color:#6b4138;background:#493721;color:#f1cc91}
+html[data-theme=dark] .quiz-feedback.good{color:#8fe0b1}
+html[data-theme=dark] .quiz-feedback.bad{color:#f0a79b}
+html[data-theme=dark] .quiz-score{color:#b5cbbd}
+html[data-theme=dark] .lecture-status{background:#3a3020;border-color:#5a4a2e;color:#f1cc91}
+html[data-theme=dark] .lecture-status.ready{background:#284e3a;border-color:#3e7457;color:#b5f3d1}
+html[data-theme=dark] .structure-card .state{color:#a3b8ac}
+html[data-theme=dark] .practice-dataset>span{background:#284e3a;border-color:#3e7457;color:#b5f3d1}
+html[data-theme=dark] .practice-file-icon{background:#284e3a;color:#77d4ad}
+html[data-theme=dark] .course-meta b{color:#77d4ad}
+html[data-theme=dark] .course-meta span{color:#a3b8ac}
+html[data-theme=dark] .practice-note,html[data-theme=dark] .practice-lab-head p{color:#a3b8ac}
 

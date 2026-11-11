@@ -44,7 +44,7 @@ function render(){
   ${window.renderLessonFormulas(page,lang,index+1)}
   <section class="explainer" id="explanation"><h2>${t('Түсіндірме','Объяснение','Explanation')}</h2><p>${explain[page-1]}</p></section>
   <div class="next-link"><a class="button" href="${index>0?chapterHref(lessonPages[index-1]):topicsHref}">← ${t('Артқа','Назад','Back')}</a>${index<lessonPages.length-1?`<a class="button primary" href="${chapterHref(lessonPages[index+1])}">${t('Келесі бет','Далее','Next')} →</a>`:''}</div>
-  <footer class="source-footer"><span>${t('Негізі: жіберілген 10-апта материалдары','Основа: предоставленные материалы недели 10','Based on the supplied week 10 materials')}</span><a href="https://scikit-learn.org/stable/modules/${isImbalanced?'model_evaluation':'clustering'}.html" target="_blank" rel="noopener">scikit-learn ↗</a>${isImbalanced?`<a href="${topicsHref}">${t('Барлық тақырыптар','Все темы','All topics')} →</a>`:'<a href="unsupervised-files/new.csv" download>new.csv ↓</a>'}</footer>`;
+  <footer class="source-footer"><span>${t('Негізі: жіберілген 10-апта материалдары','Основа: предоставленные материалы недели 10','Based on the supplied week 10 materials')}</span><a href="https://scikit-learn.org/stable/modules/${isImbalanced?'model_evaluation':'clustering'}.html">scikit-learn ↗</a>${isImbalanced?`<a href="${topicsHref}">${t('Барлық тақырыптар','Все темы','All topics')} →</a>`:'<a href="unsupervised-files/new.csv" download>new.csv ↓</a>'}</footer>`;
   $('#pageCode').onclick=()=>showCode();
   $('#explainBtn').onclick=()=>$('#explanation').scrollIntoView({behavior:'smooth'});
   if(page<9)$('#formulaBtn').onclick=()=>$('#formulas').scrollIntoView({behavior:'smooth'});

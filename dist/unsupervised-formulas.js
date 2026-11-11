@@ -156,7 +156,7 @@
         t('Ықтималдық τ шегіне тең не одан жоғары болса — 1, әйтпесе — 0. Жүгірткі τ-ды өзгертеді, сондықтан қателер матрицасы мен көрсеткіштер де өзгереді.','Если вероятность не меньше порога τ, ответ — 1, иначе — 0. Ползунок меняет τ, поэтому меняются матрица ошибок и метрики.','Predict 1 when the probability is at least τ; otherwise predict 0. The slider changes τ, so the confusion matrix and metrics change.'));
     }
 
-    const source = page === 7 ? `<p class="small-note"><a href="https://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf" target="_blank" rel="noopener">${t('t-SNE: бастапқы ғылыми мақала','t-SNE: оригинальная научная статья','t-SNE: original research paper')} ↗</a></p>` : '';
+    const source = page === 7 ? `<p class="small-note"><a href="https://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf">${t('t-SNE: бастапқы ғылыми мақала','t-SNE: оригинальная научная статья','t-SNE: original research paper')} ↗</a></p>` : '';
     return `<section class="formula-section" id="formulas" aria-labelledby="formula-title"><header class="formula-heading"><span class="formula-mark" aria-hidden="true">ƒ</span><div><h2 id="formula-title">${t('Әдістің формулалары','Формулы метода','Method formulas')}</h2><p>${t('Формула → белгілер → мағынасы','Формула → обозначения → смысл','Equation → symbols → meaning')}</p></div><span class="formula-page">${String(displayPage).padStart(2,'0')}</span></header><div class="formula-grid">${cards}</div>${source}</section>`;
   };
 })();
