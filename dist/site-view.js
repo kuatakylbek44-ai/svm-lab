@@ -23,13 +23,12 @@
     lecture: 'course',
     practice: 'course',
     sroj: 'course',
-    svm: 'course',
-    penguins: 'course',
-    autompg: 'course',
-    unsupervised: 'course',
-    imbalanced: 'course',
     iris: 'index'
   };
+  const labTopics = { svm: 8, penguins: 9, autompg: 9, unsupervised: 10, imbalanced: 10 };
+  const originTopic = new URLSearchParams(location.search).get('fromTopic');
+  const irisTopic = page === 'iris-model' ? (['#6', '#knn'].includes(location.hash) ? 7 : 6) : null;
+  const returnTopic = /^(?:[1-9]|1[01])$/.test(originTopic) ? originTopic : (irisTopic || labTopics[page]);
 
   function sameTab() {
     document.querySelectorAll('a[target="_blank"]').forEach((link) => {
@@ -57,7 +56,7 @@
       if (page !== 'index') {
         const back = document.createElement('a');
         back.className = 'back-button';
-        back.href = page === 'iris-model' ? 'index' + suffix + '#topics' : (backTargets[page] || 'index') + suffix;
+        back.href = returnTopic ? `index${suffix}#topic-group-${returnTopic}` : (backTargets[page] || 'index') + suffix;
         back.setAttribute('aria-label', labels[4]);
         back.title = labels[4];
         back.innerHTML = '<span aria-hidden="true">←</span>';

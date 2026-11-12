@@ -19,6 +19,10 @@
   };
   const number = week => String(week).padStart(2, '0');
   const page = (name, week) => `${name}${suffix}.html?n=${week}`;
+  const fromTopic = (href, week) => {
+    const [path, hash] = href.split('#');
+    return `${path}${path.includes('?') ? '&' : '?'}fromTopic=${week}${hash ? '#' + hash : ''}`;
+  };
 
   const starterTopics = [
     { id: 'intro', english: 'MACHINE LEARNING', tags: ['Classification', 'Accuracy'] },
@@ -63,18 +67,18 @@
       });
 
       const lectureLink = lecture
-        ? `<a href="${page('lecture', week.n)}">${labels[lang].lecture} →</a>`
+        ? `<a href="${fromTopic(page('lecture', week.n), week.n)}">${labels[lang].lecture} →</a>`
         : '';
       const practiceLink = cards.some(topic => topic.href === page('practice', week.n))
         ? ''
-        : `<a href="${page('practice', week.n)}">${labels[lang].practice} →</a>`;
+        : `<a href="${fromTopic(page('practice', week.n), week.n)}">${labels[lang].practice} →</a>`;
       return `
         <section class="topic-group" aria-labelledby="topic-group-${week.n}">
           <div class="topic-group-heading">
             <h3 id="topic-group-${week.n}"><span>${number(week.n)}</span> ${title}</h3>
             <div class="topic-group-links">${lectureLink}${practiceLink}</div>
           </div>
-          <div class="topic-grid">${cards.map(topic => renderCard(topic, starterPlots[topic.id])).join('')}</div>
+          <div class="topic-grid">${cards.map(topic => renderCard({ ...topic, href: fromTopic(topic.href, week.n) }, starterPlots[topic.id])).join('')}</div>
         </section>`;
     });
     const host = document.getElementById('topicCards');
