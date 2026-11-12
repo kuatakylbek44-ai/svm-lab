@@ -23,6 +23,7 @@
     heading: t('Компьютер цифрды қалай таниды?', 'Как компьютер распознаёт цифры?', 'How does a computer recognize digits?'),
     actual: t('Нақты', 'Факт', 'Actual'), predicted: t('Болжам', 'Прогноз', 'Prediction'),
     notes: t('Қорғау мәтіні', 'Текст для защиты', 'Presentation notes'),
+    explanation: t('Түсіндірме', 'Объяснение', 'Explanation'),
     formulas: t('Формулалар', 'Формулы', 'Formulas'),
     pageCode: t('Осы беттің коды', 'Код этой страницы', 'Code for this page'),
     training: t('Оқыту', 'Обучение', 'Training'), loss: t('Шығын', 'Потери', 'Loss'),
@@ -38,8 +39,9 @@
   const toolbar = () => `<div class="topic-lab-actions topic-lab-reference">
     ${chapters[active][2].length ? `<button type="button" class="topic-lab-button" data-dialog="code">&lt;/&gt; ${labels.pageCode}</button>` : ''}
     <button type="button" class="topic-lab-button" data-dialog="formulas">ƒ ${labels.formulas}</button>
+    <button type="button" class="topic-lab-button" data-dialog="explanation">${labels.explanation}</button>
     <button type="button" class="topic-lab-button" data-dialog="notes">${labels.notes}</button>
-    <a class="topic-lab-button" href="#code">${chapters[6][1]} →</a>
+    ${active === 6 ? '' : `<a class="topic-lab-button" href="#code">${chapters[6][1]} →</a>`}
   </div>`;
   let data;
   let active = 0;
@@ -105,6 +107,7 @@
     return `<div class="topic-lab-hero"><div><p class="topic-lab-kicker">11 / DIGITS + MNIST</p><h1 tabindex="-1">${labels.heading}</h1>
       <p class="topic-lab-question">${t('Пиксельден болжамға.', 'От пикселей к прогнозу.', 'From pixels to a prediction.')}</p>
       <p class="topic-lab-lead">${t('Ақылбек NumPy желісін ашады. Алмас TensorFlow моделінің нәтижесін және қате таныған цифрларын көрсетеді.', 'Акылбек разбирает сеть NumPy. Алмас показывает результаты TensorFlow и ошибки на цифрах.', 'Akylbek opens up the NumPy network. Almas shows TensorFlow results and misclassified digits.')}</p>
+      ${toolbar()}
       <div class="topic-lab-actions"><a class="topic-lab-button primary" href="#digits">${t('Зертхананы бастау', 'Начать лабораторную', 'Start the lab')} ↗</a>${notebook}${practice}</div>
       ${metrics([percent(data.digits.accuracy32), 'DIGITS · NumPy'], [percent(data.mnist.models[0].accuracy), 'MNIST · Dense 128'], [integer.format(data.mnist.testCount), t('MNIST тест кескіні', 'тестовых изображений MNIST', 'MNIST test images')])}</div>
       <figure class="topic-lab-preview"><figcaption>MNIST · 28×28</figcaption><div id="previewDigits"></div></figure></div>`;
@@ -201,6 +204,54 @@
     <div><dt>ŷ = argmaxⱼ pⱼ · Accuracy = correct / total</dt><dd>${t('Ең үлкен ықтималдықтың индексі — цифр болжамы. Тесттегі дұрыс жауаптар үлесі дәлдікті береді.', 'Индекс максимальной вероятности — прогноз цифры. Точность — доля верных ответов на тесте.', 'The largest probability gives the predicted digit. Accuracy is the fraction of correct test predictions.')}</dd></div>
   </dl>`;
 
+  function explanation() {
+    const d = data.digits;
+    const m = data.mnist;
+    const [base, wide, tuned] = m.models;
+    const most = m.top[0];
+    const pages = [
+      [
+        t('Мақсат — пиксельдерден 0–9 цифрларының бірін болжау. Оң жақтағы он сурет — MNIST оқыту жиынының басы; астындағы сан — деректегі нақты белгі.', 'Цель — предсказать цифру от 0 до 9 по пикселям. Справа первые десять обучающих изображений MNIST, под ними истинные метки.', 'The goal is to predict a digit from 0 to 9 from its pixels. The ten images are the first MNIST training examples. The digits below are their actual labels.'),
+        t('«Зертхананы бастау» батырмасын бас. Алдымен 8×8 DIGITS желісін, кейін 28×28 MNIST желісін аш.', 'Нажми «Начать лабораторную». Сначала открой сеть DIGITS 8×8, затем MNIST 28×28.', 'Start the lab. Open the 8×8 DIGITS network first, then the 28×28 MNIST network.'),
+        t('«Ақылбек NumPy-де желінің ішін көрсетеді. Алмас TensorFlow моделін бағалайды. Екі дәлдікті тікелей жарыстырмаймыз: суреттер мен тест жиындары бөлек.»', '«Акылбек покажет устройство сети NumPy, Алмас оценит TensorFlow. Точности относятся к разным изображениям и тестовым наборам».', '“Akylbek will show how the NumPy network works. Almas will evaluate the TensorFlow model. Each accuracy belongs to a different dataset and test set.”')
+      ],
+      [
+        t('8×8 кескін 64 санға айналады. Алға тарату tanh пен Softmax арқылы он ықтималдық береді. Кері тарату шығынның градиентін есептеп, салмақтарды түзетеді. Қисықтар оқыту жиынындағы шығынды көрсетеді; жоғарғы карточкалар бөлек тест дәлдігін көрсетеді.', 'Изображение 8×8 превращается в 64 числа. Прямой проход через tanh и Softmax даёт десять вероятностей. Обратный проход обновляет веса по градиенту потерь. На графике потери обучения, на карточках точность отдельного теста.', 'An 8×8 image becomes 64 values. The forward pass uses tanh and Softmax to give ten probabilities. Backpropagation computes gradients to update the weights. The curves show training loss; the cards show held-out test accuracy.'),
+        t('«Ойнату» батырмасын басып, 0–300 қадамдағы қисықтарды салыстыр. Цифр мен жасырын нейронды таңда: картадағы түс кіріс салмағының таңбасын, tanh мәні осы цифрға берілген реакцияны көрсетеді.', 'Проиграй 0–300 шагов. Выбери цифру и скрытый нейрон: цвет карты показывает знак веса пикселя, а tanh — реакцию на выбранное изображение.', 'Replay steps 0–300. Pick a digit and hidden unit: map colors show the signs of pixel weights, and the tanh value shows the response to that digit.'),
+        t(`«Бірдей бөлініс пен 300 қадамда 2 нейрон ${percent(d.accuracy2)}, 32 нейрон ${percent(d.accuracy32)} көрсетті. 32 нейрондық модель ${d.testCount} тест цифрының ${d.testCount - d.errors}-сын таныды.»`, `«На одном разбиении после 300 шагов 2 нейрона дали ${percent(d.accuracy2)}, а 32 — ${percent(d.accuracy32)}. Верно распознано ${d.testCount - d.errors} из ${d.testCount} цифр».`, `“On the same split after 300 steps, two units scored ${percent(d.accuracy2)} and 32 scored ${percent(d.accuracy32)}. The larger network got ${d.testCount - d.errors} of ${d.testCount} test digits right.”`)
+      ],
+      [
+        t('Пиксельді 255-ке бөлеміз. Flatten 28×28 кескінді 784 санға жазады. Dense(128) пен ReLU белгілерді үйренеді. Dropout(0,2) тек оқытуда жұмыс істейді. Соңғы он логит cross-entropy-ге тікелей беріледі.', 'Пиксель делим на 255. Flatten превращает 28×28 в 784 числа. Dense(128) и ReLU изучают признаки. Dropout(0,2) работает при обучении. Десять логитов идут прямо в cross-entropy.', 'Divide pixels by 255. Flatten turns 28×28 into 784 values. Dense(128) and ReLU learn features. Dropout(0.2) runs during training. Ten logits go directly into cross-entropy.'),
+        t('Алғашқы 10 кескіннің астындағы нақты цифрларды көрсет. Архитектураны солдан оңға оқып, бес эпоханың validation қисығын соңғы test accuracy мәнімен шатастырма.', 'Покажи истинные цифры под первыми 10 изображениями. Пройди схему слева направо и отличи кривую validation за пять эпох от итоговой test accuracy.', 'Show the labels under the first ten images. Walk through the architecture from left to right and distinguish the five-epoch validation curve from final test accuracy.'),
+        t(`«Оқытуға ${integer.format(m.trainCount)}, бақылауға ${integer.format(m.validationCount)} кескін бердік. Adam бес эпоха бойы салмақтарды жаңартты. Соңында модель бөлек тестте ${percent(base.accuracy)} көрсетті.»`, `«Обучали на ${integer.format(m.trainCount)}, проверяли на validation из ${integer.format(m.validationCount)} изображений. Adam обновлял веса пять эпох. Итоговый тест — ${percent(base.accuracy)}».`, `“We trained on ${integer.format(m.trainCount)} images and validated on ${integer.format(m.validationCount)}. Adam updated weights for five epochs. The separate test score was ${percent(base.accuracy)}.”`)
+      ],
+      [
+        t('Softmax ықтималдықтары қосындысы 1 болады. Ең үлкен мәннің индексі — болжам. Матрицада жол — нақты цифр, баған — болжам; диагональ — дұрыс жауаптар.', 'Вероятности Softmax в сумме дают 1. Индекс максимума — прогноз. В матрице строки — истинные цифры, столбцы — прогноз, диагональ — верные ответы.', 'Softmax probabilities sum to one. The maximum gives the predicted digit. Matrix rows are actual digits, columns are predictions, and the diagonal contains correct predictions.'),
+        t(`«10 қате болжамды» таңда да, бір кескіндегі ең үлкен екі ықтималдықты салыстыр. Матрицада ${most.actual} жолы мен ${most.prediction} бағанын бас: ${most.count} деген сан осы бағыттағы қателерді білдіреді.`, `Выбери «10 ошибок» и сравни две крупнейшие вероятности. Нажми строку ${most.actual} и столбец ${most.prediction}: ${most.count} — число ошибок в этом направлении.`, `Select ten misclassifications and compare the two highest probabilities for one image. Select row ${most.actual}, column ${most.prediction}: ${most.count} is the error count in that direction.`),
+        t(`«Базалық модель ${integer.format(m.testCount - m.errors)} кескінді дұрыс таныды, ${m.errors} кескінде қателесті. Мысалы, нақты ${most.actual} цифрын ${most.prediction} деп ${most.count} рет болжады.»`, `«Базовая модель правильно распознала ${integer.format(m.testCount - m.errors)} изображений и ошиблась ${m.errors} раз. Например, ${most.actual} принят за ${most.prediction} ${most.count} раза».`, `“The baseline correctly recognized ${integer.format(m.testCount - m.errors)} images and made ${m.errors} errors. It predicted ${most.prediction} for an actual ${most.actual} on ${most.count} occasions.”`)
+      ],
+      [
+        t('128 және 256 нейрон бірдей дерек бөлінісінде 5 эпоха оқыды. Tuner төрт нұсқаны validation дәлдігімен салыстырды. Таңдалған нұсқа жаңадан оқытылып, test-те бағаланды.', 'Модели 128 и 256 обучались 5 эпох на одном разбиении. Tuner сравнил четыре конфигурации по validation. Выбранная модель обучена заново и проверена на test.', 'The 128- and 256-unit models trained for five epochs on the same split. The tuner compared four configurations on validation. The selected model was retrained and evaluated on test.'),
+        t('Кестеде дәлдікпен бірге параметр санын қара. Графикті Validation accuracy-ден Validation loss-қа ауыстыр. Accuracy дұрыс жауапты санайды, loss модельдің сенімділігін де ескереді.', 'Сравни точность и число параметров. Переключи Validation accuracy на Validation loss. Accuracy считает верные ответы, loss учитывает также уверенность.', 'Compare both accuracy and parameter count. Switch the chart from validation accuracy to validation loss. Accuracy counts correct predictions, while loss also accounts for confidence.'),
+        t(`«128 нейрон ${percent(base.accuracy)}, 256 нейрон ${percent(wide.accuracy)} көрсетті. Tuner ${tuned.units} нейрон мен LR=${tuned.rate} таңдады. Қайта оқыту нәтижесі — ${percent(tuned.accuracy)}; бір іске қосудағы айырма тұрақты артықшылықты дәлелдемейді.»`, `«128 нейронов дали ${percent(base.accuracy)}, 256 — ${percent(wide.accuracy)}. Tuner выбрал ${tuned.units} и LR=${tuned.rate}. Повторное обучение дало ${percent(tuned.accuracy)}; один запуск не доказывает устойчивого преимущества».`, `“128 units reached ${percent(base.accuracy)}, and 256 reached ${percent(wide.accuracy)}. The tuner chose ${tuned.units} units and LR=${tuned.rate}. Retraining scored ${percent(tuned.accuracy)}; one run cannot establish a consistent advantage.”`)
+      ],
+      [
+        t('Қорғау екі бөлікке бөлінген: Ақылбек модельдің қалай үйренетінін көрсетеді, Алмас тест нәтижесін және қателерді талдайды.', 'Защита состоит из двух частей: Акылбек показывает обучение сети, Алмас анализирует тест и ошибки.', 'The presentation has two parts. Akylbek shows how the network learns, and Almas explains the test results and errors.'),
+        t('Әр адам бір тәжірибені қолмен көрсетсін. Содан кейін төмендегі сұрақтарды ашып, жауапты өз сөздеріңмен айтыңдар.', 'Каждый показывает один пример сам. Затем откройте вопросы и ответьте своими словами.', 'Each presenter should demonstrate one interaction. Then open the questions and answer in your own words.'),
+        t('«Жұмысымыз екі модельді салыстырумен аяқталады. Келесі қадам — CNN мен деректі көбейтуді validation арқылы тексеріп, жиі шатасатын цифрларға әсерін өлшеу.»', '«Дальше сравним CNN и аугментацию на validation и оценим их влияние на частые ошибки».', '“Next we would compare a CNN and data augmentation on validation and measure their effect on the most frequent mistakes.”')
+      ],
+      [
+        t('Толық Python файлы деректі жүктейді, NumPy және Keras модельдерін оқытады, төрт Tuner сынағын орындайды және график пен нәтижелерді шығарады.', 'Полный файл загружает данные, обучает NumPy и Keras, запускает четыре пробы Tuner и сохраняет графики и результаты.', 'The full Python file loads the data, trains the NumPy and Keras models, runs four tuner trials, and saves plots and results.'),
+        t('Notebook-ты ашып, алдымен сақталған нәтижелерді қара. Қайта есептеу қажет болса, Colab-та Run all таңда. Жеке бет коды алдыңғы ұяшықтарға сүйенеді, толық файлды басынан орындауға болады.', 'Открой notebook и сначала посмотри сохранённые результаты. Для пересчёта запусти Run all в Colab. Фрагменты страниц зависят от предыдущих ячеек; полный файл запускается целиком.', 'Open the notebook and inspect the saved outputs first. Choose Run all in Colab to recompute. Page excerpts rely on earlier cells; the full script can run from the beginning.'),
+        t('«Кодтан үш жерді көрсете аламыз: train_digits — қолмен кері тарату, build_mnist — Keras архитектурасы, confusion_matrix — қателерді жинау.»', '«Покажем три места: train_digits — ручной обратный проход, build_mnist — архитектура Keras, confusion_matrix — подсчёт ошибок».', '“We can point to three places in the code: train_digits for manual backpropagation, build_mnist for the Keras architecture, and confusion_matrix for counting errors.”')
+      ]
+    ];
+    const titles = [t('Бұл бетте не көрсетілген?', 'Что показывает страница?', 'What this page shows'),
+      t('Экранда не істеу керек?', 'Что сделать на экране?', 'What to do on screen'),
+      t('Қорғауда қалай айтуға болады?', 'Как объяснить на защите?', 'What to say during the presentation')];
+    return `<div class="week11-explanation">${pages[active].map((paragraph, i) => `<section class="week11-panel"><h3>${titles[i]}</h3><p>${paragraph}</p></section>`).join('')}</div>`;
+  }
+
   const source = () => {
     sourceRequest ||= fetch(asset + 'week11-study.py').then(response => {
       if (!response.ok) throw Error('Source unavailable');
@@ -239,8 +290,11 @@
   function showDialog(kind) {
     const dialog = document.getElementById('week11Dialog');
     const body = document.getElementById('week11DialogBody');
-    document.getElementById('week11DialogTitle').textContent = labels[kind === 'code' ? 'pageCode' : kind];
+    document.getElementById('week11DialogTitle').textContent = kind === 'explanation'
+      ? `${labels.explanation} · ${chapters[active][1]}`
+      : labels[kind === 'code' ? 'pageCode' : kind];
     if (kind === 'code') showCode(body, chapters[active][2]);
+    else if (kind === 'explanation') body.innerHTML = explanation();
     else body.innerHTML = kind === 'notes' ? speech() : formulas();
     dialog.showModal();
   }
@@ -292,7 +346,7 @@
       overview, digits, mnist, predictions, compare,
       () => heading(chapters[5][1]) + toolbar() + speech() + `<div class="topic-lab-actions">${notebook}${python}</div>
         <p class="week11-lead">${t('Дереккөздер', 'Источники', 'Sources')} · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html">DIGITS</a> · <a href="https://www.tensorflow.org/tutorials/quickstart/beginner">TensorFlow MNIST</a> · <a href="https://www.tensorflow.org/tutorials/keras/keras_tuner">Keras Tuner</a></p>`,
-      () => heading(chapters[6][1]) + '<div id="week11FullCode"></div>'
+      () => heading(chapters[6][1]) + toolbar() + '<div id="week11FullCode"></div>'
     ][active];
     host.innerHTML = section();
     document.querySelectorAll('#week11Rail nav a').forEach((link, i) => {

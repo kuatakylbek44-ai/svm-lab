@@ -47,6 +47,8 @@
 .week11-insight { border-inline-start: 3px solid var(--green); padding: 8px 12px; margin: 12px 0; line-height: 1.6; background: var(--soft); }
 .week11-speech p { margin-bottom: 10px; line-height: 1.7; }
 .week11-speech h3 { color: var(--green); }
+.week11-explanation { display: grid; gap: 10px; }
+.week11-explanation h3 { color: var(--green); }
 @media (max-width: 840px) {
   .week11-grid { grid-template-columns: 1fr; }
 }
