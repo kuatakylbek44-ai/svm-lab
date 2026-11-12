@@ -58,7 +58,7 @@
     <button type="button" class="topic-lab-button" data-dialog="code">&lt;/&gt; ${labels.code}</button>
     <button type="button" class="topic-lab-button" data-dialog="formulas">ƒ ${labels.formulas}</button>
     <button type="button" class="topic-lab-button" data-dialog="explanation">${labels.explanation}</button>
-    ${download}<a class="topic-lab-button" href="sroj11-guide.html?fromTopic=11">${t('Қадамдық түсіндірме (орысша)', 'Пошаговый разбор для новичков', 'Beginner walkthrough (Russian)')} ↗</a></div>`;
+    ${download}<a class="topic-lab-button" href="sroj11-guide${suffix}.html?fromTopic=11">${t('Қадамдық түсіндірме', 'Пошаговый разбор для новичков', 'Beginner walkthrough')} ↗</a></div>`;
   const metric = (value, label) => `<div><strong>${value}</strong><small>${label}</small></div>`;
   const metricRow = (...items) => `<div class="week11-metrics">${items.map(args => metric(...args)).join('')}</div>`;
 

@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f5ef">
+  <title>Hierarchical clustering and DBSCAN · ML LAB</title>
+  <link rel="icon" href="hub-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="hub.css">
+  <link rel="stylesheet" href="language.css">
+  <link rel="stylesheet" href="site-view.css">
+  <link rel="stylesheet" href="topic-lab.css?v=reference">
+  <link rel="stylesheet" href="sroj11-guide.css">
+  <script src="language.js?v=guide-languages"></script>
+  <script src="site-view.js?v=sroj-guide"></script>
+  <script src="sroj11-core.js?v=park" defer></script>
+  <script src="sroj11-guide.js?v=languages" defer></script>
+</head>
+<body class="topic-lab-shell cluster-guide">
+<a class="skip" href="#main">Skip to content</a>
+<aside class="topic-lab-rail">
+  <a class="topic-lab-brand" href="index.en.html#topic-group-11">ML<span>LAB</span></a>
+  <p class="topic-lab-topic">Guided assignment · Week 11</p>
+  <nav aria-label="Lesson sections">
+    <a href="#start"><span>01</span>What is clustering?</a>
+    <a href="#hierarchy"><span>02</span>Hierarchy and dendrogram</a>
+    <a href="#dbscan"><span>03</span>DBSCAN in the park</a>
+    <a href="#compare"><span>04</span>Compare with K-Means</a>
+    <a href="#python"><span>05</span>Python line by line</a>
+    <a href="#questions"><span>06</span>Applications and questions</a>
+  </nav>
+  <a class="topic-lab-return" href="sroj11.en.html?fromTopic=11#compare">← Practice with 31 points</a>
+</aside>
+<div class="topic-lab-workspace">
+  <header class="topbar"><span class="topic-lab-crumb">Week 11 · Clustering</span></header>
+  <main id="main" class="topic-lab-main">
+    <section class="guide-intro" id="start">
+      <p class="topic-lab-kicker">ML LAB / 11</p>
+      <h1>How does an algorithm find groups?</h1>
+      <p class="guide-deck">Merge grades step by step, then see which groups DBSCAN finds in the park.</p>
+      <p><strong>Clustering</strong> groups similar things without predefined answers. A cluster is one such group. It can uncover similar routes in GPS data or shoppers with similar habits. What counts as similar depends on your features: two shoppers might buy equally often and spend different amounts.</p>
+      <div class="topic-lab-actions"><a class="topic-lab-button primary" href="#hierarchy">Start with the grades →</a><a class="topic-lab-button" href="#dbscan">Open the park example</a></div>
+    </section>
+
+    <section class="guide-section" id="hierarchy">
+      <p class="topic-lab-kicker">02 / Hierarchical clustering</p>
+      <h2>From individual grades to a tree</h2>
+      <p>Take five grades: <strong>20, 25, 50, 80, 85</strong>. Each begins in its own group. At each step we merge the two nearest groups. Two grades are as far apart as the difference between them. The distance between groups is the distance between their <em>closest</em> members. This rule is called <strong>single linkage</strong>.</p>
+      <div class="guide-demo">
+        <h3>Watch the tree grow</h3>
+        <div class="guide-controls">
+          <button type="button" class="topic-lab-button primary" id="mergePlay">▶ Animate merges</button>
+          <button type="button" class="topic-lab-button" id="mergeNext">One step →</button>
+          <button type="button" class="topic-lab-button" id="mergeReset">Reset</button>
+          <label for="cutHeight">Cut height: <output id="cutValue" for="cutHeight">27</output>
+            <input type="range" id="cutHeight" min="0" max="35" value="27">
+          </label>
+        </div>
+        <div id="mergeTree"></div>
+        <p id="mergeStatus" class="guide-result" role="status"></p>
+        <div id="mergeGroups" class="guide-groups" aria-label="Resulting groups"></div>
+      </div>
+      <ol>
+        <li><strong>20 and 25 merge first.</strong> They are 5 apart. So are 80 and 85, so either pair could go first. The animation takes the left pair.</li>
+        <li><strong>80 and 85 also merge at height 5.</strong> Three groups remain: {20, 25}, {50}, and {80, 85}.</li>
+        <li><strong>50 joins {20, 25}.</strong> It is 25 away from 25 on the left and 30 away from 80 on the right. We choose the smaller distance.</li>
+        <li><strong>The final two groups merge at height 30.</strong> Their closest pair is 50 and 80. One group now contains every grade.</li>
+      </ol>
+      <h3>How to read a dendrogram</h3>
+      <p>A <strong>dendrogram</strong> is a tree of merges. Individual grades sit at the bottom. Each horizontal branch shows the distance at which two groups merged. The spacing between labels is for layout; read the <em>height</em> of the branch.</p>
+      <p>To choose a group count, draw a horizontal line and count the vertical branches it crosses. Cut <em>between</em> merge heights. Height <strong>4</strong> gives 5 groups, <strong>10</strong> gives 3, <strong>27</strong> gives 2, and <strong>33</strong> gives 1. Try the slider.</p>
+      <p class="guide-takeaway"><strong>Remember:</strong> hierarchical clustering builds a tree of successive merges. You can inspect the whole tree before choosing where to stop.</p>
+    </section>
+
+    <section class="guide-section" id="dbscan">
+      <p class="topic-lab-kicker">03 / DBSCAN</p>
+      <h2>People on a path in the park</h2>
+      <p>Two groups stand on the path, one at <strong>0, 1, 2, 3 m</strong> and one at <strong>9, 10, 11, 12 m</strong>. Another person stands at <strong>20 m</strong>. <strong>DBSCAN</strong> finds places with enough neighbors and connects them into groups.</p>
+      <div class="guide-demo">
+        <h3>Change the radius and see what happens</h3>
+        <div class="guide-controls">
+          <label for="parkEps"><code>eps</code>: <output id="epsValue" for="parkEps">1</output> m
+            <input type="range" id="parkEps" min="0.5" max="8" step="0.5" value="1">
+          </label>
+          <label for="parkMin"><code>min_samples</code>: <output id="minValue" for="parkMin">3</output>
+            <input type="range" id="parkMin" min="1" max="6" step="1" value="3">
+          </label>
+          <label for="parkPerson">Person at <select id="parkPerson"></select></label>
+          <button type="button" class="topic-lab-button primary" id="parkPlay">▶ Play the changes</button>
+        </div>
+        <div class="guide-controls guide-presets" aria-label="Example settings">
+          <button type="button" class="topic-lab-button" data-eps="0.5" data-min="3">0.5 m · 3</button>
+          <button type="button" class="topic-lab-button" data-eps="1" data-min="3">1 m · 3</button>
+          <button type="button" class="topic-lab-button" data-eps="1" data-min="4">1 m · 4</button>
+          <button type="button" class="topic-lab-button" data-eps="6" data-min="3">6 m · 3</button>
+        </div>
+        <div id="parkPlot"></div>
+        <p id="parkStatus" class="guide-result" role="status"></p>
+        <p class="guide-caption">Color shows the group. A filled circle is a core point, a hollow one is at the edge, and × is noise. The dashed bracket shows the chosen person's <code>eps</code> reach to either side.</p>
+      </div>
+      <h3>What do the parameters mean?</h3>
+      <ul>
+        <li><strong><code>eps</code> is the search radius.</strong> With <code>eps=1</code>, the person at 1 m sees people at 0, 1, and 2 m. A person exactly on the radius boundary counts.</li>
+        <li><strong><code>min_samples</code> is the minimum number of points in the radius.</strong> Count the person too. With <code>min_samples=3</code>, the person at 1 m has exactly three points nearby. This makes it a <strong>core point</strong>, a point through which the group can grow.</li>
+        <li><strong>Border point.</strong> The person at 0 m has only two points nearby: 0 and 1. They join the group because they are next to the core point at 1 m, but they cannot extend it themselves.</li>
+        <li><strong>Noise.</strong> With a radius of 1 m, the person at 20 m sees only themselves. No core point is nearby, so DBSCAN leaves them out. This depends on the settings; the point is not necessarily a data error.</li>
+      </ul>
+      <div class="guide-table"><table>
+        <thead><tr><th>eps</th><th>min_samples</th><th>Result</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>0.5 m</td><td>3</td><td>0 groups, 9 noise points</td><td>Everyone sees only themselves.</td></tr>
+          <tr><td>1 m</td><td>3</td><td>2 groups, 1 noise point</td><td>Both groups have core points. The person at 20 m stays alone.</td></tr>
+          <tr><td>1 m</td><td>4</td><td>0 groups, 9 noise points</td><td>The radius is unchanged, but even the middle of a group has only three nearby points.</td></tr>
+          <tr><td>6 m</td><td>3</td><td>1 group, 1 noise point</td><td>The core points at 3 and 9 m are now neighbors and connect the groups.</td></tr>
+        </tbody>
+      </table></div>
+      <p class="guide-takeaway"><strong>Remember:</strong> DBSCAN connects dense areas and can leave sparse points as noise. You do not have to choose the group count in advance.</p>
+    </section>
+
+    <section class="guide-section" id="compare">
+      <p class="topic-lab-kicker">04 / Comparison</p>
+      <h2>Three algorithms, the same five grades</h2>
+      <div class="guide-table"><table>
+        <thead><tr><th>Method</th><th>What it does</th><th>Result on the grades</th></tr></thead>
+        <tbody>
+          <tr><td>Hierarchical</td><td>Merges the nearest groups. A cut at 27 leaves two.</td><td>{20, 25, 50} and {80, 85}</td></tr>
+          <tr><td>DBSCAN</td><td>Looks within 6 points. At least two points must be present, counting the point itself.</td><td>{20, 25} and {80, 85}; 50 is noise</td></tr>
+          <tr><td>K-Means</td><td>Finds two centers for <code>k=2</code>. A center is the group's mean. Every object is assigned to one center.</td><td>{20, 25, 50} and {80, 85}</td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>What happens to 50?</strong> Hierarchical clustering adds it to the left group because 25 is closer than 80. The shown K-Means run finds centers near 31.67 and 82.5, so 50 goes to the first. DBSCAN only checks the 6-point neighborhood. It finds no other point there.</p>
+    </section>
+
+    <section class="guide-section" id="python">
+      <p class="topic-lab-kicker">05 / scikit-learn</p>
+      <h2>Reproduce the result in Python</h2>
+      <p>Run this in Colab or Python with <code>scikit-learn</code> installed. Each inner list is a row for one student. The single column holds the grade.</p>
+      <pre class="topic-code"><code>from sklearn.cluster import AgglomerativeClustering, DBSCAN, KMeans
+X = [[20], [25], [50], [80], [85]]
+hierarchy = AgglomerativeClustering(n_clusters=2, linkage="single")
+density = DBSCAN(eps=6, min_samples=2)
+centers = KMeans(n_clusters=2, random_state=0, n_init=10)
+print("Hierarchical:", hierarchy.fit_predict(X).tolist())
+print("DBSCAN:", density.fit_predict(X).tolist())
+print("K-Means:", centers.fit_predict(X).tolist())</code></pre>
+      <div class="topic-lab-actions"><a class="topic-lab-button" href="sroj11-files/clustering-scores.py" download>↓ Download Python</a></div>
+      <h3>What each line does</h3>
+      <ol>
+        <li><code>from sklearn.cluster import …</code> loads the three ready-to-use algorithms.</li>
+        <li><code>X = …</code> stores five grades. Each student has one feature.</li>
+        <li><code>hierarchy = …</code> chooses two groups and the closest-pair rule.</li>
+        <li><code>density = …</code> searches within 6 points. A core point needs two points including itself.</li>
+        <li><code>centers = …</code> sets two centers. <code>n_init=10</code> tries ten initializations and keeps the best. <code>random_state=0</code> fixes the randomness so the run is repeatable.</li>
+        <li>The first <code>print</code> runs hierarchical clustering with <code>fit_predict(X)</code> and prints the group of each grade. <code>tolist()</code> converts the result into a Python list.</li>
+        <li>The second <code>print</code> does the same for DBSCAN.</li>
+        <li>The third <code>print</code> prints the K-Means result.</li>
+      </ol>
+      <h3>Output from the executed code</h3>
+      <pre class="topic-code"><code>Hierarchical: [0, 0, 0, 1, 1]
+DBSCAN: [0, 0, -1, 1, 1]
+K-Means: [0, 0, 0, 1, 1]</code></pre>
+      <p>Read left to right in the order <strong>20, 25, 50, 80, 85</strong>. <code>0</code> and <code>1</code> are group names. Swapping the numbers leaves the groups unchanged. DBSCAN's <code>-1</code> marks grade 50 as noise.</p>
+    </section>
+
+    <section class="guide-section" id="questions">
+      <p class="topic-lab-kicker">06 / Practice and presentation</p>
+      <h2>Where is this useful?</h2>
+      <ul>
+        <li><strong>Hierarchy:</strong> group similar news articles into subtopics and see how those form larger topics.</li>
+        <li><strong>DBSCAN:</strong> find concentrations of GPS points on a map and separate isolated observations.</li>
+        <li><strong>K-Means:</strong> divide shoppers into a chosen number of groups by purchase frequency and spending.</li>
+      </ul>
+      <h3>What might the instructor ask?</h3>
+      <p><strong>How can DBSCAN find a curved group?</strong> A chain of neighboring core points is enough. The group does not need a shared center.</p>
+      <p><strong>What if one feature is money and another counts purchases?</strong> Check the scales first. A large-valued feature can dominate the distance. Bring the features to comparable scales if needed.</p>
+      <p><strong>How can two people present it?</strong> Akylbek plays the grade merges and cuts the tree at 27. Almas opens the park, changes <code>eps</code> from 1 to 6, and explains why the groups join.</p>
+      <h3>Five self-check questions</h3>
+      <div class="guide-quiz">
+        <details><summary>1. Why do 20 and 25 merge before 25 and 50?</summary><p>5 is smaller than 25. The 80 and 85 pair is also 5 apart.</p></details>
+        <details><summary>2. How many groups remain after cutting at 27?</summary><p>Two: {20, 25, 50} and {80, 85}. The last merge is at 30.</p></details>
+        <details><summary>3. With eps=1 m and min_samples=3, is the person at 1 m a core point?</summary><p>Yes. The neighborhood includes 0, 1, and 2 m, counting the person too.</p></details>
+        <details><summary>4. What does -1 mean for grade 50 in the DBSCAN output?</summary><p>It is noise. No other grade lies within 6 points, so it belongs to no cluster.</p></details>
+        <details><summary>5. Which method needs a center count in advance?</summary><p>K-Means. Hierarchy lets you choose a cut; DBSCAN gets its count from density.</p></details>
+      </div>
+      <p class="guide-caption">References: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html">AgglomerativeClustering</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html">DBSCAN</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html">K-Means</a>.</p>
+    </section>
+  </main>
+</div>
+</body>
+</html>

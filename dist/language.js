@@ -13,7 +13,7 @@
     const filename = next.pathname.split('/').pop() || 'index.html';
     // Static hosting may redirect .html pages to extensionless URLs.
     const base = filename.replace(/\.html$/, '').replace(/\.(ru|en)$/, '');
-    if (!['index', 'course', 'lecture', 'sroj', 'practice', 'topic-lab', 'week11', 'sroj11', 'svm', 'iris', 'iris-model', 'penguins', 'autompg', 'unsupervised', 'imbalanced'].includes(base)) return next.href;
+    if (!['index', 'course', 'lecture', 'sroj', 'practice', 'topic-lab', 'week11', 'sroj11', 'sroj11-guide', 'svm', 'iris', 'iris-model', 'penguins', 'autompg', 'unsupervised', 'imbalanced'].includes(base)) return next.href;
     const target = base + (lang === 'kk' ? '' : '.' + lang) + '.html';
     next.pathname = next.pathname.slice(0, next.pathname.lastIndexOf('/') + 1) + target;
     next.searchParams.delete('lang');

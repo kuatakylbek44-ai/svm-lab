@@ -1,81 +1,83 @@
 <!doctype html>
-<html lang="ru">
+<html lang="kk">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f4f5ef">
-  <title>Иерархическая кластеризация и DBSCAN · ML LAB</title>
+  <title>Иерархиялық кластерлеу және DBSCAN · ML LAB</title>
   <link rel="icon" href="hub-icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="hub.css">
+  <link rel="stylesheet" href="language.css">
   <link rel="stylesheet" href="site-view.css">
   <link rel="stylesheet" href="topic-lab.css?v=reference">
   <link rel="stylesheet" href="sroj11-guide.css">
+  <script src="language.js?v=guide-languages"></script>
   <script src="site-view.js?v=sroj-guide"></script>
   <script src="sroj11-core.js?v=park" defer></script>
-  <script src="sroj11-guide.js" defer></script>
+  <script src="sroj11-guide.js?v=languages" defer></script>
 </head>
 <body class="topic-lab-shell cluster-guide">
-<a class="skip" href="#main">Перейти к содержанию</a>
+<a class="skip" href="#main">Мазмұнға өту</a>
 <aside class="topic-lab-rail">
-  <a class="topic-lab-brand" href="index.ru.html#topic-group-11">ML<span>LAB</span></a>
-  <p class="topic-lab-topic">СРОП · 11-я неделя</p>
-  <nav aria-label="Разделы занятия">
-    <a href="#start"><span>01</span>Что такое кластеризация</a>
-    <a href="#hierarchy"><span>02</span>Иерархия и дендрограмма</a>
-    <a href="#dbscan"><span>03</span>DBSCAN в парке</a>
-    <a href="#compare"><span>04</span>Сравнение с K-Means</a>
-    <a href="#python"><span>05</span>Python по строкам</a>
-    <a href="#questions"><span>06</span>Применение и вопросы</a>
+  <a class="topic-lab-brand" href="index.html#topic-group-11">ML<span>LAB</span></a>
+  <p class="topic-lab-topic">СОӨЖ · 11-апта</p>
+  <nav aria-label="Сабақ бөлімдері">
+    <a href="#start"><span>01</span>Кластерлеу деген не?</a>
+    <a href="#hierarchy"><span>02</span>Иерархия және дендрограмма</a>
+    <a href="#dbscan"><span>03</span>Саябақтағы DBSCAN</a>
+    <a href="#compare"><span>04</span>K-Means-пен салыстыру</a>
+    <a href="#python"><span>05</span>Python коды жол-жолымен</a>
+    <a href="#questions"><span>06</span>Қолдану және сұрақтар</a>
   </nav>
-  <a class="topic-lab-return" href="sroj11.ru.html?fromTopic=11#compare">← Практикум на 31 точке</a>
+  <a class="topic-lab-return" href="sroj11.html?fromTopic=11#compare">← 31 нүктелік тәжірибе</a>
 </aside>
 <div class="topic-lab-workspace">
-  <header class="topbar"><span class="topic-lab-crumb">11-я неделя · Кластеризация</span></header>
+  <header class="topbar"><span class="topic-lab-crumb">11-апта · Кластерлеу</span></header>
   <main id="main" class="topic-lab-main">
     <section class="guide-intro" id="start">
       <p class="topic-lab-kicker">ML LAB / 11</p>
-      <h1>Как алгоритм находит группы?</h1>
-      <p class="guide-deck">Объедини оценки по шагам, а затем проверь, какие компании найдёт DBSCAN в парке.</p>
-      <p><strong>Кластеризация</strong> — поиск групп похожих объектов без заранее заданных ответов. Кластер — одна такая группа. Например, можно найти похожие маршруты по данным GPS или группы покупателей с похожими привычками. Что считать «похожим», зависит от выбранных признаков: покупатели могут быть похожи по частоте покупок и отличаться по сумме расходов.</p>
-      <div class="topic-lab-actions"><a class="topic-lab-button primary" href="#hierarchy">Начать с оценок →</a><a class="topic-lab-button" href="#dbscan">Открыть пример с парком</a></div>
+      <h1>Алгоритм топтарды қалай табады?</h1>
+      <p class="guide-deck">Бағаларды қадаммен біріктір. Содан кейін DBSCAN саябақта қандай топтар табатынын көр.</p>
+      <p><strong>Кластерлеу</strong> — алдын ала берілген жауапсыз ұқсас объектілерді топтау. Кластер — осындай бір топ. Мысалы, GPS дерегінен ұқсас маршруттарды немесе сатып алу дағдылары ұқсас адамдарды табуға болады. Ұқсастық таңдалған белгіге тәуелді: екі адам бірдей жиілікпен сауда жасап, әртүрлі сома жұмсауы мүмкін.</p>
+      <div class="topic-lab-actions"><a class="topic-lab-button primary" href="#hierarchy">Бағалардан бастау →</a><a class="topic-lab-button" href="#dbscan">Саябақ мысалын ашу</a></div>
     </section>
 
     <section class="guide-section" id="hierarchy">
-      <p class="topic-lab-kicker">02 / Иерархическая кластеризация</p>
-      <h2>От отдельных оценок к дереву</h2>
-      <p>Представь, что есть пять оценок: <strong>20, 25, 50, 80, 85</strong>. Сначала каждая оценка — отдельная группа. На каждом шаге объединяем две ближайшие группы. Здесь расстояние между оценками — разница между числами, а расстояние между группами — расстояние между их <em>ближайшими</em> участниками. Это правило называется <strong>single linkage</strong>, или «метод ближайшего соседа».</p>
+      <p class="topic-lab-kicker">02 / Иерархиялық кластерлеу</p>
+      <h2>Жеке бағалардан ағашқа дейін</h2>
+      <p>Бес баға бар: <strong>20, 25, 50, 80, 85</strong>. Әуелде әр баға — жеке топ. Әр қадамда ең жақын екі топты қосамыз. Екі бағаның арақашықтығы — олардың айырмасы. Топтар арасы олардың <em>ең жақын</em> мүшелерінің арақашықтығымен өлшенеді. Бұл ереже <strong>single linkage</strong> немесе ең жақын көрші әдісі деп аталады.</p>
       <div class="guide-demo">
-        <h3>Посмотри, как растёт дерево</h3>
+        <h3>Ағаштың қалай өсетінін бақыла</h3>
         <div class="guide-controls">
-          <button type="button" class="topic-lab-button primary" id="mergePlay">▶ Оживить объединения</button>
-          <button type="button" class="topic-lab-button" id="mergeNext">Один шаг →</button>
-          <button type="button" class="topic-lab-button" id="mergeReset">Сначала</button>
-          <label for="cutHeight">Высота среза: <output id="cutValue" for="cutHeight">27</output>
+          <button type="button" class="topic-lab-button primary" id="mergePlay">▶ Біріктіруді ойнату</button>
+          <button type="button" class="topic-lab-button" id="mergeNext">Бір қадам →</button>
+          <button type="button" class="topic-lab-button" id="mergeReset">Басынан</button>
+          <label for="cutHeight">Кесу биіктігі: <output id="cutValue" for="cutHeight">27</output>
             <input type="range" id="cutHeight" min="0" max="35" value="27">
           </label>
         </div>
         <div id="mergeTree"></div>
         <p id="mergeStatus" class="guide-result" role="status"></p>
-        <div id="mergeGroups" class="guide-groups" aria-label="Получившиеся группы"></div>
+        <div id="mergeGroups" class="guide-groups" aria-label="Шыққан топтар"></div>
       </div>
       <ol>
-        <li><strong>20 и 25 объединяются первыми.</strong> Между ними 5. Между 80 и 85 тоже 5, поэтому допустимо начать с другой пары. В этой анимации при равенстве берём левую.</li>
-        <li><strong>80 и 85 объединяются на той же высоте 5.</strong> Теперь три группы: {20, 25}, {50} и {80, 85}.</li>
-        <li><strong>50 присоединяется к {20, 25}.</strong> До ближайшего числа слева (25) расстояние 25, а до ближайшего справа (80) — 30. Выбираем 25.</li>
-        <li><strong>Оставшиеся две группы объединяются на высоте 30.</strong> Их ближайшая пара — 50 и 80. Получается одна группа со всеми оценками.</li>
+        <li><strong>Алдымен 20 мен 25 қосылады.</strong> Арақашықтығы 5. 80 мен 85-тің арасы да 5, сондықтан екеуінің бірінен бастауға болады. Анимацияда сол жақ жұпты аламыз.</li>
+        <li><strong>80 мен 85 те 5 биіктігінде қосылады.</strong> Енді үш топ бар: {20, 25}, {50} және {80, 85}.</li>
+        <li><strong>50 саны {20, 25} тобына қосылады.</strong> Сол жақтағы 25-ке дейінгі аралық 25, оң жақтағы 80-ге дейінгі аралық 30. Кіші аралықты таңдаймыз.</li>
+        <li><strong>Қалған екі топ 30 биіктігінде қосылады.</strong> Ең жақын жұбы — 50 мен 80. Барлық баға бір топқа түседі.</li>
       </ol>
-      <h3>Как читать дендрограмму</h3>
-      <p><strong>Дендрограмма</strong> — дерево объединений. Внизу находятся отдельные оценки. Горизонтальная ветка показывает, на каком расстоянии две группы объединились. Расстояние по горизонтали между подписями смысла не несёт: важна <em>высота</em> ветки.</p>
-      <p>Чтобы выбрать число кластеров, проведи горизонтальную линию. Посчитай вертикальные ветви, которые она пересекает. Удобно резать <em>между</em> высотами объединений. На высоте <strong>4</strong> будет 5 групп, на <strong>10</strong> — 3, на <strong>27</strong> — 2, на <strong>33</strong> — одна. Передвинь ползунок и проверь.</p>
-      <p class="guide-takeaway"><strong>Запомни:</strong> иерархия строит дерево из последовательных объединений. Сначала можно увидеть всю картину, а потом выбрать уровень, на котором остановиться.</p>
+      <h3>Дендрограмманы қалай оқимыз?</h3>
+      <p><strong>Дендрограмма</strong> — біріктіру ағашы. Төменде жеке бағалар тұр. Көлденең тармақ екі топтың қай қашықтықта қосылғанын көрсетеді. Белгілердің көлденең аралығы маңызды емес, тармақтың <em>биіктігі</em> маңызды.</p>
+      <p>Кластер санын таңдау үшін көлденең сызық жүргіз. Сызық кесіп өтетін тік тармақтарды сана. Біріктіру биіктіктерінің <em>арасынан</em> кескен ыңғайлы: <strong>4</strong> биіктігінде 5 топ, <strong>10</strong>-да 3, <strong>27</strong>-де 2, <strong>33</strong>-те 1 топ. Жүгірткіні жылжытып тексер.</p>
+      <p class="guide-takeaway"><strong>Есте сақта:</strong> иерархия қадам сайын топтарды біріктіріп, ағаш құрады. Ағашты көрген соң қай деңгейде тоқтайтыныңды таңдайсың.</p>
     </section>
 
     <section class="guide-section" id="dbscan">
       <p class="topic-lab-kicker">03 / DBSCAN</p>
-      <h2>Люди на дорожке в парке</h2>
-      <p>На дорожке стоят две компании: люди на отметках <strong>0, 1, 2, 3 м</strong> и <strong>9, 10, 11, 12 м</strong>. Ещё один человек стоит на отметке <strong>20 м</strong>. <strong>DBSCAN</strong> ищет места, где достаточно соседей, и соединяет такие места в группы.</p>
+      <h2>Саябақ жолындағы адамдар</h2>
+      <p>Жолда екі топ тұр: біріншісі <strong>0, 1, 2, 3 м</strong>, екіншісі <strong>9, 10, 11, 12 м</strong> белгілерінде. Тағы бір адам <strong>20 м</strong> белгісінде тұр. <strong>DBSCAN</strong> көршісі жеткілікті орындарды тауып, оларды топтарға қосады.</p>
       <div class="guide-demo">
-        <h3>Меняй радиус и смотри, что происходит</h3>
+        <h3>Радиусты өзгертіп, нәтижені бақыла</h3>
         <div class="guide-controls">
           <label for="parkEps"><code>eps</code>: <output id="epsValue" for="parkEps">1</output> м
             <input type="range" id="parkEps" min="0.5" max="8" step="0.5" value="1">
@@ -83,10 +85,10 @@
           <label for="parkMin"><code>min_samples</code>: <output id="minValue" for="parkMin">3</output>
             <input type="range" id="parkMin" min="1" max="6" step="1" value="3">
           </label>
-          <label for="parkPerson">Человек на отметке <select id="parkPerson"></select></label>
-          <button type="button" class="topic-lab-button primary" id="parkPlay">▶ Показать изменения</button>
+          <label for="parkPerson">Адам тұрған белгі <select id="parkPerson"></select></label>
+          <button type="button" class="topic-lab-button primary" id="parkPlay">▶ Өзгерістерді ойнату</button>
         </div>
-        <div class="guide-controls guide-presets" aria-label="Готовые примеры">
+        <div class="guide-controls guide-presets" aria-label="Дайын мысалдар">
           <button type="button" class="topic-lab-button" data-eps="0.5" data-min="3">0,5 м · 3</button>
           <button type="button" class="topic-lab-button" data-eps="1" data-min="3">1 м · 3</button>
           <button type="button" class="topic-lab-button" data-eps="1" data-min="4">1 м · 4</button>
@@ -94,93 +96,93 @@
         </div>
         <div id="parkPlot"></div>
         <p id="parkStatus" class="guide-result" role="status"></p>
-        <p class="guide-caption">Цвет показывает группу. Закрашенный кружок — основная точка, пустой кружок — край группы, × — шум. Пунктирный отрезок показывает, кого выбранный человек видит на расстоянии <code>eps</code> влево и вправо.</p>
+        <p class="guide-caption">Түс топты білдіреді. Боялған шеңбер — негізгі нүкте, іші бос шеңбер — шекаралық нүкте, × — шу. Үзік сызық таңдалған адамның екі жағындағы <code>eps</code> аралығын көрсетеді.</p>
       </div>
-      <h3>Что задают параметры</h3>
+      <h3>Параметрлер нені білдіреді?</h3>
       <ul>
-        <li><strong><code>eps</code> — радиус поиска.</strong> При <code>eps=1</code> человек на отметке 1 м видит людей на 0, 1 и 2 м. Человек ровно на границе радиуса тоже считается.</li>
-        <li><strong><code>min_samples</code> — сколько точек должно быть в этом радиусе.</strong> Считаем и самого человека. При <code>min_samples=3</code> на отметке 1 м ровно три точки. Это <strong>основная точка</strong>: вокруг достаточно людей, чтобы через неё группа могла расти.</li>
-        <li><strong>Край группы.</strong> На отметке 0 м в радиусе только две точки: 0 и 1. Но человек на 0 м находится рядом с основной точкой на 1 м, поэтому тоже входит в группу. Сам расширять группу он не может.</li>
-        <li><strong>Шум.</strong> Человек на 20 м при радиусе 1 м видит только себя. Рядом нет основной точки, поэтому DBSCAN оставляет его без группы. Это результат выбранных настроек: такая точка не обязательно ошибка в данных.</li>
+        <li><strong><code>eps</code> — іздеу радиусы.</strong> <code>eps=1</code> болса, 1 м белгісіндегі адам 0, 1 және 2 м-дегі адамдарды көреді. Радиус шегіндегі адам да саналады.</li>
+        <li><strong><code>min_samples</code> — радиус ішіндегі ең аз нүкте саны.</strong> Адамның өзі де саналады. <code>min_samples=3</code> кезінде 1 м белгісінің маңында үш нүкте бар. Бұл — <strong>негізгі нүкте</strong>: осы нүкте арқылы топ өсе алады.</li>
+        <li><strong>Шекаралық нүкте.</strong> 0 м белгісінің радиусында екі нүкте ғана бар: 0 және 1. Ол 1 м-дегі негізгі нүктеге жақын болғандықтан топқа кіреді, бірақ топты өзі кеңейтпейді.</li>
+        <li><strong>Шу.</strong> Радиус 1 м болса, 20 м-дегі адам тек өзін көреді. Жақын жерде негізгі нүкте жоқ, сондықтан DBSCAN оны топқа қоспайды. Бұл таңдалған параметрдің нәтижесі; нүкте деректегі қате болуы міндетті емес.</li>
       </ul>
       <div class="guide-table"><table>
-        <thead><tr><th>eps</th><th>min_samples</th><th>Результат</th><th>Почему</th></tr></thead>
+        <thead><tr><th>eps</th><th>min_samples</th><th>Нәтиже</th><th>Себебі</th></tr></thead>
         <tbody>
-          <tr><td>0,5 м</td><td>3</td><td>0 групп, 9 точек шума</td><td>Никто не видит соседей, кроме себя.</td></tr>
-          <tr><td>1 м</td><td>3</td><td>2 группы, 1 точка шума</td><td>Внутри каждой компании есть основные точки; человек на 20 м остаётся отдельно.</td></tr>
-          <tr><td>1 м</td><td>4</td><td>0 групп, 9 точек шума</td><td>Радиус прежний, но даже у человека в середине компании только три точки в окрестности.</td></tr>
-          <tr><td>6 м</td><td>3</td><td>1 группа, 1 точка шума</td><td>Основные точки на 3 и 9 м стали соседями и связали две компании.</td></tr>
+          <tr><td>0,5 м</td><td>3</td><td>0 топ, 9 шу нүктесі</td><td>Әр адам тек өзін көреді.</td></tr>
+          <tr><td>1 м</td><td>3</td><td>2 топ, 1 шу нүктесі</td><td>Әр топта негізгі нүктелер бар, 20 м-дегі адам бөлек қалады.</td></tr>
+          <tr><td>1 м</td><td>4</td><td>0 топ, 9 шу нүктесі</td><td>Радиус сол күйінде, бірақ топтың ортасындағы адамның маңында да үш нүкте ғана бар.</td></tr>
+          <tr><td>6 м</td><td>3</td><td>1 топ, 1 шу нүктесі</td><td>3 және 9 м-дегі негізгі нүктелер көрші болып, екі топты жалғайды.</td></tr>
         </tbody>
       </table></div>
-      <p class="guide-takeaway"><strong>Запомни:</strong> DBSCAN соединяет плотные участки, а редкие точки может оставить шумом. Число кластеров заранее задавать не нужно.</p>
+      <p class="guide-takeaway"><strong>Есте сақта:</strong> DBSCAN тығыз аймақтарды жалғайды. Алыс нүктелер шу болып қалуы мүмкін. Топ санын алдын ала берудің қажеті жоқ.</p>
     </section>
 
     <section class="guide-section" id="compare">
-      <p class="topic-lab-kicker">04 / Сравнение</p>
-      <h2>Три алгоритма, те же пять оценок</h2>
+      <p class="topic-lab-kicker">04 / Салыстыру</p>
+      <h2>Үш алгоритм, бірдей бес баға</h2>
       <div class="guide-table"><table>
-        <thead><tr><th>Метод</th><th>Что решает</th><th>Результат на оценках</th></tr></thead>
+        <thead><tr><th>Әдіс</th><th>Не істейді?</th><th>Бағалардағы нәтиже</th></tr></thead>
         <tbody>
-          <tr><td>Иерархическая</td><td>Объединяет ближайшие группы. Срез на 27 оставляет две группы.</td><td>{20, 25, 50} и {80, 85}</td></tr>
-          <tr><td>DBSCAN</td><td>Ищет соседей в пределах 6 баллов. Нужно минимум две точки, считая саму оценку.</td><td>{20, 25} и {80, 85}; 50 — шум</td></tr>
-          <tr><td>K-Means</td><td>Для <code>k=2</code> подбирает два центра. Центр — среднее значение группы. Каждый объект относится к одному из центров.</td><td>{20, 25, 50} и {80, 85}</td></tr>
+          <tr><td>Иерархиялық</td><td>Ең жақын топтарды қосады. 27-де кескенде екі топ қалады.</td><td>{20, 25, 50} және {80, 85}</td></tr>
+          <tr><td>DBSCAN</td><td>6 балл ішінен көрші іздейді. Нүктенің өзін қосқанда кемінде екі нүкте керек.</td><td>{20, 25} және {80, 85}; 50 — шу</td></tr>
+          <tr><td>K-Means</td><td><code>k=2</code> болса, екі орталық табады. Орталық — топтың орташа мәні. Әр объект бір орталыққа беріледі.</td><td>{20, 25, 50} және {80, 85}</td></tr>
         </tbody>
       </table></div>
-      <p><strong>Что будет с 50?</strong> Иерархия присоединяет 50 к левой группе, потому что 25 ближе, чем 80. В показанном запуске K-Means центры получаются примерно 31,67 и 82,5: к первому ближе. DBSCAN смотрит только на окрестность: в пределах 6 баллов от 50 соседей нет, кроме самой точки. Так один объект помогает увидеть разницу между методами.</p>
+      <p><strong>50 санына не болады?</strong> Иерархия оны сол топқа қосады: 25 саны 80-ге қарағанда жақын. Көрсетілген K-Means іске қосуында орталықтар шамамен 31,67 және 82,5 болды, 50 біріншісіне жақын. DBSCAN 6 баллдық аралықты қарайды: 50 маңында өзінен басқа нүкте жоқ.</p>
     </section>
 
     <section class="guide-section" id="python">
       <p class="topic-lab-kicker">05 / scikit-learn</p>
-      <h2>Повтори результат на Python</h2>
-      <p>Запусти код в Colab или Python с установленным <code>scikit-learn</code>. Список внутри списка нужен, потому что одна строка представляет одного студента, а один столбец — его оценку.</p>
+      <h2>Нәтижені Python-да қайталау</h2>
+      <p>Кодты Colab-та немесе <code>scikit-learn</code> орнатылған Python ортасында орында. Әр ішкі тізім бір оқушыны білдіреді, жалғыз баған — оның бағасы.</p>
       <pre class="topic-code"><code>from sklearn.cluster import AgglomerativeClustering, DBSCAN, KMeans
 X = [[20], [25], [50], [80], [85]]
 hierarchy = AgglomerativeClustering(n_clusters=2, linkage="single")
 density = DBSCAN(eps=6, min_samples=2)
 centers = KMeans(n_clusters=2, random_state=0, n_init=10)
-print("Иерархия:", hierarchy.fit_predict(X).tolist())
+print("Hierarchical:", hierarchy.fit_predict(X).tolist())
 print("DBSCAN:", density.fit_predict(X).tolist())
 print("K-Means:", centers.fit_predict(X).tolist())</code></pre>
-      <div class="topic-lab-actions"><a class="topic-lab-button" href="sroj11-files/clustering-scores.py" download>↓ Скачать Python</a></div>
-      <h3>Что делает каждая строка</h3>
+      <div class="topic-lab-actions"><a class="topic-lab-button" href="sroj11-files/clustering-scores.py" download>↓ Python кодын жүктеу</a></div>
+      <h3>Әр жол не істейді?</h3>
       <ol>
-        <li><code>from sklearn.cluster import …</code> — подключает три готовых алгоритма.</li>
-        <li><code>X = …</code> — записывает пять оценок; у каждого студента один признак.</li>
-        <li><code>hierarchy = …</code> — настраивает иерархию на две группы и правило ближайшей пары.</li>
-        <li><code>density = …</code> — ищет соседей на расстоянии до 6 баллов. Для основной точки нужно минимум 2 точки с учётом самой себя.</li>
-        <li><code>centers = …</code> — задаёт два центра. <code>n_init=10</code> пробует десять вариантов начальных центров и оставляет лучший результат. <code>random_state=0</code> фиксирует случайный старт, чтобы запуск можно было повторить.</li>
-        <li>Первый <code>print</code> запускает иерархию через <code>fit_predict(X)</code> и печатает номер группы каждой оценки. <code>tolist()</code> превращает результат в обычный список Python.</li>
-        <li>Второй <code>print</code> делает то же для DBSCAN.</li>
-        <li>Третий <code>print</code> печатает результат K-Means.</li>
+        <li><code>from sklearn.cluster import …</code> үш дайын алгоритмді қосады.</li>
+        <li><code>X = …</code> бес бағаны жазады. Әр оқушының бір белгісі бар.</li>
+        <li><code>hierarchy = …</code> екі топ пен ең жақын жұп ережесін белгілейді.</li>
+        <li><code>density = …</code> 6 балл аралығынан көрші іздейді. Негізгі нүктеге өзін қосқанда екі нүкте қажет.</li>
+        <li><code>centers = …</code> екі орталықты белгілейді. <code>n_init=10</code> он бастапқы нұсқаны сынайды. <code>random_state=0</code> нәтижені қайталауға көмектеседі.</li>
+        <li>Алғашқы <code>print</code> иерархияны <code>fit_predict(X)</code> арқылы жүргізіп, әр бағаның топ нөмірін шығарады. <code>tolist()</code> нәтижені кәдімгі Python тізіміне айналдырады.</li>
+        <li>Екінші <code>print</code> DBSCAN нәтижесін шығарады.</li>
+        <li>Үшінші <code>print</code> K-Means нәтижесін шығарады.</li>
       </ol>
-      <h3>Вывод выполненного кода</h3>
-      <pre class="topic-code"><code>Иерархия: [0, 0, 0, 1, 1]
-DBSCAN:   [0, 0, -1, 1, 1]
-K-Means:  [0, 0, 0, 1, 1]</code></pre>
-      <p>Читаем слева направо: позиции соответствуют оценкам <strong>20, 25, 50, 80, 85</strong>. <code>0</code> и <code>1</code> — номера групп, а не оценки качества. Названия групп можно поменять местами, и разбиение останется тем же. <code>-1</code> у DBSCAN означает, что оценка 50 осталась шумом.</p>
+      <h3>Кодтың нақты нәтижесі</h3>
+      <pre class="topic-code"><code>Hierarchical: [0, 0, 0, 1, 1]
+DBSCAN: [0, 0, -1, 1, 1]
+K-Means: [0, 0, 0, 1, 1]</code></pre>
+      <p>Солдан оңға қарай <strong>20, 25, 50, 80, 85</strong> бағаларына сәйкес. <code>0</code> мен <code>1</code> — топ нөмірлері. Нөмірлерді алмастырсаң да топ құрамы өзгермейді. DBSCAN-дағы <code>-1</code> — 50 бағасының шу болып қалғанын білдіреді.</p>
     </section>
 
     <section class="guide-section" id="questions">
-      <p class="topic-lab-kicker">06 / Практика и защита</p>
-      <h2>Где это пригодится</h2>
+      <p class="topic-lab-kicker">06 / Тәжірибе және қорғау</p>
+      <h2>Қайда қолданылады?</h2>
       <ul>
-        <li><strong>Иерархия:</strong> сгруппировать похожие новости в подтемы и посмотреть, как подтемы складываются в крупные темы.</li>
-        <li><strong>DBSCAN:</strong> найти скопления GPS-точек на карте и отделить одиночные наблюдения.</li>
-        <li><strong>K-Means:</strong> разделить покупателей на заранее заданное число групп по частоте и сумме покупок.</li>
+        <li><strong>Hierarchical:</strong> ұқсас жаңалықтарды тақырыпшаларға бөліп, олардың үлкен тақырыптарға қалай қосылатынын көру.</li>
+        <li><strong>DBSCAN:</strong> картадан GPS нүктелерінің шоғырын тауып, жеке нүктелерді бөлу.</li>
+        <li><strong>K-Means:</strong> сатып алушыларды жиілік пен шығын бойынша алдын ала белгіленген топ санына бөлу.</li>
       </ul>
-      <h3>Что может спросить преподаватель</h3>
-      <p><strong>Почему DBSCAN может соединить точки в изогнутую группу?</strong> Ему достаточно цепочки соседних основных точек. Общий центр группе не нужен.</p>
-      <p><strong>Что делать, если один признак измеряется в рублях, а другой — в покупках?</strong> Сначала проверить масштабы. Иначе большие числа могут почти полностью определять расстояние. Можно привести признаки к сопоставимым масштабам.</p>
-      <p><strong>Как показать обе темы вдвоём?</strong> Акылбек запускает объединение оценок и делает срез на 27. Алмас открывает парк, переключает <code>eps</code> с 1 на 6 и объясняет, почему две компании слились.</p>
-      <h3>Пять вопросов для самопроверки</h3>
+      <h3>Оқытушы не сұрауы мүмкін?</h3>
+      <p><strong>DBSCAN иілген пішіндегі топты қалай табады?</strong> Көрші негізгі нүктелер тізбегі жеткілікті. Топтың ортақ орталығы қажет емес.</p>
+      <p><strong>Бір белгі теңгемен, екіншісі сатып алу санымен өлшенсе ше?</strong> Алдымен масштабтарды тексер. Үлкен сандар қашықтыққа тым көп әсер етпеуі үшін белгілерді салыстырмалы масштабқа келтіруге болады.</p>
+      <p><strong>Екеуің қалай көрсетесіңдер?</strong> Ақылбек бағаларды біріктіріп, ағашты 27-де кеседі. Алмас саябақта <code>eps</code> мәнін 1-ден 6-ға ауыстырып, екі топтың неге қосылғанын түсіндіреді.</p>
+      <h3>Өзіңді тексеретін бес сұрақ</h3>
       <div class="guide-quiz">
-        <details><summary>1. Почему 20 и 25 объединяются раньше, чем 25 и 50?</summary><p>Расстояние 5 меньше, чем 25. У пары 80 и 85 тоже расстояние 5.</p></details>
-        <details><summary>2. Сколько групп останется при срезе дендрограммы на высоте 27?</summary><p>Две: {20, 25, 50} и {80, 85}. Последнее объединение происходит выше, на 30.</p></details>
-        <details><summary>3. При eps=1 м и min_samples=3 человек на отметке 1 м — основная точка? Почему?</summary><p>Да. Его окрестность содержит точки на 0, 1 и 2 м, включая его самого.</p></details>
-        <details><summary>4. Что означает -1 у оценки 50 в выводе DBSCAN?</summary><p>Алгоритм оставил её шумом: при радиусе 6 у неё нет другого соседа и она не входит ни в один кластер.</p></details>
-        <details><summary>5. Какому методу нужно задать число центров заранее?</summary><p>K-Means. Для иерархии число групп выбирают по срезу дерева; DBSCAN выводит его из настроек плотности.</p></details>
+        <details><summary>1. Неге 20 мен 25 сандары 25 пен 50-ден бұрын қосылады?</summary><p>5 аралығы 25-тен кіші. 80 мен 85-тің арасы да 5.</p></details>
+        <details><summary>2. Дендрограмманы 27-де кескенде неше топ қалады?</summary><p>Екі: {20, 25, 50} және {80, 85}. Соңғы қосылу 30 биіктігінде.</p></details>
+        <details><summary>3. eps=1 м және min_samples=3 болса, 1 м-дегі адам негізгі нүкте ме?</summary><p>Иә. 0, 1 және 2 м-дегі үш нүкте бар. Өзі де саналады.</p></details>
+        <details><summary>4. DBSCAN нәтижесіндегі 50 бағасына берілген -1 нені білдіреді?</summary><p>Ол шу болып қалды. Радиус 6 болса, басқа көршісі жоқ және кластерге кірмейді.</p></details>
+        <details><summary>5. Қай әдіске орталық санын алдын ала беру керек?</summary><p>K-Means. Иерархияда ағашты кесеміз, ал DBSCAN топ санын тығыздық арқылы табады.</p></details>
       </div>
-      <p class="guide-caption">Справка: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html">AgglomerativeClustering</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html">DBSCAN</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html">K-Means</a>.</p>
+      <p class="guide-caption">Дереккөздер: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html">AgglomerativeClustering</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html">DBSCAN</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html">K-Means</a>.</p>
     </section>
   </main>
 </div>
