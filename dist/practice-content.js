@@ -396,7 +396,7 @@ proba = model.predict_proba(X_test)[:, 1]
 print(classification_report(y_test, pred))
 print("ROC-AUC:", roc_auc_score(y_test, proba))` },
       files: [{ label: "6-Logistic-Regression-Sklearn.ipynb", href: "practice-files/6-Logistic-Regression-Sklearn.ipynb", meta: "Jupyter Notebook · 118 KB" }],
-      lab: "https://iris-lab-kz.kuatakylbek44.chatgpt.site/",
+      lab: "iris-model.html#logistic",
       note: "Тек accuracy-ге сүйенбеңіз: кластар теңгерімсіз болса, precision, recall және F1 маңыздырақ."
     },
     ru: {
@@ -425,7 +425,7 @@ proba = model.predict_proba(X_test)[:, 1]
 print(classification_report(y_test, pred))
 print("ROC-AUC:", roc_auc_score(y_test, proba))` },
       files: [{ label: "6-Logistic-Regression-Sklearn.ipynb", href: "practice-files/6-Logistic-Regression-Sklearn.ipynb", meta: "Jupyter Notebook · 118 KB" }],
-      lab: "https://iris-lab-kz.kuatakylbek44.chatgpt.site/",
+      lab: "iris-model.html#logistic",
       note: "Не ограничивайтесь accuracy: при дисбалансе классов precision, recall и F1 важнее."
     },
     en: {
@@ -454,7 +454,7 @@ proba = model.predict_proba(X_test)[:, 1]
 print(classification_report(y_test, pred))
 print("ROC-AUC:", roc_auc_score(y_test, proba))` },
       files: [{ label: "6-Logistic-Regression-Sklearn.ipynb", href: "practice-files/6-Logistic-Regression-Sklearn.ipynb", meta: "Jupyter Notebook · 118 KB" }],
-      lab: "https://iris-lab-kz.kuatakylbek44.chatgpt.site/",
+      lab: "iris-model.html#logistic",
       note: "Do not rely on accuracy alone: with class imbalance, precision, recall and F1 matter more."
     }
   },
@@ -489,7 +489,7 @@ for k in [3, 5, 7, 9]:
 model = KNeighborsClassifier(n_neighbors=5).fit(X_train, y_train)
 print(classification_report(y_test, model.predict(X_test)))` },
       files: [{ label: "7-Model-Evaluation.ipynb", href: "practice-files/7-Model-Evaluation.ipynb", meta: "Jupyter Notebook · 367 KB" }, { label: "Iris.csv", href: "practice-files/Iris.csv", meta: "Деректер · 5 KB" }],
-      lab: "https://iris-lab-kz.kuatakylbek44.chatgpt.site/#6",
+      lab: "iris-model.html#knn",
       note: "k мәнін тақ сандармен салыстырыңыз. Тым кіші k шуға, тым үлкен k шекараны бұрмалауға әкелуі мүмкін."
     },
     ru: {
@@ -522,7 +522,7 @@ for k in [3, 5, 7, 9]:
 model = KNeighborsClassifier(n_neighbors=5).fit(X_train, y_train)
 print(classification_report(y_test, model.predict(X_test)))` },
       files: [{ label: "7-Model-Evaluation.ipynb", href: "practice-files/7-Model-Evaluation.ipynb", meta: "Jupyter Notebook · 367 KB" }, { label: "Iris.csv", href: "practice-files/Iris.csv", meta: "Данные · 5 KB" }],
-      lab: "https://iris-lab-kz.kuatakylbek44.chatgpt.site/#6",
+      lab: "iris-model.html#knn",
       note: "Сравнивайте нечётные k. Слишком маленькое k чувствительно к шуму, слишком большое искажает границу."
     },
     en: {
@@ -555,7 +555,7 @@ for k in [3, 5, 7, 9]:
 model = KNeighborsClassifier(n_neighbors=5).fit(X_train, y_train)
 print(classification_report(y_test, model.predict(X_test)))` },
       files: [{ label: "7-Model-Evaluation.ipynb", href: "practice-files/7-Model-Evaluation.ipynb", meta: "Jupyter Notebook · 367 KB" }, { label: "Iris.csv", href: "practice-files/Iris.csv", meta: "Data · 5 KB" }],
-      lab: "https://iris-lab-kz.kuatakylbek44.chatgpt.site/#6",
+      lab: "iris-model.html#knn",
       note: "Compare odd k values. A very small k is sensitive to noise; a very large k blurs the boundary."
     }
   },

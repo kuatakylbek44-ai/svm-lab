@@ -1,0 +1,26 @@
+.iris-model-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block: 16px 24px;
+}
+.iris-model-tabs a[aria-current] {
+  background: var(--green);
+  color: var(--bg);
+}
+.iris-model-main { padding-bottom: 40px; }
+.iris-model-main .starter-panel > p { margin-block: 12px; line-height: 1.55; }
+.iris-model-main .starter-visual > p { color: var(--muted); }
+.iris-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 0; margin-block: 12px; list-style: none; }
+.iris-legend li { display: flex; align-items: center; gap: 5px; }
+.iris-legend span { width: 10px; height: 10px; border-radius: 50%; background: var(--species); }
+.iris-model-plot { display: block; width: 100%; max-height: 520px; }
+.iris-model-plot text { fill: var(--ink); font-size: 13px; }
+.iris-grid path { stroke: var(--line); stroke-dasharray: 4 4; }
+.iris-sample { fill: #fff; stroke-width: 3; }
+.iris-neighbors path { stroke-width: 1.7; opacity: .75; }
+.iris-shares { display: grid; gap: 8px; }
+.iris-shares label { display: flex; justify-content: space-between; gap: 10px; }
+.iris-shares meter { display: block; width: 100%; height: 14px; }
+.iris-model-links { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 20px; }
+.iris-model-links a { color: var(--green); text-decoration: underline; }

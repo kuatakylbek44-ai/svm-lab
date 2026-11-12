@@ -57,7 +57,7 @@
       if (page !== 'index') {
         const back = document.createElement('a');
         back.className = 'back-button';
-        back.href = (backTargets[page] || 'index') + suffix;
+        back.href = page === 'iris-model' ? 'index' + suffix + '#topics' : (backTargets[page] || 'index') + suffix;
         back.setAttribute('aria-label', labels[4]);
         back.title = labels[4];
         back.innerHTML = '<span aria-hidden="true">←</span>';
@@ -92,7 +92,6 @@
         sync();
       };
 
-      full.hidden = !document.fullscreenEnabled;
       full.onclick = async () => {
         try {
           if (document.fullscreenElement) await document.exitFullscreen();

@@ -15,7 +15,7 @@
   const labHref = lab => {
     if (!lab) return '';
     if (/^https?:/i.test(lab)) return lab;
-    return lab.replace(/\.html$/, `${suffix}.html`);
+    return lab.replace(/\.html(?=[?#]|$)/, `${suffix}.html`);
   };
   const kicker = document.getElementById('practiceKicker');
   const title = document.getElementById('practiceTitle');
