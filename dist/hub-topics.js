@@ -75,7 +75,7 @@
     const clustering = {
       id: 'sroj11', name: ['СОӨЖ · Иерархия және DBSCAN', 'СРОП · Иерархия и DBSCAN', 'Assignment · Hierarchy and DBSCAN'][languageIndex],
       english: 'HIERARCHICAL CLUSTERING / DBSCAN', label: 'WEEK 11',
-      href: `sroj11${suffix}.html`, lab: labels[lang].practiceLab, tags: ['Dendrogram', 'ε', 'MinPts'],
+      href: lang === 'ru' ? 'sroj11-guide.html' : `sroj11${suffix}.html`, lab: labels[lang].practiceLab, tags: ['Dendrogram', 'ε', 'MinPts'],
       desc: ['Бір деректе дендрограмма мен тығыздыққа негізделген кластерлерді салыстыр. Қорғауға дайын мысал.', 'Сравни дендрограмму и кластеризацию по плотности на одних данных. Пример для защиты.', 'Compare a dendrogram and density-based groups on the same dataset. Includes a presentation example.'][languageIndex]
     };
     const topicById = new Map([...starters, ...topics, digits, clustering].map(topic => [topic.id, topic]));

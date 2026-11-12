@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f5ef">
+  <title>Иерархическая кластеризация и DBSCAN · ML LAB</title>
+  <link rel="icon" href="hub-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="hub.css">
+  <link rel="stylesheet" href="site-view.css">
+  <link rel="stylesheet" href="topic-lab.css?v=reference">
+  <link rel="stylesheet" href="sroj11-guide.css">
+  <script src="site-view.js?v=sroj-guide"></script>
+  <script src="sroj11-core.js?v=park" defer></script>
+  <script src="sroj11-guide.js" defer></script>
+</head>
+<body class="topic-lab-shell cluster-guide">
+<a class="skip" href="#main">Перейти к содержанию</a>
+<aside class="topic-lab-rail">
+  <a class="topic-lab-brand" href="index.ru.html#topic-group-11">ML<span>LAB</span></a>
+  <p class="topic-lab-topic">СРОП · 11-я неделя</p>
+  <nav aria-label="Разделы занятия">
+    <a href="#start"><span>01</span>Что такое кластеризация</a>
+    <a href="#hierarchy"><span>02</span>Иерархия и дендрограмма</a>
+    <a href="#dbscan"><span>03</span>DBSCAN в парке</a>
+    <a href="#compare"><span>04</span>Сравнение с K-Means</a>
+    <a href="#python"><span>05</span>Python по строкам</a>
+    <a href="#questions"><span>06</span>Применение и вопросы</a>
+  </nav>
+  <a class="topic-lab-return" href="sroj11.ru.html?fromTopic=11#compare">← Практикум на 31 точке</a>
+</aside>
+<div class="topic-lab-workspace">
+  <header class="topbar"><span class="topic-lab-crumb">11-я неделя · Кластеризация</span></header>
+  <main id="main" class="topic-lab-main">
+    <section class="guide-intro" id="start">
+      <p class="topic-lab-kicker">ML LAB / 11</p>
+      <h1>Как алгоритм находит группы?</h1>
+      <p class="guide-deck">Объедини оценки по шагам, а затем проверь, какие компании найдёт DBSCAN в парке.</p>
+      <p><strong>Кластеризация</strong> — поиск групп похожих объектов без заранее заданных ответов. Кластер — одна такая группа. Например, можно найти похожие маршруты по данным GPS или группы покупателей с похожими привычками. Что считать «похожим», зависит от выбранных признаков: покупатели могут быть похожи по частоте покупок и отличаться по сумме расходов.</p>
+      <div class="topic-lab-actions"><a class="topic-lab-button primary" href="#hierarchy">Начать с оценок →</a><a class="topic-lab-button" href="#dbscan">Открыть пример с парком</a></div>
+    </section>
+
+    <section class="guide-section" id="hierarchy">
+      <p class="topic-lab-kicker">02 / Иерархическая кластеризация</p>
+      <h2>От отдельных оценок к дереву</h2>
+      <p>Представь, что есть пять оценок: <strong>20, 25, 50, 80, 85</strong>. Сначала каждая оценка — отдельная группа. На каждом шаге объединяем две ближайшие группы. Здесь расстояние между оценками — разница между числами, а расстояние между группами — расстояние между их <em>ближайшими</em> участниками. Это правило называется <strong>single linkage</strong>, или «метод ближайшего соседа».</p>
+      <div class="guide-demo">
+        <h3>Посмотри, как растёт дерево</h3>
+        <div class="guide-controls">
+          <button type="button" class="topic-lab-button primary" id="mergePlay">▶ Оживить объединения</button>
+          <button type="button" class="topic-lab-button" id="mergeNext">Один шаг →</button>
+          <button type="button" class="topic-lab-button" id="mergeReset">Сначала</button>
+          <label for="cutHeight">Высота среза: <output id="cutValue" for="cutHeight">27</output>
+            <input type="range" id="cutHeight" min="0" max="35" value="27">
+          </label>
+        </div>
+        <div id="mergeTree"></div>
+        <p id="mergeStatus" class="guide-result" role="status"></p>
+        <div id="mergeGroups" class="guide-groups" aria-label="Получившиеся группы"></div>
+      </div>
+      <ol>
+        <li><strong>20 и 25 объединяются первыми.</strong> Между ними 5. Между 80 и 85 тоже 5, поэтому допустимо начать с другой пары. В этой анимации при равенстве берём левую.</li>
+        <li><strong>80 и 85 объединяются на той же высоте 5.</strong> Теперь три группы: {20, 25}, {50} и {80, 85}.</li>
+        <li><strong>50 присоединяется к {20, 25}.</strong> До ближайшего числа слева (25) расстояние 25, а до ближайшего справа (80) — 30. Выбираем 25.</li>
+        <li><strong>Оставшиеся две группы объединяются на высоте 30.</strong> Их ближайшая пара — 50 и 80. Получается одна группа со всеми оценками.</li>
+      </ol>
+      <h3>Как читать дендрограмму</h3>
+      <p><strong>Дендрограмма</strong> — дерево объединений. Внизу находятся отдельные оценки. Горизонтальная ветка показывает, на каком расстоянии две группы объединились. Расстояние по горизонтали между подписями смысла не несёт: важна <em>высота</em> ветки.</p>
+      <p>Чтобы выбрать число кластеров, проведи горизонтальную линию. Посчитай вертикальные ветви, которые она пересекает. Удобно резать <em>между</em> высотами объединений. На высоте <strong>4</strong> будет 5 групп, на <strong>10</strong> — 3, на <strong>27</strong> — 2, на <strong>33</strong> — одна. Передвинь ползунок и проверь.</p>
+      <p class="guide-takeaway"><strong>Запомни:</strong> иерархия строит дерево из последовательных объединений. Сначала можно увидеть всю картину, а потом выбрать уровень, на котором остановиться.</p>
+    </section>
+
+    <section class="guide-section" id="dbscan">
+      <p class="topic-lab-kicker">03 / DBSCAN</p>
+      <h2>Люди на дорожке в парке</h2>
+      <p>На дорожке стоят две компании: люди на отметках <strong>0, 1, 2, 3 м</strong> и <strong>9, 10, 11, 12 м</strong>. Ещё один человек стоит на отметке <strong>20 м</strong>. <strong>DBSCAN</strong> ищет места, где достаточно соседей, и соединяет такие места в группы.</p>
+      <div class="guide-demo">
+        <h3>Меняй радиус и смотри, что происходит</h3>
+        <div class="guide-controls">
+          <label for="parkEps"><code>eps</code>: <output id="epsValue" for="parkEps">1</output> м
+            <input type="range" id="parkEps" min="0.5" max="8" step="0.5" value="1">
+          </label>
+          <label for="parkMin"><code>min_samples</code>: <output id="minValue" for="parkMin">3</output>
+            <input type="range" id="parkMin" min="1" max="6" step="1" value="3">
+          </label>
+          <label for="parkPerson">Человек на отметке <select id="parkPerson"></select></label>
+          <button type="button" class="topic-lab-button primary" id="parkPlay">▶ Показать изменения</button>
+        </div>
+        <div class="guide-controls guide-presets" aria-label="Готовые примеры">
+          <button type="button" class="topic-lab-button" data-eps="0.5" data-min="3">0,5 м · 3</button>
+          <button type="button" class="topic-lab-button" data-eps="1" data-min="3">1 м · 3</button>
+          <button type="button" class="topic-lab-button" data-eps="1" data-min="4">1 м · 4</button>
+          <button type="button" class="topic-lab-button" data-eps="6" data-min="3">6 м · 3</button>
+        </div>
+        <div id="parkPlot"></div>
+        <p id="parkStatus" class="guide-result" role="status"></p>
+        <p class="guide-caption">Цвет показывает группу. Закрашенный кружок — основная точка, пустой кружок — край группы, × — шум. Пунктирный отрезок показывает, кого выбранный человек видит на расстоянии <code>eps</code> влево и вправо.</p>
+      </div>
+      <h3>Что задают параметры</h3>
+      <ul>
+        <li><strong><code>eps</code> — радиус поиска.</strong> При <code>eps=1</code> человек на отметке 1 м видит людей на 0, 1 и 2 м. Человек ровно на границе радиуса тоже считается.</li>
+        <li><strong><code>min_samples</code> — сколько точек должно быть в этом радиусе.</strong> Считаем и самого человека. При <code>min_samples=3</code> на отметке 1 м ровно три точки. Это <strong>основная точка</strong>: вокруг достаточно людей, чтобы через неё группа могла расти.</li>
+        <li><strong>Край группы.</strong> На отметке 0 м в радиусе только две точки: 0 и 1. Но человек на 0 м находится рядом с основной точкой на 1 м, поэтому тоже входит в группу. Сам расширять группу он не может.</li>
+        <li><strong>Шум.</strong> Человек на 20 м при радиусе 1 м видит только себя. Рядом нет основной точки, поэтому DBSCAN оставляет его без группы. Это результат выбранных настроек: такая точка не обязательно ошибка в данных.</li>
+      </ul>
+      <div class="guide-table"><table>
+        <thead><tr><th>eps</th><th>min_samples</th><th>Результат</th><th>Почему</th></tr></thead>
+        <tbody>
+          <tr><td>0,5 м</td><td>3</td><td>0 групп, 9 точек шума</td><td>Никто не видит соседей, кроме себя.</td></tr>
+          <tr><td>1 м</td><td>3</td><td>2 группы, 1 точка шума</td><td>Внутри каждой компании есть основные точки; человек на 20 м остаётся отдельно.</td></tr>
+          <tr><td>1 м</td><td>4</td><td>0 групп, 9 точек шума</td><td>Радиус прежний, но даже у человека в середине компании только три точки в окрестности.</td></tr>
+          <tr><td>6 м</td><td>3</td><td>1 группа, 1 точка шума</td><td>Основные точки на 3 и 9 м стали соседями и связали две компании.</td></tr>
+        </tbody>
+      </table></div>
+      <p class="guide-takeaway"><strong>Запомни:</strong> DBSCAN соединяет плотные участки, а редкие точки может оставить шумом. Число кластеров заранее задавать не нужно.</p>
+    </section>
+
+    <section class="guide-section" id="compare">
+      <p class="topic-lab-kicker">04 / Сравнение</p>
+      <h2>Три алгоритма, те же пять оценок</h2>
+      <div class="guide-table"><table>
+        <thead><tr><th>Метод</th><th>Что решает</th><th>Результат на оценках</th></tr></thead>
+        <tbody>
+          <tr><td>Иерархическая</td><td>Объединяет ближайшие группы. Срез на 27 оставляет две группы.</td><td>{20, 25, 50} и {80, 85}</td></tr>
+          <tr><td>DBSCAN</td><td>Ищет соседей в пределах 6 баллов. Нужно минимум две точки, считая саму оценку.</td><td>{20, 25} и {80, 85}; 50 — шум</td></tr>
+          <tr><td>K-Means</td><td>Для <code>k=2</code> подбирает два центра. Центр — среднее значение группы. Каждый объект относится к одному из центров.</td><td>{20, 25, 50} и {80, 85}</td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>Что будет с 50?</strong> Иерархия присоединяет 50 к левой группе, потому что 25 ближе, чем 80. В показанном запуске K-Means центры получаются примерно 31,67 и 82,5: к первому ближе. DBSCAN смотрит только на окрестность: в пределах 6 баллов от 50 соседей нет, кроме самой точки. Так один объект помогает увидеть разницу между методами.</p>
+    </section>
+
+    <section class="guide-section" id="python">
+      <p class="topic-lab-kicker">05 / scikit-learn</p>
+      <h2>Повтори результат на Python</h2>
+      <p>Запусти код в Colab или Python с установленным <code>scikit-learn</code>. Список внутри списка нужен, потому что одна строка представляет одного студента, а один столбец — его оценку.</p>
+      <pre class="topic-code"><code>from sklearn.cluster import AgglomerativeClustering, DBSCAN, KMeans
+X = [[20], [25], [50], [80], [85]]
+hierarchy = AgglomerativeClustering(n_clusters=2, linkage="single")
+density = DBSCAN(eps=6, min_samples=2)
+centers = KMeans(n_clusters=2, random_state=0, n_init=10)
+print("Иерархия:", hierarchy.fit_predict(X).tolist())
+print("DBSCAN:", density.fit_predict(X).tolist())
+print("K-Means:", centers.fit_predict(X).tolist())</code></pre>
+      <div class="topic-lab-actions"><a class="topic-lab-button" href="sroj11-files/clustering-scores.py" download>↓ Скачать Python</a></div>
+      <h3>Что делает каждая строка</h3>
+      <ol>
+        <li><code>from sklearn.cluster import …</code> — подключает три готовых алгоритма.</li>
+        <li><code>X = …</code> — записывает пять оценок; у каждого студента один признак.</li>
+        <li><code>hierarchy = …</code> — настраивает иерархию на две группы и правило ближайшей пары.</li>
+        <li><code>density = …</code> — ищет соседей на расстоянии до 6 баллов. Для основной точки нужно минимум 2 точки с учётом самой себя.</li>
+        <li><code>centers = …</code> — задаёт два центра. <code>n_init=10</code> пробует десять вариантов начальных центров и оставляет лучший результат. <code>random_state=0</code> фиксирует случайный старт, чтобы запуск можно было повторить.</li>
+        <li>Первый <code>print</code> запускает иерархию через <code>fit_predict(X)</code> и печатает номер группы каждой оценки. <code>tolist()</code> превращает результат в обычный список Python.</li>
+        <li>Второй <code>print</code> делает то же для DBSCAN.</li>
+        <li>Третий <code>print</code> печатает результат K-Means.</li>
+      </ol>
+      <h3>Вывод выполненного кода</h3>
+      <pre class="topic-code"><code>Иерархия: [0, 0, 0, 1, 1]
+DBSCAN:   [0, 0, -1, 1, 1]
+K-Means:  [0, 0, 0, 1, 1]</code></pre>
+      <p>Читаем слева направо: позиции соответствуют оценкам <strong>20, 25, 50, 80, 85</strong>. <code>0</code> и <code>1</code> — номера групп, а не оценки качества. Названия групп можно поменять местами, и разбиение останется тем же. <code>-1</code> у DBSCAN означает, что оценка 50 осталась шумом.</p>
+    </section>
+
+    <section class="guide-section" id="questions">
+      <p class="topic-lab-kicker">06 / Практика и защита</p>
+      <h2>Где это пригодится</h2>
+      <ul>
+        <li><strong>Иерархия:</strong> сгруппировать похожие новости в подтемы и посмотреть, как подтемы складываются в крупные темы.</li>
+        <li><strong>DBSCAN:</strong> найти скопления GPS-точек на карте и отделить одиночные наблюдения.</li>
+        <li><strong>K-Means:</strong> разделить покупателей на заранее заданное число групп по частоте и сумме покупок.</li>
+      </ul>
+      <h3>Что может спросить преподаватель</h3>
+      <p><strong>Почему DBSCAN может соединить точки в изогнутую группу?</strong> Ему достаточно цепочки соседних основных точек. Общий центр группе не нужен.</p>
+      <p><strong>Что делать, если один признак измеряется в рублях, а другой — в покупках?</strong> Сначала проверить масштабы. Иначе большие числа могут почти полностью определять расстояние. Можно привести признаки к сопоставимым масштабам.</p>
+      <p><strong>Как показать обе темы вдвоём?</strong> Акылбек запускает объединение оценок и делает срез на 27. Алмас открывает парк, переключает <code>eps</code> с 1 на 6 и объясняет, почему две компании слились.</p>
+      <h3>Пять вопросов для самопроверки</h3>
+      <div class="guide-quiz">
+        <details><summary>1. Почему 20 и 25 объединяются раньше, чем 25 и 50?</summary><p>Расстояние 5 меньше, чем 25. У пары 80 и 85 тоже расстояние 5.</p></details>
+        <details><summary>2. Сколько групп останется при срезе дендрограммы на высоте 27?</summary><p>Две: {20, 25, 50} и {80, 85}. Последнее объединение происходит выше, на 30.</p></details>
+        <details><summary>3. При eps=1 м и min_samples=3 человек на отметке 1 м — основная точка? Почему?</summary><p>Да. Его окрестность содержит точки на 0, 1 и 2 м, включая его самого.</p></details>
+        <details><summary>4. Что означает -1 у оценки 50 в выводе DBSCAN?</summary><p>Алгоритм оставил её шумом: при радиусе 6 у неё нет другого соседа и она не входит ни в один кластер.</p></details>
+        <details><summary>5. Какому методу нужно задать число центров заранее?</summary><p>K-Means. Для иерархии число групп выбирают по срезу дерева; DBSCAN выводит его из настроек плотности.</p></details>
+      </div>
+      <p class="guide-caption">Справка: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html">AgglomerativeClustering</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html">DBSCAN</a> · <a href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html">K-Means</a>.</p>
+    </section>
+  </main>
+</div>
+</body>
+</html>

@@ -41,10 +41,12 @@
     return { tree: last, labels, cut: cut || active };
   }
 
-  function density(eps, minPts) {
-    const neighbors = distances.map(row => row.flatMap((distance, j) => distance <= eps + 1e-10 ? [j] : []));
+  function density(eps, minPts, sample = points) {
+    const matrix = sample === points ? distances
+      : sample.map(([x, y]) => sample.map(([a, b]) => Math.hypot(x - a, y - b)));
+    const neighbors = matrix.map(row => row.flatMap((distance, j) => distance <= eps + 1e-10 ? [j] : []));
     const core = neighbors.map(ids => ids.length >= minPts);
-    const labels = points.map(() => -1);
+    const labels = sample.map(() => -1);
     let clusters = 0;
     core.forEach((isCore, i) => {
       if (!isCore || labels[i] >= 0) return;
