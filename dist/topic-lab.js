@@ -20,7 +20,8 @@
     ['overview', t('Мақсат пен міндет', 'Цель и задачи', 'Aim and objectives')],
     ['experiment', t('Интерактивті тәжірибе', 'Интерактивный опыт', 'Interactive experiment')],
     ['results', t('Нәтижені салыстыру', 'Сравнение результатов', 'Compare results')],
-    ['defense', t('Қорғауға дайындық', 'Подготовка к защите', 'Presentation preparation')]
+    ['defense', t('Қорғауға дайындық', 'Подготовка к защите', 'Presentation preparation')],
+    ['code', t('Толық код', 'Полный код', 'Full code')]
   ];
   const defenseLabel = t('Қорғау мәтіні', 'Текст для защиты', 'Presentation notes');
   const startLabel = t('Зертхананы бастау', 'Начать лабораторную', 'Start the lab');
@@ -28,6 +29,19 @@
   const pauseLabel = t('Кідірту', 'Пауза', 'Pause');
   const closeLabel = t('Жабу', 'Закрыть', 'Close');
   const topicsLabel = t('Тақырыптарға қайту', 'Вернуться к темам', 'Back to topics');
+  const referenceLabels = {
+    code: t('Осы беттің коды', 'Код этой страницы', 'Code for this page'),
+    formulas: t('Формулалар', 'Формулы', 'Formulas'),
+    explanation: t('Түсіндірме', 'Объяснение', 'Explanation')
+  };
+  const referenceBar = (fullPage = false) => `<div class="topic-lab-actions topic-lab-reference">
+    ${fullPage ? '' : `<button type="button" class="topic-lab-button" data-reference="code">&lt;/&gt; ${referenceLabels.code}</button>`}
+    <button type="button" class="topic-lab-button" data-reference="formulas">ƒ ${referenceLabels.formulas}</button>
+    <button type="button" class="topic-lab-button" data-reference="explanation">${referenceLabels.explanation}</button>
+    ${fullPage ? '' : `<a class="topic-lab-button" href="#code" data-stage="4">${stages[4][1]} →</a>`}
+  </div>`;
+  const theory = window.LAB_THEORY[week];
+  const formulaCards = `<dl class="topic-lab-formulas">${theory.map(({ expression, meaning }) => `<div><dt>${expression}</dt><dd>${meaning}</dd></div>`).join('')}</dl>`;
   const defense = `<div class="topic-lab-defense">
     <section><h3>${t('Экранда көрсет', 'Покажи на экране', 'Show on screen')}</h3><p>${content.show}</p></section>
     <section><h3>${t('Осылай түсіндір', 'Объясни своими словами', 'Explain it aloud')}</h3><p>${content.say}</p></section>
@@ -51,6 +65,7 @@
           <h1>${title}</h1>
           <p class="topic-lab-question">${content.question}</p>
           <p class="topic-lab-lead">${lesson.summary[langIndex]}</p>
+          ${referenceBar()}
           <a class="topic-lab-button primary" href="#experiment" data-stage="1">${startLabel} ↗</a>
         </div>
         <figure class="topic-lab-preview">
@@ -65,12 +80,14 @@
         <div class="topic-lab-actions"><button type="button" class="topic-lab-button primary" id="labPlay">▶ ${playLabel}</button>
         <button type="button" class="topic-lab-button" id="labReset">${t('Қалпына келтіру', 'Сбросить', 'Reset')}</button></div>
       </div>
+      ${referenceBar()}
       <p class="topic-lab-demo" id="labDemoStatus" role="status"></p>
       <div id="labWorkbench"></div>
     </section>
     <section class="topic-lab-stage" data-panel="2" hidden>
       <div class="topic-lab-heading"><div><p class="topic-lab-kicker">${number} / 03</p><h2>${stages[2][1]}</h2></div>
       <button type="button" class="topic-lab-button" id="labBaseline">${t('Ағымдағыны бастапқы мән ету', 'Взять текущий результат за основу', 'Set current as baseline')}</button></div>
+      ${referenceBar()}
       <div class="topic-lab-comparison">
         <section><h3>${t('Бастапқы нәтиже', 'Исходный результат', 'Baseline result')}</h3><p id="labBefore"></p><div id="labBeforePlot"></div></section>
         <section><h3>${t('Ағымдағы нәтиже', 'Текущий результат', 'Current result')}</h3><p id="labAfter"></p><div id="labAfterPlot"></div></section>
@@ -80,17 +97,27 @@
     </section>
     <section class="topic-lab-stage" data-panel="3" hidden>
       <div class="topic-lab-heading"><div><p class="topic-lab-kicker">${number} / 04</p><h2>${stages[3][1]}</h2></div></div>
+      ${referenceBar()}
       ${defense}
       <div class="topic-lab-actions">
         <a class="topic-lab-button" href="practice${suffix}.html?n=${week}&amp;fromTopic=${week}">${labels[lang].practice} · Notebook ↗</a>
         ${lecture ? `<a class="topic-lab-button" href="lecture${suffix}.html?n=${week}&amp;fromTopic=${week}">${labels[lang].lecture} ↗</a>` : ''}
       </div>
     </section>
-    <dialog class="topic-lab-dialog" aria-labelledby="labDefenseTitle">
+    <section class="topic-lab-stage" data-panel="4" hidden>
+      <div class="topic-lab-heading"><div><p class="topic-lab-kicker">${number} / 05</p><h2>${stages[4][1]}</h2></div></div>
+      ${referenceBar(true)}
+      <div id="labFullCode"></div>
+    </section>
+    <dialog class="topic-lab-dialog" id="labDefenseDialog" aria-labelledby="labDefenseTitle">
       <div class="topic-lab-heading"><h2 id="labDefenseTitle">${defenseLabel}</h2><form method="dialog"><button class="topic-lab-button">${closeLabel}</button></form></div>
       ${defense}
+    </dialog>
+    <dialog class="topic-lab-dialog topic-lab-reference-dialog" id="labReferenceDialog" aria-labelledby="labReferenceTitle">
+      <div class="topic-lab-heading"><h2 id="labReferenceTitle"></h2><form method="dialog"><button class="topic-lab-button">${closeLabel}</button></form></div>
+      <div id="labReferenceText"></div><div id="labPageCode" hidden></div>
     </dialog>`;
-  document.getElementById('labFooter').innerHTML = `<div class="topic-lab-progress"><span id="labProgressText"></span><progress id="labProgress" max="4" value="1"></progress></div>
+  document.getElementById('labFooter').innerHTML = `<div class="topic-lab-progress"><span id="labProgressText"></span><progress id="labProgress" max="${stages.length}" value="1"></progress></div>
     <div class="topic-lab-actions"><button type="button" class="topic-lab-button" id="labPrev">← ${t('Артқа', 'Назад', 'Back')}</button>
     <button type="button" class="topic-lab-button primary" id="labNext"></button></div>`;
 
@@ -109,10 +136,13 @@
     byId('labAfterPlot').innerHTML = plot(current);
     byId('labTakeaway').textContent = current.insight;
   };
-  const experiment = window.mountStarterLab(workbench, week, view => {
-    current = view;
-    baseline ||= view;
+  const experiment = window.mountStarterLab(workbench, week, (view, settings) => {
+    current = { ...view, settings };
+    baseline ||= current;
   });
+  const loadSource = window.LAB_REFERENCE.createSource(number);
+  const pageCode = window.LAB_REFERENCE.createCodePanel(byId('labPageCode'), number, loadSource);
+  const fullCode = window.LAB_REFERENCE.createCodePanel(byId('labFullCode'), number, loadSource);
   byId('labPreview').innerHTML = plot(current);
   byId('labPreviewMetric').textContent = current.summary;
 
@@ -131,10 +161,11 @@
     });
     document.querySelector('.topic-lab-crumb').textContent = stages[index][1];
     byId('labProgress').value = index + 1;
-    byId('labProgressText').textContent = `0${index + 1} / 04`;
+    byId('labProgressText').textContent = `0${index + 1} / 0${stages.length}`;
     byId('labPrev').disabled = index === 0;
     byId('labNext').textContent = index === stages.length - 1 ? topicsLabel + ' ↗' : stages[index + 1][1] + ' →';
     if (index === 2) updateComparison();
+    if (stages[index][0] === 'code') fullCode('code', current.settings, baseline.settings);
     if (updateHash) history.replaceState(null, '', '#' + stages[index][0]);
     window.scrollTo({ top: 0, behavior: 'instant' });
   }
@@ -157,7 +188,39 @@
     if (active === stages.length - 1) location.assign(topicHref);
     else openStage(active + 1);
   });
-  byId('labNotes').addEventListener('click', () => host.querySelector('dialog').showModal());
+  byId('labNotes').addEventListener('click', () => { stopDemo(); byId('labDefenseDialog').showModal(); });
+  const stageExplanations = [
+    t('Беттің мақсатын және деректің нені білдіретінін түсіндір. Содан кейін қандай нәтиже күтетіндігіңді айт.', 'Объясни цель страницы и смысл данных. Затем сформулируй ожидаемый результат.', 'Explain the aim and what the data represents. Then state what you expect to see.'),
+    t('Бір параметрді өзгертіп, графиктегі және кестедегі өзгерісті бақыла.', 'Измени один параметр и проследи изменения графика и таблицы.', 'Change one parameter and observe the chart and table.'),
+    t('Бастапқы және ағымдағы мәндерді салыстыр. Айырманы қай параметр өзгерткенін атап өт.', 'Сравни исходный и текущий результат. Назови параметр, который вызвал разницу.', 'Compare the baseline and current results. Name the parameter that caused the difference.'),
+    t('Әуелі экраннан нәтижені көрсет, содан кейін оның себебін түсіндір.', 'Сначала покажи результат на экране, затем объясни его причину.', 'Show the result on screen first, then explain its cause.'),
+    t('Код бөлімдері деректі көрсетеді, тәжірибені орындайды, нәтижені салыстырады және қорғаудағы мысалды тексереді.', 'Разделы кода показывают данные, выполняют опыт, сравнивают результаты и проверяют пример для защиты.', 'The code sections inspect the data, run the experiment, compare results, and check the presentation example.')
+  ];
+  host.querySelectorAll('[data-reference]').forEach(button => button.addEventListener('click', () => {
+    stopDemo();
+    const kind = button.dataset.reference;
+    const text = byId('labReferenceText');
+    text.hidden = kind === 'code';
+    byId('labPageCode').hidden = kind !== 'code';
+    byId('labReferenceTitle').textContent = `${referenceLabels[kind]} · ${stages[active][1]}`;
+    if (kind === 'code') pageCode(stages[active][0], current.settings, baseline.settings);
+    else {
+      text.innerHTML = `<p class="topic-code-help">${stageExplanations[active]}</p>` + (kind === 'formulas' ? formulaCards : defense);
+      if (kind === 'explanation' && (active === 1 || active === 2)) {
+        const result = document.createElement('p');
+        result.className = 'topic-lab-takeaway';
+        result.textContent = active === 1 ? `${current.summary}. ${current.insight}` : `${baseline.summary} → ${current.summary}. ${current.insight}`;
+        text.append(result);
+      }
+      if (kind === 'explanation') {
+        const walkthrough = document.createElement('section');
+        walkthrough.className = 'topic-lab-walkthrough';
+        walkthrough.innerHTML = `<h3>${t('Есептеу жолы', 'Ход расчёта', 'How the result is calculated')}</h3>${formulaCards}`;
+        text.append(walkthrough);
+      }
+    }
+    byId('labReferenceDialog').showModal();
+  }));
   byId('labBaseline').addEventListener('click', () => { baseline = current; updateComparison(); });
   byId('labReset').addEventListener('click', () => {
     stopDemo();

@@ -1,0 +1,42 @@
+(() => {
+  'use strict';
+  const i = { kk: 0, ru: 1, en: 2 }[document.documentElement.lang];
+  const f = (expression, ...meaning) => ({ expression, meaning: meaning[i] });
+  window.LAB_THEORY = {
+    1: [
+      f('y = 𝟙[score ≥ 50]', 'y — емтиханның нақты класы. 50 баллдан бастап 1 («өтті»), әйтпесе 0. Мысалы, 47 → 0, 52 → 1.', 'y — фактический класс. От 50 баллов ставим 1 («сдал»), иначе 0. Например, 47 → 0, 52 → 1.', 'y is the actual class. A score of 50 or more gives 1 (pass); otherwise it is 0. For example, 47 → 0 and 52 → 1.'),
+      f('ŷ = 𝟙[hours ≥ t]', 'ŷ — болжам, t — жүгірткідегі оқу сағатының шегі. t = 4 болса, 2 сағат оқыған оқушыға 0 болжанады, ал оның нақты балы 52.', 'ŷ — прогноз, t — порог учебных часов. При t = 4 прогноз для ученика с 2 часами равен 0, хотя его фактический балл — 52.', 'ŷ is the prediction and t is the study-hours threshold. At t = 4, the student who studied 2 hours gets prediction 0 even though the actual score is 52.'),
+      f('Accuracy = Σ 𝟙[ŷᵢ = yᵢ] / n', 'n — барлық оқушы саны. Шек 4 сағат болса, 7/8 = 87,5%. Шек 9 сағат болса, 2/8 = 25%.', 'n — число учеников. При пороге 4 часа: 7/8 = 87,5%. При пороге 9 часов: 2/8 = 25%.', 'n is the number of students. A four-hour threshold gives 7/8 = 87.5%; a nine-hour threshold gives 2/8 = 25%.')
+    ],
+    2: [
+      f('S = { rowᵢ : scoreᵢ ≥ minimum }', 'S — сүзгіден өткен жолдар. Шек 75 болса, 83 пен 92 балл алған екі жол ғана қалады.', 'S — строки после фильтра. При минимуме 75 остаются две строки с баллами 83 и 92.', 'S contains the filtered rows. A cutoff of 75 keeps only the two rows scoring 83 and 92.'),
+      f('sorted(S, key=column, reverse=True)', 'Таңдалған баған бойынша кему реті. Тең мәнді жолдар бастапқы ретін сақтайды. Сүзгі мен сұрыптау бастапқы кестені өзгертпейді.', 'Сортировка по выбранному столбцу по убыванию. Равные значения сохраняют исходный порядок. Исходная таблица остаётся прежней.', 'Sort descending by the selected column. Ties retain their original order. The source table stays intact.'),
+      f('mean = Σ scoreᵢ / |S|', 'Шек 75 болғанда (83 + 92) / 2 = 87,5. S бос болса, орташа мән анықталмайды.', 'При минимуме 75: (83 + 92) / 2 = 87,5. Для пустой выборки среднее не определено.', 'At a cutoff of 75, (83 + 92) / 2 = 87.5. A mean is undefined when S is empty.')
+    ],
+    3: [
+      f('Scatter = { (xᵢ, scoreᵢ) }', 'xᵢ — таңдалған сағат бағаны. Бір нүкте бір оқушыны білдіреді; бірдей x мәні бар бірнеше нүкте болуы мүмкін.', 'xᵢ — выбранный столбец часов. Одна точка — один ученик; несколько точек могут иметь одинаковый x.', 'xᵢ comes from the selected hours column. Each point is one student; several points can share the same x.'),
+      f('bar(x) = Σ scoreᵢ / nₓ,  xᵢ = x', 'nₓ — x сағатына сәйкес оқушы саны. 8 сағат ұйықтаған екі оқушының бағаны (35 + 72) / 2 = 53,5.', 'nₓ — число учеников с данным количеством часов. При 8 часах сна столбец равен (35 + 72) / 2 = 53,5.', 'nₓ counts students with that hour value. For eight hours of sleep, the bar is (35 + 72) / 2 = 53.5.'),
+      f('r = Σ(xᵢ − x̄)(yᵢ − ȳ) / √[Σ(xᵢ − x̄)² · Σ(yᵢ − ȳ)²]', 'x̄ және ȳ — екі бағанның орташалары. r −1 мен +1 арасында. r барлық жеке нүктелерден есептеледі, график түрін ауыстыру оны өзгертпейді.', 'x̄ и ȳ — средние двух столбцов. r лежит между −1 и +1. Он считается по отдельным наблюдениям и не меняется при смене вида графика.', 'x̄ and ȳ are column means. r is between −1 and +1. It uses individual observations and stays the same when you switch chart types.')
+    ],
+    4: [
+      f('mean = Σ xᵢ / n · median = middle(sorted(x))', 'n — бос емес мән саны. Жұп n кезінде медиана — ортадағы екі мәннің ортасы. Бұл деректе орташа 64, ал медиана 63,5.', 'n — число известных значений. При чётном n медиана — среднее двух центральных значений. Здесь среднее 64, медиана 63,5.', 'n counts known values. With even n, the median averages the two middle values. Here the mean is 64 and the median is 63.5.'),
+      f('x′ = (x − min) / (max − min)', 'min = 35, max = 92. Мысалы, 59 үшін (59 − 35) / 57 ≈ 0,42. Шеткі мәндер 0 және 1 болады.', 'min = 35, max = 92. Например, для 59: (59 − 35) / 57 ≈ 0,42. Крайние значения становятся 0 и 1.', 'min = 35 and max = 92. For 59, (59 − 35) / 57 ≈ 0.42. The endpoints become 0 and 1.'),
+      f('n(drop) = n(all) − n(missing) = 8 − 2 = 6', 'Жолды алып тастау жол санын өзгертеді. Орташа немесе медианамен толтыру 8 жолдың бәрін сақтайды.', 'Удаление сокращает число строк. Заполнение средним или медианой сохраняет все 8 строк.', 'Dropping missing rows reduces the row count. Mean or median imputation preserves all eight rows.')
+    ],
+    5: [
+      f('ŷᵢ = wxᵢ + b   ·   eᵢ = yᵢ − ŷᵢ', 'x — оқу сағаты, y — нақты балл, w — көлбеулік, b — бастапқы мән. w=4, b=28, x=1 кезінде ŷ=32, қалдық 34−32=2.', 'x — часы, y — фактический балл, w — наклон, b — свободный член. При w=4, b=28 и x=1 прогноз 32, остаток 34−32=2.', 'x is hours, y is the actual score, w is the slope, and b is the intercept. With w=4, b=28, x=1, the prediction is 32 and the residual is 34−32=2.'),
+      f('MSE = (1/n) Σ eᵢ²', 'Қателерді квадраттап, орташалаймыз. Train үшін n=6, test үшін n=2. Екі метрика екі бөлек деректе есептеледі.', 'Квадраты ошибок усредняются. Для train n=6, для test n=2. Метрики считаются на разных данных.', 'Average the squared errors. Train uses n=6, test uses n=2. These metrics use separate observations.'),
+      f('w = Σ(xᵢ−x̄)(yᵢ−ȳ) / Σ(xᵢ−x̄)²   ·   b = ȳ − wx̄', 'Тек жасыл train нүктелері қолданылады. Нәтиже w≈8,37, b=26,2; train MSE ≈8,51.', 'Используются только зелёные точки train. Получаем w≈8,37, b=26,2 и train MSE ≈8,51.', 'Only the green training points are used. The fit gives w≈8.37, b=26.2, and train MSE ≈8.51.')
+    ],
+    7: [
+      f('ŷ = 𝟙[score ≥ t]   ·   CM = [[TP, FN], [FP, TN]]', 't — шешім шегі. Бірінші жол нақты оң жағдайлар, екінші жол нақты теріс жағдайлар. Бағандар: болжам 1 және 0.', 't — порог решения. Первая строка — реальные положительные случаи, вторая — отрицательные. Столбцы: прогноз 1 и 0.', 't is the decision threshold. Rows are actual positives and negatives. Columns are predictions 1 and 0.'),
+      f('Accuracy = (TP+TN)/n   ·   Precision = TP/(TP+FP)   ·   Recall = TP/(TP+FN)', 'TP — табылған оң, TN — дұрыс теріс, FP — жалған дабыл, FN — өткізіп алу. Оң болжам мүлде болмаса, precision анықталмайды.', 'TP — найденные положительные, TN — верные отрицательные, FP — ложные тревоги, FN — пропуски. Без положительных прогнозов precision не определена.', 'TP means detected positives, TN correct negatives, FP false alarms, and FN misses. Precision is undefined with zero positive predictions.'),
+      f('F1 = 2TP / (2TP + FP + FN)', 'Шекті 80%-дан 25%-ға түсіргенде осы деректе accuracy 66,67% болып қалады, бірақ recall 33,33%-дан 100%-ға өсіп, precision 100%-дан 60%-ға төмендейді.', 'При снижении порога с 80% до 25% accuracy остаётся 66,67%, recall растёт с 33,33% до 100%, а precision падает со 100% до 60%.', 'Lowering the threshold from 80% to 25% leaves accuracy at 66.67%, but recall rises from 33.33% to 100% and precision falls from 100% to 60%.')
+    ],
+    11: [
+      f('y = x₁ ⊕ x₂   ·   h = tanh(Wx + b)   ·   p = σ(vᵀh + c)', 'XOR әртүрлі кірістерге 1 береді. W және b төрт жасырын нейронды анықтайды. v және c шығыс қабатына тиесілі; σ(z)=1/(1+e⁻ᶻ).', 'XOR даёт 1 для разных входов. W и b задают четыре скрытых нейрона. v и c принадлежат выходу; σ(z)=1/(1+e⁻ᶻ).', 'XOR outputs 1 for different inputs. W and b define four hidden units. v and c define the output; σ(z)=1/(1+e⁻ᶻ).'),
+      f('L = −(1/n) Σ [yᵢ log pᵢ + (1−yᵢ) log(1−pᵢ)]', 'n=4. Binary cross-entropy сенімді, бірақ қате болжамға үлкен айып береді. Бастапқы loss ≈0,79; 2000 қадамда ≈0,002.', 'n=4. Бинарная кросс-энтропия сильно штрафует уверенные ошибки. Начальный loss ≈0,79; через 2000 шагов ≈0,002.', 'n=4. Binary cross-entropy penalizes confident errors. Loss starts around 0.79 and falls to about 0.002 at step 2000.'),
+      f('δₒ = p−y   ·   δₕ = δₒv ⊙ (1−h²)   ·   θ ← θ − η∇L', 'δ — қате сигналы, ⊙ — элемент бойынша көбейту. Код төрт мысалдың градиентін қосып 0,15-ке көбейтеді, бұл орташа градиент үшін η=0,60-қа тең.', 'δ — сигнал ошибки, ⊙ — поэлементное умножение. Код суммирует градиенты четырёх примеров и умножает на 0,15, что соответствует η=0,60 для среднего градиента.', 'δ is the error signal and ⊙ is elementwise multiplication. The code sums four gradients and multiplies by 0.15, equivalent to η=0.60 on the mean gradient.')
+    ]
+  };
+})();

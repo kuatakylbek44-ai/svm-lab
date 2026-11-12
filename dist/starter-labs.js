@@ -183,7 +183,11 @@
       result.textContent = view.summary;
       details.innerHTML = view.details;
       insight.textContent = view.insight;
-      onChange(view);
+      const settings = Object.fromEntries([...form.elements].filter(control => control.name).map(control => [
+        control.name,
+        control.type === 'checkbox' ? control.checked : control.type === 'range' ? Number(control.value) : control.value
+      ]));
+      onChange(view, settings);
     };
     form.addEventListener('submit', event => event.preventDefault());
     form.addEventListener('input', update);

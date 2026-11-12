@@ -105,6 +105,28 @@
 .topic-lab-takeaway { margin-bottom: 18px; }
 .topic-lab-dialog { margin: auto; width: min(800px, calc(100% - 32px)); max-height: calc(100dvh - 40px); padding: 22px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 14px; }
 .topic-lab-dialog::backdrop { background: #071712a8; }
+.topic-lab-reference { margin: 0 0 22px; }
+.topic-lab-reference-dialog { width: min(970px, calc(100% - 32px)); }
+.topic-code-help { color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+.topic-code-actions { align-items: center; margin-bottom: 10px; }
+.topic-code-actions [role="status"] { color: var(--muted); overflow-wrap: anywhere; }
+.topic-code {
+  overflow: auto;
+  max-height: min(62dvh, 620px);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: clamp(12px, 2vw, 24px);
+  background: #13241e;
+  color: #d9eee2;
+  font: 13px/1.65 ui-monospace, Consolas, monospace;
+  tab-size: 4;
+}
+.topic-code code { font: inherit; }
+.topic-lab-formulas { display: grid; gap: 12px; margin: 0; }
+.topic-lab-formulas > div { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+.topic-lab-formulas dt { color: var(--green); font: 600 15px/1.65 ui-monospace, Consolas, monospace; overflow-wrap: anywhere; }
+.topic-lab-formulas dd { margin: 7px 0 0; line-height: 1.65; }
+.topic-lab-walkthrough h3 { margin: 14px 0 10px; }
 .topic-lab-footer {
   position: fixed;
   z-index: 9;
