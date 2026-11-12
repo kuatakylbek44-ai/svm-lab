@@ -1,0 +1,57 @@
+.week11 .topic-lab-main { max-width: 1600px; margin-inline: auto; }
+.week11 .topic-lab-hero h1 { font-size: clamp(36px, 5.4vw, 87px); }
+.week11 .topic-lab-hero { min-height: 60vh; }
+.week11 .topic-lab-preview { min-width: 0; }
+.week11-lead { color: var(--muted); max-width: 75ch; line-height: 1.7; margin: 10px 0 16px; }
+.week11-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 18px 0; }
+.week11-metrics > div, .week11-panel {
+  background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+  padding: clamp(12px, 2vw, 22px); min-width: 0;
+}
+.week11-metrics strong { display: block; font: 600 clamp(16px, 2.15vw, 32px)/1.15 Georgia, serif; color: var(--green); letter-spacing: -.025em; white-space: nowrap; }
+.week11-metrics small { display: block; margin-top: 7px; color: var(--muted); line-height: 1.4; }
+.week11-grid { display: grid; grid-template-columns: 1.2fr 1fr; align-items: start; gap: 16px; margin: 16px 0; }
+.week11-panel h3 { margin: 0 0 12px; font-size: 17px; }
+.week11-panel p { line-height: 1.55; }
+.week11-panel figure { margin: 0; }
+.week11-panel img { width: 100%; border-radius: 7px; display: block; }
+.week11-panel figcaption { color: var(--muted); margin-top: 8px; }
+.week11-digit-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.week11-digit-grid button, .week11-digit-grid figure { padding: 5px; margin: 0; border: 1px solid var(--line); border-radius: 7px; min-width: 0; text-align: center; color: var(--ink); }
+.week11-digit-grid button { background: var(--paper); cursor: pointer; }
+.week11-digit-grid button[aria-pressed=true] { border-color: var(--green); background: var(--soft); }
+.week11-digit-grid canvas, .week11-detail canvas { image-rendering: pixelated; display: block; width: 100%; aspect-ratio: 1; border-radius: 5px; background: #12211b; }
+.week11-digit-grid figcaption, .week11-digit-grid button span { display: block; margin-top: 4px; font-size: 12px; }
+.week11-detail { display: grid; grid-template-columns: minmax(72px, 120px) 1fr; gap: 12px; align-items: start; margin-top: 16px; }
+.week11-detail p { margin-bottom: 5px; }
+.week11-bars { display: grid; gap: 3px; }
+.week11-bars label { display: grid; grid-template-columns: 2ch 1fr 6ch; gap: 6px; align-items: center; font-size: 11px; }
+.week11-bars meter { width: 100%; }
+.week11-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin: 14px 0; }
+.week11-controls label { display: grid; gap: 4px; color: var(--muted); }
+.week11-controls select { font: inherit; background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 7px; padding: 7px; }
+.week11-controls input { accent-color: var(--green); min-width: 135px; }
+.week11-plot { width: 100%; display: block; }
+.week11-plot text { fill: var(--muted); font-size: 11px; }
+.week11-plot .grid { stroke: var(--line); stroke-dasharray: 4 5; }
+.week11-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.week11-flow span { padding: 9px 12px; background: var(--soft); border: 1px solid var(--line); border-radius: 8px; }
+.week11-table-wrap { overflow-x: auto; }
+.week11-table { width: 100%; border-collapse: collapse; }
+.week11-table :is(th,td) { padding: 9px 7px; text-align: start; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.week11-table th { color: var(--green); }
+.week11-matrix { table-layout: fixed; min-width: 320px; }
+.week11-matrix :is(td,th) { padding: 2px; text-align: center; font-size: 11px; }
+.week11-matrix button { width: 100%; min-height: 30px; padding: 0; color: var(--ink); border: 1px solid var(--line); border-radius: 4px; cursor: pointer; font: inherit; }
+.week11-matrix button[aria-pressed=true] { outline: 2px solid var(--green); }
+.week11-insight { border-inline-start: 3px solid var(--green); padding: 8px 12px; margin: 12px 0; line-height: 1.6; background: var(--soft); }
+.week11-speech p { margin-bottom: 10px; line-height: 1.7; }
+.week11-speech h3 { color: var(--green); }
+@media (max-width: 840px) {
+  .week11-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 500px) {
+  .week11-metrics { gap: 6px; }
+  .week11-digit-grid { gap: 5px; }
+  .week11 .topic-lab-footer { flex-wrap: wrap; }
+}

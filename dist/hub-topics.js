@@ -15,7 +15,7 @@
     8: ['svm'],
     9: ['penguins', 'autompg'],
     10: ['unsupervised', 'imbalanced'],
-    11: ['neural']
+    11: ['digits11', 'neural']
   };
   const number = week => String(week).padStart(2, '0');
   const page = (name, week) => `${name}${suffix}.html?n=${week}`;
@@ -38,6 +38,9 @@
   ];
   const axes = '<path d="M42 24v116h240" fill="none" stroke="#8c9c91" stroke-width="2"/>';
   const starterPlots = {
+    digits11: '<rect x="59" y="29" width="202" height="112" rx="12" fill="#182923"/>'
+      + ['1111011', '1000010', '1110100', '0010100', '1110100'].map((row, y) => [...row].map((on, x) => on === '1'
+        ? `<rect class="topic-mark" x="${97 + x * 19}" y="${42 + y * 17}" width="13" height="13" rx="2" fill="${x < 3 ? '#7bd6ae' : '#b899e3'}"/>` : '').join('')).join(''),
     intro: axes + '<path class="topic-mark" d="M155 25v114" stroke="#7654aa" stroke-width="3" stroke-dasharray="6 5"/>'
       + [67, 91, 118, 138, 179, 203, 235, 264].map((x, i) => `<circle class="topic-mark" cx="${x}" cy="${100 - i * 7 + (i % 2) * 17}" r="7" fill="${i < 4 ? '#7654aa' : '#207d65'}"/>`).join(''),
     pandas: '<rect x="42" y="30" width="236" height="108" rx="9" fill="#fcfdf8"/>'
@@ -61,7 +64,13 @@
         href: page('topic-lab', week)
       };
     });
-    const topicById = new Map([...starters, ...topics].map(topic => [topic.id, topic]));
+    const digits = {
+      id: 'digits11', name: ['Қолжазба цифрларын тану', 'Распознавание рукописных цифр', 'Handwritten digit recognition'][languageIndex],
+      english: 'DIGITS + MNIST', label: 'NUMPY / TENSORFLOW',
+      href: `week11${suffix}.html`, lab: labels[lang].practiceLab, tags: ['DIGITS', 'MNIST', 'Keras Tuner'],
+      desc: ['Екі нейрондық желіні оқытып, қолжазба цифрларын таныдық. Дәлдік, қателер және қорғау мәтіні бір жерде.', 'Две нейронные сети распознают рукописные цифры. Точность, ошибки и текст для защиты.', 'Two neural networks classify handwritten digits. Explore accuracy, errors, and presentation notes.'][languageIndex]
+    };
+    const topicById = new Map([...starters, ...topics, digits].map(topic => [topic.id, topic]));
     const orderedTopics = [];
     const sections = practice.map(week => {
       const lecture = lectureByWeek.get(week.n);
