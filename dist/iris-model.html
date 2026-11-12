@@ -3,39 +3,135 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f4f5ef">
-  <title>Iris Lab · ML LAB</title>
-  <link rel="icon" href="hub-icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="hub.css">
-  <link rel="stylesheet" href="course.css?v=workbench">
-  <link rel="stylesheet" href="iris-model.css">
-  <link rel="stylesheet" href="language.css">
-  <link rel="stylesheet" href="site-view.css">
-  <link rel="stylesheet" href="topic-guide.css">
-  <script src="language.js?v=iris-model"></script>
-  <script src="site-view.js?v=iris-model"></script>
-  <script src="topic-guide.js?v=iris-model" defer></script>
-  <script src="iris-model.js" defer></script>
+  <title>IRIS LAB · Ақылбек & Алмас</title>
+  <meta name="description" content="Logistic Regression-ды алты интерактивті бөліммен түсіну. Ақылбек пен Алмастың қазақша зертханасы.">
+  <link rel="stylesheet" href="iris-original.css">
+  <link rel="stylesheet" href="language.css"><link rel="stylesheet" href="iris-original-theme.css">
+  <script src="language.js?v=iris-model"></script><script src="site-view.js?v=iris-original"></script>
+  <script src="iris-original-core.js" defer></script><script src="iris-original.js" defer></script>
 </head>
 <body>
-<header class="header"><div class="header-inner">
-  <a class="brand" href="index.html#topics">ML<span>LAB</span></a>
-  <nav><a href="index.html#topics">Тақырыптар</a><a href="iris.html">Iris датасеті</a></nav>
-  <div id="irisModelGuide"></div>
-</div></header>
-<main class="wrap iris-model-main" id="main">
-  <section class="lesson-hero">
-    <div class="lesson-kicker">IRIS LAB</div>
-    <h1 id="irisModelTitle">Логистикалық регрессия</h1><p class="lesson-lead">Iris гүлінің түрін болжап көр.</p>
-  </section>
-  <nav class="iris-model-tabs" aria-label="Iris Lab">
-    <a class="topic-guide-button" href="#logistic">Логистикалық регрессия</a>
-    <a class="topic-guide-button" href="#knn">KNN</a>
+<a class="skip" href="#main">Мазмұнға өту</a>
+<aside class="rail">
+  <a class="brand" href="#1" aria-label="Басты бет"><span class="brand-icon"><i></i><i></i><i></i></span>IRIS<span>LAB</span></a>
+  <div class="rail-title">МАШИНАЛЫҚ ОҚЫТУ / СОӨЖ</div>
+  <a class="iris-home" href="index.html#topics">← ML LAB басты беті</a>
+  <div class="chapter-owner"><span class="avatar">АҚ</span><div>Ақылбек<small>1–3-беттер · Негіздері</small></div></div>
+  <nav aria-label="Ақылбектің бөлімдері">
+    <button class="nav-link active" data-page="1"><span>01</span>Мақсат пен міндет</button>
+    <button class="nav-link" data-page="2"><span>02</span>Деректер зертханасы</button>
+    <button class="nav-link" data-page="3"><span>03</span>Модельдің логикасы</button>
   </nav>
-  <div id="irisExperiment"><p role="status">Iris деректері жүктелуде…</p></div>
-  <div class="iris-model-links">
-    <a href="lecture.html?n=6">Дәріс 06</a>
-    <a href="lecture.html?n=7">Дәріс 07</a>
-    <a href="iris.html">Iris датасеті</a>
-  </div>
-</main>
-</body></html>
+  <div class="rail-divider"></div>
+  <div class="chapter-owner"><span class="avatar lilac">АЛ</span><div>Алмас<small>4–6-беттер · Практика</small></div></div>
+  <nav aria-label="Алмастың бөлімдері">
+    <button class="nav-link" data-page="4"><span>04</span>Оқыту және болжам</button>
+    <button class="nav-link" data-page="5"><span>05</span>Нәтижелерді талдау</button>
+    <button class="nav-link" data-page="6"><span>06</span>Ең жақсы k</button>
+  </nav>
+  <div class="rail-bottom"><span class="live-dot"></span>Нақты Iris деректері<small>150 үлгі · 4 белгі · 3 класс</small><button class="text-btn" id="sourcesBtn">Дереккөздер ↗</button></div>
+</aside>
+<div class="workspace">
+  <header class="topbar">
+    <div class="breadcrumb">Зертхана <span>/</span> <strong id="crumb">Мақсат пен міндет</strong></div>
+    <div class="top-actions"><span id="speakerTag" class="speaker-tag">Ақылбек · 1/6</span><button class="button small outline" id="notesBtn">Қорғау мәтіні <span>↗</span></button></div>
+  </header>
+  <main id="main" tabindex="-1">
+    <section class="page active" id="page1" aria-labelledby="title1">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="live-dot"></span> КОДТАН — ТҮСІНІККЕ</div>
+          <h1 id="title1">Төрт өлшем.<br>Үш гүл.<br><em>Бір болжам.</em></h1>
+          <p class="hero-desc">Гүлдің түрін компьютер қалай таниды? Logistic Regression моделін бірге зерттейік.</p>
+          <button class="button primary hero-cta" data-page="2">Зертхананы бастау <span>↗</span></button>
+          <div class="hero-credits"><span><b>Ақылбек</b> 01–03</span><span><b>Алмас</b> 04–06</span></div>
+        </div>
+        <div class="hero-visual">
+          <div class="figure-head"><span>IRIS / НАҚТЫ ДЕРЕКТЕР</span><span class="badge">150 гүл</span></div>
+          <svg id="heroPlot" viewBox="0 0 540 440" role="img" aria-label="Iris гүлдерінің күлте өлшемдері бойынша таралуы"></svg>
+          <div class="legend"><span><i class="dot c0"></i>setosa</span><span><i class="dot c1"></i>versicolor</span><span><i class="dot c2"></i>virginica</span></div>
+          <div class="figure-caption">Әр нүкте — бір гүл. Түсі — оның нақты түрі.</div>
+        </div>
+      </div>
+      <div class="intro-strip"><div><span class="strip-num">01</span><div><b>Белгілерді аламыз</b><p>Ұзындық пен ен — модельге кіріс.</p></div></div><span class="flow-arrow">→</span><div><span class="strip-num">02</span><div><b>Модельді оқытамыз</b><p>Деректерден заңдылық үйренеді.</p></div></div><span class="flow-arrow">→</span><div><span class="strip-num">03</span><div><b>Класты болжаймыз</b><p>Үш түрдің біреуін таңдайды.</p></div></div></div>
+      <div class="bottom-remark">Бүгінгі міндет <span>Logistic Regression көмегімен классификация жасап, нәтижесін талдау.</span></div>
+    </section>
+
+    <section class="page" id="page2" aria-labelledby="title2" hidden>
+      <div class="page-heading"><div><div class="eyebrow">02 / АҚЫЛБЕК · ДЕРЕКТЕР</div><h2 id="title2">Модельге не береміз?</h2><p>X — гүлдің төрт өлшемі. y — оның нақты түрі.</p></div><button class="button outline small code-toggle" data-code="data">Python коды &lt;/&gt;</button></div>
+      <div class="lab-grid">
+        <div class="plot-panel"><div class="plot-toolbar"><span class="section-label">150 ГҮЛДІ ЗЕРТТЕ</span><div class="segmented"><button class="selected" id="colorClass">Кластар</button><button id="colorSplit">Train / Test</button></div></div>
+          <svg id="dataPlot" viewBox="0 0 640 430" role="img" aria-label="Өлшемдері өзгертілетін Iris нүктелік графигі"></svg>
+          <div id="dataLegend" class="legend"></div><div class="chart-hint" id="pointInfo" aria-live="polite">Нүктені басып, гүлдің өлшемдерін қара.</div><label for="dataPoint" class="micro">Немесе гүлді тізімнен таңда</label><select id="dataPoint" aria-label="Графиктегі гүлді таңдау"></select>
+        </div>
+        <div class="controls-panel">
+          <h3>Графикті өзгерт</h3>
+          <label for="xAxis">Көлденең ось · X</label><select id="xAxis"><option value="0">Тостағанша ұзындығы</option><option value="1">Тостағанша ені</option><option value="2" selected>Күлте ұзындығы</option><option value="3">Күлте ені</option></select>
+          <label for="yAxis">Тік ось · Y</label><select id="yAxis"><option value="0">Тостағанша ұзындығы</option><option value="1">Тостағанша ені</option><option value="2">Күлте ұзындығы</option><option value="3" selected>Күлте ені</option></select>
+          <div class="control-divider"></div>
+          <label for="testRatio" class="range-label">Тест үлесі <strong id="testRatioValue">20%</strong></label><input type="range" id="testRatio" min="10" max="40" step="10" value="20"><div class="range-ends"><span>10%</span><span>40%</span></div>
+          <div class="split-bar"><span id="trainBar"></span><span id="testBar"></span></div>
+          <div class="split-figures"><div><span class="train-text">Оқыту / Train</span><b id="trainCount">120</b></div><div><span class="test-text">Тексеру / Test</span><b id="testCount">30</b></div></div>
+          <p class="micro">Бөлу өзгерсе, 4–6-беттердегі есептер де жаңарады. Барлық нұсқада random_state=42.</p>
+        </div>
+      </div>
+      <div class="concept-pair"><div><b>Көпклассты / multiclass</b><p>Бір гүл → бір түр. Iris осы есепке жатады.</p></div><div><b>Көпбелгілі / multilabel</b><p>Бір видео → «білім» + «технология». Бірнеше санат қатар беріледі.</p></div></div>
+    </section>
+
+    <section class="page" id="page3" aria-labelledby="title3" hidden>
+      <div class="page-heading"><div><div class="eyebrow">03 / АҚЫЛБЕК · МОДЕЛЬ ЛОГИКАСЫ</div><h2 id="title3">Сан қалай ықтималдыққа айналады?</h2><p>Жүгірткілерді жылжыт. Графиктің жауабын бірден көр.</p></div></div>
+      <div class="mode-tabs" role="tablist" aria-label="Модельді түсіндіру тәсілі"><button role="tab" aria-selected="true" id="sigmoidTab" class="active">01 · Сигмоида: 2 класс</button><button role="tab" aria-selected="false" id="softmaxTab">02 · Softmax: Iris-тің 3 класы</button></div>
+      <div class="lab-grid" id="sigmoidView">
+        <div class="plot-panel"><div class="plot-toolbar"><span class="section-label">S ТӘРІЗДІ ҚИСЫҚ</span><span class="formula">p = 1 / (1 + e⁻ᶻ)</span></div><svg id="sigmoidPlot" viewBox="0 0 640 410" role="img" aria-label="Интерактивті сигмоида графигі"></svg><div class="chart-hint">Үзік сызық — 0.5 шегі. Нүкте — таңдалған x мәні.</div></div>
+        <div class="controls-panel"><h3>Модельмен тәжірибе</h3>
+          <label class="range-label" for="weight">Салмақ · w <strong id="weightVal">1.0</strong></label><input id="weight" type="range" min="-3" max="3" value="1" step="0.1">
+          <label class="range-label" for="bias">Ығысу · b <strong id="biasVal">0.0</strong></label><input id="bias" type="range" min="-4" max="4" value="0" step="0.1">
+          <label class="range-label" for="sampleX">Кіріс мәні · x <strong id="sampleXVal">1.0</strong></label><input id="sampleX" type="range" min="-5" max="5" value="1" step="0.1">
+          <div class="prob-readout"><span>Класс 1 ықтималдығы</span><strong id="sigProb">73.1<small>%</small></strong><div id="sigDecision">Болжам: класс 1</div></div>
+          <div id="zEquation" class="equation">z = 1 × 1 + 0 = 1</div><button class="button outline full" id="sweepBtn">▶ Қисық бойымен жүргізу</button>
+        </div>
+      </div>
+      <div class="lab-grid" id="softmaxView" hidden>
+        <div class="softmax-panel"><div class="section-label">ҮШ КЛАСҚА — ҮШ ЫҚТИМАЛДЫҚ</div><div class="softmax-formula">pᵢ = exp(zᵢ) / Σ exp(zⱼ)</div><div id="softmaxBars"></div><div class="softmax-result" id="softmaxResult"></div><p class="micro">Ықтималдықтардың қосындысы = 100%. Ең үлкені — болжанған класс.</p></div>
+        <div class="controls-panel"><h3>Класс ұпайларын өзгерт</h3><p class="micro">Бұл — softmax логикасын түсіндіретін тәжірибе. Ұпайлар Iris-тен есептелген нәтиже емес.</p>
+          <label class="range-label" for="logit0">setosa · z₀ <strong id="logit0Val">2.0</strong></label><input id="logit0" type="range" min="-3" max="5" value="2" step="0.1">
+          <label class="range-label" for="logit1">versicolor · z₁ <strong id="logit1Val">1.0</strong></label><input id="logit1" type="range" min="-3" max="5" value="1" step="0.1">
+          <label class="range-label" for="logit2">virginica · z₂ <strong id="logit2Val">0.0</strong></label><input id="logit2" type="range" min="-3" max="5" value="0" step="0.1">
+        </div>
+      </div>
+      <div class="inline-note"><span>Есте сақта</span><p>Сигмоида екі класты мысалды түсіндіреді. Біздің Iris моделіміз үш класс үшін softmax қолданады.</p></div>
+    </section>
+
+    <section class="page" id="page4" aria-labelledby="title4" hidden>
+      <div class="page-heading"><div><div class="eyebrow">04 / АЛМАС · ПРАКТИКА</div><h2 id="title4">Оқытамыз. Сосын болжаймыз.</h2><p>fit() заңдылықты үйренеді, predict() жаңа гүлдің түрін анықтайды.</p></div><button class="button outline small code-toggle" data-code="train">Python коды &lt;/&gt;</button></div>
+      <div class="training-strip"><div class="training-steps"><button class="train-step active" data-step="0"><span>1</span>Деректер</button><i>→</i><button class="train-step" data-step="1"><span>2</span>Бөлу</button><i>→</i><button class="train-step" data-step="2"><span>3</span>fit()</button><i>→</i><button class="train-step" data-step="3"><span>4</span>predict()</button></div><button class="button primary small" id="trainPlay">▶ Қадамдарды көрсету</button></div>
+      <div class="training-explain"><code id="stageCode">X, y = load_iris(return_X_y=True)</code><p id="stageExplain">150 гүлдің төрт өлшемі мен нақты кластарын жүктейміз.</p><div class="step-progress"><span id="stepProgress"></span></div></div>
+      <div class="predict-grid"><div class="flower-inputs"><div class="row-between"><h3>Өз гүліңді тексер</h3><button id="samplePreset" class="text-btn">Тесттен үлгі алу ↻</button></div><p class="micro">Өлшемдерді өзгерт. Болжам оқытылған модельдің коэффициенттерімен қайта есептеледі.</p><div id="flowerSliders"></div></div>
+        <div class="prediction-result"><div class="section-label">МОДЕЛЬДІҢ БОЛЖАМЫ</div><div class="flower-emblem" id="flowerEmblem" aria-hidden="true">✳</div><h3 id="predName">setosa</h3><div id="predictionBars"></div><p class="micro" id="predInputNote"></p></div>
+      </div>
+      <div class="inline-note"><span>Есеп туралы</span><p id="precomputeNote">Оқыту нәтижелері scikit-learn арқылы алдын ала есептелген. Қадамдар анимациясы оқу ретін көрсетеді; өлшемдерді өзгерткендегі болжам браузерде есептеледі.</p></div>
+    </section>
+
+    <section class="page" id="page5" aria-labelledby="title5" hidden>
+      <div class="page-heading"><div><div class="eyebrow">05 / АЛМАС · НӘТИЖЕ</div><h2 id="title5">Модель қанша гүлді дұрыс таныды?</h2><p>Болжамды y_test ішіндегі нақты жауаптармен салыстырамыз.</p></div><button class="button outline small code-toggle" data-code="metrics">Python коды &lt;/&gt;</button></div>
+      <div class="result-overview"><div class="big-metric"><span>TEST ACCURACY</span><strong id="accuracyBig">100<small>%</small></strong><p id="accuracyFraction">30 гүлдің 30-ы дұрыс анықталды.</p></div><div class="metric-explain"><div class="equation">Accuracy = дұрыс болжамдар / барлық болжамдар</div><p>Бұл көрсеткіш <b>тест деректеріндегі</b> нәтижені бағалайды.</p><label for="resultSplit">Тест үлесін өзгертіп салыстыр</label><select id="resultSplit"><option value="10">10% · 15 гүл</option><option value="20" selected>20% · 30 гүл</option><option value="30">30% · 45 гүл</option><option value="40">40% · 60 гүл</option></select></div></div>
+      <div class="results-grid"><div class="matrix-panel"><div class="row-between"><h3>Қателер матрицасы</h3><span class="badge" id="errorCount">0 қате</span></div><div class="matrix-axis">Болжанған класс →</div><div id="matrix"></div><p class="micro">Жол — нақты класс. Баған — болжам. Ұяшықты басып, тиісті гүлдерді қара.</p><div id="matrixDetail" class="matrix-detail" aria-live="polite">Диагональдағы мәндер — дұрыс болжамдар.</div></div><div class="metric-panel"><h3>Әр класс бойынша</h3><div class="table-wrap"><table id="metricsTable"><thead><tr><th>Класс</th><th>Precision</th><th>Recall</th><th>F1</th></tr></thead><tbody></tbody></table></div><details><summary>Метрикалар нені білдіреді?</summary><p><b>Precision:</b> осы класс деп болжанғандардың қаншасы дұрыс?</p><p><b>Recall:</b> осы кластағы нақты гүлдердің қаншасын таптық?</p><p><b>F1:</b> precision мен recall-дың гармониялық ортасы.</p></details><div class="test-compare"><label for="testSample">Бір тест гүлін тексер</label><select id="testSample"></select><div id="testCompare"></div></div></div></div>
+      <div class="inline-note"><span>Қорытынды</span><p>100% шықса да, бұл барлық болашақ деректе қателеспейді деген сөз емес. Нәтиже таңдалған тест бөлігіне қатысты.</p></div>
+    </section>
+
+    <section class="page" id="page6" aria-labelledby="title6" hidden>
+      <div class="page-heading"><div><div class="eyebrow">06 / АЛМАС · ҚОСЫМША СҰРАҚ</div><h2 id="title6">Ең жақсы <em>k</em> қалай табылады?</h2><p>Бұл бөлім — KNN туралы. k — есепке алынатын жақын көршілер саны.</p></div><button class="button outline small code-toggle" data-code="knn">Python коды &lt;/&gt;</button></div>
+      <div class="model-difference"><b>Logistic Regression</b><span>коэффициенттер мен ықтималдықтар</span><i>≠</i><b>KNN</b><span>ең жақын k көршінің дауысы</span></div>
+      <div class="lab-grid"><div class="plot-panel"><div class="plot-toolbar"><span class="section-label">k ЖӘНЕ КРОСС-ВАЛИДАЦИЯ</span><span class="badge">cv = 5</span></div><svg id="knnPlot" viewBox="0 0 640 410" role="img" aria-label="k мәніне байланысты бес бөліктік кросс-валидация дәлдігі"></svg><div class="chart-hint">Күлгін сызық — train ішіндегі орташа CV дәлдігі. Жұлдыз — таңдалған best_k.</div></div><div class="controls-panel"><h3>Көршілер санын таңда</h3><label for="knnK" class="range-label">k <strong id="knnKValue">3</strong></label><input id="knnK" type="range" min="1" max="20" step="1" value="3"><div class="range-ends"><span>1 көрші</span><span>20 көрші</span></div><div class="knn-scores"><div><span>Таңдалған k үшін CV</span><b id="knnCV">95.83%</b></div><div><span>Үздік k</span><b id="bestK">3</b></div></div><button class="button primary full" id="scanK">▶ k мәндерін салыстыру</button><p class="micro">k train деректеріндегі CV арқылы таңдалады. Test соңғы бағалауға сақталады.</p><div class="best-summary" id="bestSummary"></div></div></div>
+      <div class="final-band"><span class="final-icon">✓</span><div><h3>Біз модель құрудың толық жолын өттік.</h3><p>Деректерді шақырдық, бөлдік, оқыттық, болжам жасадық және нәтижені бағаладық.</p></div><button class="button outline" id="allCodeBtn">Толық код &lt;/&gt;</button></div>
+    </section>
+    <div id="loadError" hidden class="load-error" role="alert">Деректер жүктелмеді. Интернетті тексеріп, бетті жаңартыңыз. <button onclick="location.reload()">Қайта жүктеу</button></div>
+  </main>
+  <footer class="bottom-nav"><div class="footer-left"><span id="pageCount">01 / 06</span><div class="progress-track"><span id="pageProgress"></span></div><span class="keyboard-hint">← → бет ауыстыру</span></div><div class="footer-buttons"><button class="button ghost" id="prevBtn" disabled>← Артқа</button><button class="button primary" id="nextBtn">Келесі бет →</button></div></footer>
+</div>
+<dialog id="notesDialog"><div class="dialog-head"><div><span class="eyebrow" id="notesOwner">АҚЫЛБЕК · 1-БЕТ</span><h2>Қорғауға дайындық</h2></div><button class="close-btn" data-close="notesDialog" aria-label="Жабу">×</button></div><div class="dialog-body"><div class="section-label">АЙТАТЫН МӘТІН</div><p class="speaker-script" id="speakerScript"></p><div class="demo-cue" id="demoCue"></div><div class="section-label questions-heading">АПАЙ СҰРАСА</div><div id="qaList"></div></div></dialog>
+<dialog id="codeDialog" class="code-dialog"><div class="dialog-head"><div><span class="eyebrow">GOOGLE COLAB / PYTHON</span><h2 id="codeTitle">Python коды</h2></div><button class="close-btn" data-close="codeDialog" aria-label="Жабу">×</button></div><div class="dialog-body"><p id="codeDescription" class="micro"></p><pre><code id="codeText"></code></pre><div class="code-actions"><button class="button primary" id="copyCode">Кодты көшіру</button><button class="button outline" id="downloadCode">.py жүктеу ↓</button></div><p class="micro">Colab-та орындауға дайын. Толық кодта Logistic Regression және KNN бөлек көрсетілген.</p></div></dialog>
+<dialog id="sourcesDialog"><div class="dialog-head"><div><span class="eyebrow">ДЕРЕККӨЗДЕР ЖӘНЕ ӘДІС</span><h2>Есептер қайдан алынды?</h2></div><button class="close-btn" data-close="sourcesDialog" aria-label="Жабу">×</button></div><div class="dialog-body"><p>Iris деректері scikit-learn кітапханасындағы load_iris() арқылы алынды. 150 үлгі, 4 белгі, 3 класс.</p><p id="versionInfo"></p><p>Train/test: random_state=42, stratify қолданылмады. LogisticRegression(max_iter=1000), қалған параметрлер әдепкі. KNN: k=1…20, cv=5, scoring="accuracy". Белгілер бастапқы сантиметр шкаласында. Масштабтау қолданылмады.</p><p>Тест үлесінің төрт нұсқасы алдын ала Python-да есептелген. Гүл өлшемдерін өзгертудегі ықтималдықтар сол модельдің коэффициенттерімен браузерде есептеледі. Анимациялар — қадамдардың көрнекі түсіндірмесі.</p><ul class="sources-list"><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html" target="_blank" rel="noopener">Iris деректері ↗</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html" target="_blank" rel="noopener">Logistic Regression ↗</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html" target="_blank" rel="noopener">GridSearchCV ↗</a></li><li><a href="https://scikit-learn.org/stable/modules/multiclass.html" target="_blank" rel="noopener">Multiclass және multilabel ↗</a></li></ul></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

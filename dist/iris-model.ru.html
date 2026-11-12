@@ -3,39 +3,135 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f4f5ef">
-  <title>Iris Lab · ML LAB</title>
-  <link rel="icon" href="hub-icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="hub.css">
-  <link rel="stylesheet" href="course.css?v=workbench">
-  <link rel="stylesheet" href="iris-model.css">
-  <link rel="stylesheet" href="language.css">
-  <link rel="stylesheet" href="site-view.css">
-  <link rel="stylesheet" href="topic-guide.css">
-  <script src="language.js?v=iris-model"></script>
-  <script src="site-view.js?v=iris-model"></script>
-  <script src="topic-guide.js?v=iris-model" defer></script>
-  <script src="iris-model.js" defer></script>
+  <title>ИРИС ЛАБ · Акылбек и Алмас</title>
+  <meta name="description" content="Понимание логистической регрессии в шести интерактивных разделах. Казахская лаборатория Акылбека и Алмаса.">
+  <link rel="stylesheet" href="iris-original.css">
+  <link rel="stylesheet" href="language.css"><link rel="stylesheet" href="iris-original-theme.css">
+  <script src="language.js?v=iris-model"></script><script src="site-view.js?v=iris-original"></script>
+  <script src="iris-original-core.js" defer></script><script src="iris-original.ru.js" defer></script>
 </head>
 <body>
-<header class="header"><div class="header-inner">
-  <a class="brand" href="index.ru.html#topics">ML<span>LAB</span></a>
-  <nav><a href="index.ru.html#topics">Темы</a><a href="iris.ru.html">Данные Iris</a></nav>
-  <div id="irisModelGuide"></div>
-</div></header>
-<main class="wrap iris-model-main" id="main">
-  <section class="lesson-hero">
-    <div class="lesson-kicker">IRIS LAB</div>
-    <h1 id="irisModelTitle">Логистическая регрессия</h1><p class="lesson-lead">Предскажи вид цветка Iris.</p>
-  </section>
-  <nav class="iris-model-tabs" aria-label="Iris Lab">
-    <a class="topic-guide-button" href="#logistic">Логистическая регрессия</a>
-    <a class="topic-guide-button" href="#knn">KNN</a>
+<a class="skip" href="#main">Перейти к содержимому</a>
+<aside class="rail">
+  <a class="brand" href="#1" aria-label="Главная страница"><span class="brand-icon"><i></i><i></i><i></i></span>IRIS<span>LAB</span></a>
+  <div class="rail-title">МАШИННОЕ ОБУЧЕНИЕ / ОБУЧЕНИЕ</div>
+  <a class="iris-home" href="index.ru.html#topics">← Главная ML LAB</a>
+  <div class="chapter-owner"><span class="avatar">АК</span><div>Акылбек<small>Страницы 1–3 · Основы</small></div></div>
+  <nav aria-label="Разделы Акылбека">
+    <button class="nav-link active" data-page="1"><span>01</span>Цель и задачи</button>
+    <button class="nav-link" data-page="2"><span>02</span>Лаборатория данных</button>
+    <button class="nav-link" data-page="3"><span>03</span>Как работает модель</button>
   </nav>
-  <div id="irisExperiment"><p role="status">Загрузка данных Iris…</p></div>
-  <div class="iris-model-links">
-    <a href="lecture.ru.html?n=6">Лекция 06</a>
-    <a href="lecture.ru.html?n=7">Лекция 07</a>
-    <a href="iris.ru.html">Данные Iris</a>
-  </div>
-</main>
-</body></html>
+  <div class="rail-divider"></div>
+  <div class="chapter-owner"><span class="avatar lilac">АЛ</span><div>Алмас<small>Страницы 4–6 · Практика</small></div></div>
+  <nav aria-label="Разделы Алмаса">
+    <button class="nav-link" data-page="4"><span>04</span>Обучение и прогноз</button>
+    <button class="nav-link" data-page="5"><span>05</span>Анализ результатов</button>
+    <button class="nav-link" data-page="6"><span>06</span>лучший к</button>
+  </nav>
+  <div class="rail-bottom"><span class="live-dot"></span>Реальные данные Iris<small>150 образцов · 4 признака · 3 класса</small><button class="text-btn" id="sourcesBtn">Источники ↗</button></div>
+</aside>
+<div class="workspace">
+  <header class="topbar">
+    <div class="breadcrumb">Лаборатория <span>/</span> <strong id="crumb">Цель и задачи</strong></div>
+    <div class="top-actions"><span id="speakerTag" class="speaker-tag">Акылбек · 1/6</span><button class="button small outline" id="notesBtn">Текст для защиты <span>↗</span></button></div>
+  </header>
+  <main id="main" tabindex="-1">
+    <section class="page active" id="page1" aria-labelledby="title1">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="live-dot"></span> ОТ КОДА К ПОНИМАНИЮ</div>
+          <h1 id="title1">Четыре измерения.<br>Три цветка.<br><em>Один прогноз.</em></h1>
+          <p class="hero-desc">Как компьютер распознает тип цветка? Давайте вместе рассмотрим модель логистической регрессии.</p>
+          <button class="button primary hero-cta" data-page="2">Запустить лабораторию <span>↗</span></button>
+          <div class="hero-credits"><span><b>Акылбек</b> 01–03</span><span><b>Алмас</b> 04–06</span></div>
+        </div>
+        <div class="hero-visual">
+          <div class="figure-head"><span>ИРИС / РЕАЛЬНЫЕ ДАННЫЕ</span><span class="badge">150 цветов</span></div>
+          <svg id="heroPlot" viewBox="0 0 540 440" role="img" aria-label="Распределение цветков ириса по размерам"></svg>
+          <div class="legend"><span><i class="dot c0"></i>setosa</span><span><i class="dot c1"></i>versicolor</span><span><i class="dot c2"></i>virginica</span></div>
+          <div class="figure-caption">Каждая точка — один цветок. Цвет показывает его настоящий вид.</div>
+        </div>
+      </div>
+      <div class="intro-strip"><div><span class="strip-num">01</span><div><b>Собираем признаки</b><p>Длина и ширина вводятся в модель.</p></div></div><span class="flow-arrow">→</span><div><span class="strip-num">02</span><div><b>Обучаем модель</b><p>Шаблоны изучаются на основе данных.</p></div></div><span class="flow-arrow">→</span><div><span class="strip-num">03</span><div><b>Предсказываем класс</b><p>Выберите один из трех типов.</p></div></div></div>
+      <div class="bottom-remark">Сегодняшняя задача <span>Классификация и анализ результатов с использованием логистической регрессии.</span></div>
+    </section>
+
+    <section class="page" id="page2" aria-labelledby="title2" hidden>
+      <div class="page-heading"><div><div class="eyebrow">02 / АКЫЛБЕК · ДАННЫЕ</div><h2 id="title2">Что мы даем модели?</h2><p>X — четыре измерения цветка. y — его фактическая форма.</p></div><button class="button outline small code-toggle" data-code="data"></button></div>
+      <div class="lab-grid">
+        <div class="plot-panel"><div class="plot-toolbar"><span class="section-label">ИССЛЕДУЙ 150 ЦВЕТКОВ</span><div class="segmented"><button class="selected" id="colorClass">Классы</button><button id="colorSplit">Train / Test</button></div></div>
+          <svg id="dataPlot" viewBox="0 0 640 430" role="img" aria-label="Точечная диаграмма радужной оболочки изменяемого размера"></svg>
+          <div id="dataLegend" class="legend"></div><div class="chart-hint" id="pointInfo" aria-live="polite">Нажмите на точку и увидите размер цветка.</div><label for="dataPoint" class="micro">Или выберите цветок из списка</label><select id="dataPoint" aria-label="Выберите цветок в таблице"></select>
+        </div>
+        <div class="controls-panel">
+          <h3>Изменить график</h3>
+          <label for="xAxis"></label><select id="xAxis"><option value="0">Длина чашелистика</option><option value="1">Ширина чашелистика</option><option value="2" selected>Длина лепестка</option><option value="3">Ширина лепестка</option></select>
+          <label for="yAxis"></label><select id="yAxis"><option value="0">Длина чашелистика</option><option value="1">Ширина чашелистика</option><option value="2">Длина лепестка</option><option value="3" selected>Ширина лепестка</option></select>
+          <div class="control-divider"></div>
+          <label for="testRatio" class="range-label">Тестовая доля <strong id="testRatioValue">20%</strong></label><input type="range" id="testRatio" min="10" max="40" step="10" value="20"><div class="range-ends"><span>10%</span><span>40%</span></div>
+          <div class="split-bar"><span id="trainBar"></span><span id="testBar"></span></div>
+          <div class="split-figures"><div><span class="train-text"></span><b id="trainCount">120</b></div><div><span class="test-text"></span><b id="testCount">30</b></div></div>
+          <p class="micro">Если изменится раздача, обновятся и задачи на стр. 4–6. Random_state=42 во всех версиях.</p>
+        </div>
+      </div>
+      <div class="concept-pair"><div><b>Мультикласс / мультикласс</b><p>Один цветок → один вид. Ирис принадлежит этому аккаунту.</p></div><div><b>Мультилейбл / мультилейбл</b><p>Одно видео → «знание» + «технология». Несколько категорий представлены рядом.</p></div></div>
+    </section>
+
+    <section class="page" id="page3" aria-labelledby="title3" hidden>
+      <div class="page-heading"><div><div class="eyebrow">03 / АКЫЛБЕК · ЛОГИКА МОДЕЛИ</div><h2 id="title3">Как число становится вероятностью?</h2><p>Переместите ползунки. Сразу смотрите графический ответ.</p></div></div>
+      <div class="mode-tabs" role="tablist" aria-label="Способ объяснения модели"><button role="tab" aria-selected="true" id="sigmoidTab" class="active">01 · Сигмовидная: 2 занятия</button><button role="tab" aria-selected="false" id="softmaxTab">02 · Softmax: три класса Iris</button></div>
+      <div class="lab-grid" id="sigmoidView">
+        <div class="plot-panel"><div class="plot-toolbar"><span class="section-label">S-ОБРАЗНАЯ КРИВАЯ</span><span class="formula">p = 1 / (1 + e⁻ᶻ)</span></div><svg id="sigmoidPlot" viewBox="0 0 640 410" role="img" aria-label="Интерактивный сигмовидный график"></svg><div class="chart-hint">Пунктирная линия — порог 0,5. Точка — это выбранное значение x.</div></div>
+        <div class="controls-panel"><h3>Опыт работы с моделью</h3>
+          <label class="range-label" for="weight">Вес · Вт <strong id="weightVal">1.0</strong></label><input id="weight" type="range" min="-3" max="3" value="1" step="0.1">
+          <label class="range-label" for="bias">Смещение · b <strong id="biasVal">0.0</strong></label><input id="bias" type="range" min="-4" max="4" value="0" step="0.1">
+          <label class="range-label" for="sampleX">Входное значение · x <strong id="sampleXVal">1.0</strong></label><input id="sampleX" type="range" min="-5" max="5" value="1" step="0.1">
+          <div class="prob-readout"><span>Вероятность класса 1</span><strong id="sigProb">73.1<small>%</small></strong><div id="sigDecision"></div></div>
+          <div id="zEquation" class="equation">z = 1 × 1 + 0 = 1</div><button class="button outline full" id="sweepBtn">▶ Движение по повороту</button>
+        </div>
+      </div>
+      <div class="lab-grid" id="softmaxView" hidden>
+        <div class="softmax-panel"><div class="section-label">ТРИ КЛАССА, ТРИ ВЕРОЯТНОСТИ</div><div class="softmax-formula">pᵢ = exp(zᵢ) / Σ exp(zⱼ)</div><div id="softmaxBars"></div><div class="softmax-result" id="softmaxResult"></div><p class="micro">Сумма вероятностей = 100%. Самый большой — предполагаемый класс.</p></div>
+        <div class="controls-panel"><h3>Изменить оценки за класс</h3><p class="micro">Это эксперимент, который объясняет логику softmax. Оценки не являются рассчитанными результатами от Iris.</p>
+          <label class="range-label" for="logit0">setosa · z₀ <strong id="logit0Val">2.0</strong></label><input id="logit0" type="range" min="-3" max="5" value="2" step="0.1">
+          <label class="range-label" for="logit1">versicolor · z₁ <strong id="logit1Val">1.0</strong></label><input id="logit1" type="range" min="-3" max="5" value="1" step="0.1">
+          <label class="range-label" for="logit2">virginica · z₂ <strong id="logit2Val">0.0</strong></label><input id="logit2" type="range" min="-3" max="5" value="0" step="0.1">
+        </div>
+      </div>
+      <div class="inline-note"><span>Помнить</span><p>Sigmoid объясняет пример с двумя классами. Наша модель Iris использует softmax для трех классов.</p></div>
+    </section>
+
+    <section class="page" id="page4" aria-labelledby="title4" hidden>
+      <div class="page-heading"><div><div class="eyebrow">04 / АЛМАС · ПРАКТИКА</div><h2 id="title4">Обучаем модель. Затем предсказываем.</h2><p>fit() изучает шаблон, Predict() определяет тип нового цветка.</p></div><button class="button outline small code-toggle" data-code="train"></button></div>
+      <div class="training-strip"><div class="training-steps"><button class="train-step active" data-step="0"><span>1</span>Данные</button><i>→</i><button class="train-step" data-step="1"><span>2</span>Разбиение</button><i>→</i><button class="train-step" data-step="2"><span>3</span>fit()</button><i>→</i><button class="train-step" data-step="3"><span>4</span>predict()</button></div><button class="button primary small" id="trainPlay">▶ Показать шаги</button></div>
+      <div class="training-explain"><code id="stageCode">X, y = load_iris(return_X_y=True)</code><p id="stageExplain">Скачиваем 150 цветов четырех размеров и реальных классов.</p><div class="step-progress"><span id="stepProgress"></span></div></div>
+      <div class="predict-grid"><div class="flower-inputs"><div class="row-between"><h3>Проверьте свой цветок</h3><button id="samplePreset" class="text-btn">Образец теста ↻</button></div><p class="micro">Изменить размеры. Прогноз пересчитывается с использованием коэффициентов обученной модели.</p><div id="flowerSliders"></div></div>
+        <div class="prediction-result"><div class="section-label">МОДЕЛЬ ПРОГНОЗА</div><div class="flower-emblem" id="flowerEmblem" aria-hidden="true">✳</div><h3 id="predName">setosa</h3><div id="predictionBars"></div><p class="micro" id="predInputNote"></p></div>
+      </div>
+      <div class="inline-note"><span>Об отчете</span><p id="precomputeNote">Результаты обучения предварительно рассчитываются с помощью scikit-learn. Пошаговая анимация показывает последовательность обучения; Оценка при изменении размера рассчитывается в браузере.</p></div>
+    </section>
+
+    <section class="page" id="page5" aria-labelledby="title5" hidden>
+      <div class="page-heading"><div><div class="eyebrow">05 / АЛМАС · РЕЗУЛЬТАТЫ</div><h2 id="title5">Сколько цветов модель правильно узнала?</h2><p>Сравниваем прогноз с реальными ответами в y_test.</p></div><button class="button outline small code-toggle" data-code="metrics"></button></div>
+      <div class="result-overview"><div class="big-metric"><span>TEST ACCURACY</span><strong id="accuracyBig">100<small>%</small></strong><p id="accuracyFraction">Правильно идентифицировано 30 цветков из 30.</p></div><div class="metric-explain"><div class="equation">Точность = правильные прогнозы / все прогнозы</div><p>Это показатель <b>в тестовых данных</b> оценивает результат.</p><label for="resultSplit">Сравните и сопоставьте тестовую часть</label><select id="resultSplit"><option value="10">10% · 15 цветов</option><option value="20" selected>20% · 30 цветов</option><option value="30">30% · 45 цветов</option><option value="40">40% · 60 цветов</option></select></div></div>
+      <div class="results-grid"><div class="matrix-panel"><div class="row-between"><h3>Матрица ошибок</h3><span class="badge" id="errorCount">0 ошибок</span></div><div class="matrix-axis">Предсказанный класс →</div><div id="matrix"></div><p class="micro">String — это настоящий класс. Столбец представляет собой прогноз. Нажмите на ячейку и посмотрите на соответствующие цветы.</p><div id="matrixDetail" class="matrix-detail" aria-live="polite">Значения по диагонали — правильные предположения.</div></div><div class="metric-panel"><h3>Для каждого класса</h3><div class="table-wrap"><table id="metricsTable"><thead><tr><th>Сорт</th><th>Precision</th><th>Recall</th><th>F1</th></tr></thead><tbody></tbody></table></div><details><summary>Что означают метрики?</summary><p><b>Precision:</b> Сколько из предсказанных представителей этого класса оказались правы?</p><p><b>Recall:</b> Сколько настоящих цветов в этом классе мы нашли?</p><p><b>F1:</b> гармоничная среда точности и отзыва.</p></details><div class="test-compare"><label for="testSample">Проверьте один тестовый цветок</label><select id="testSample"></select><div id="testCompare"></div></div></div></div>
+      <div class="inline-note"><span>Заключение</span><p>Даже если оно окажется 100%, это не означает, что все будущие данные будут безошибочными. Результат связан с выбранной частью теста.</p></div>
+    </section>
+
+    <section class="page" id="page6" aria-labelledby="title6" hidden>
+      <div class="page-heading"><div><div class="eyebrow">06 / АЛМАС · ДОПОЛНИТЕЛЬНЫЙ ВОПРОС</div><h2 id="title6">Лучшее <em>k</em> как найти</h2><p>Этот раздел посвящен КНН. k — количество ближайших соседей, которые следует учитывать.</p></div><button class="button outline small code-toggle" data-code="knn"></button></div>
+      <div class="model-difference"><b>Logistic Regression</b><span>коэффициенты и вероятности</span><i>≠</i><b>KNN</b><span>k голосов ближайших соседей</span></div>
+      <div class="lab-grid"><div class="plot-panel"><div class="plot-toolbar"><span class="section-label">k И ПЕРЕКРЕСТНАЯ ПРОВЕРКА</span><span class="badge">cv = 5</span></div><svg id="knnPlot" viewBox="0 0 640 410" role="img" aria-label="Пятичастная точность перекрестной проверки как функция k"></svg><div class="chart-hint">Фиолетовая линия — это средняя точность CV внутри поезда. Звезда — выбрано best_k.</div></div><div class="controls-panel"><h3>Выберите количество соседей</h3><label for="knnK" class="range-label">k <strong id="knnKValue">3</strong></label><input id="knnK" type="range" min="1" max="20" step="1" value="3"><div class="range-ends"><span>1 сосед</span><span>20 соседей</span></div><div class="knn-scores"><div><span>Резюме для выбранных k</span><b id="knnCV">95.83%</b></div><div><span>Лучший к</span><b id="bestK">3</b></div></div><button class="button primary full" id="scanK">▶ Сравнение значений k</button><p class="micro">k выбирается CV в данных поезда. Тест сохраняется для окончательной оценки.</p><div class="best-summary" id="bestSummary"></div></div></div>
+      <div class="final-band"><span class="final-icon">✓</span><div><h3>Мы прошли весь процесс создания модели.</h3><p>Мы обрабатывали, сегментировали, обучали, прогнозировали и оценивали данные.</p></div><button class="button outline" id="allCodeBtn">Полный код &lt;/&gt;</button></div>
+    </section>
+    <div id="loadError" hidden class="load-error" role="alert">Не удалось загрузить данные. Пожалуйста, проверьте Интернет и обновите страницу. <button onclick="location.reload()">Перезагрузить</button></div>
+  </main>
+  <footer class="bottom-nav"><div class="footer-left"><span id="pageCount">01 / 06</span><div class="progress-track"><span id="pageProgress"></span></div><span class="keyboard-hint">← → переключение страниц</span></div><div class="footer-buttons"><button class="button ghost" id="prevBtn" disabled>← Назад</button><button class="button primary" id="nextBtn">Следующая страница →</button></div></footer>
+</div>
+<dialog id="notesDialog"><div class="dialog-head"><div><span class="eyebrow" id="notesOwner">АКЫЛБЕК · СТРАНИЦА 1</span><h2>Подготовка к защите</h2></div><button class="close-btn" data-close="notesDialog" aria-label="Закрывать">×</button></div><div class="dialog-body"><div class="section-label">ТЕКСТ ВЫСТУПЛЕНИЯ</div><p class="speaker-script" id="speakerScript"></p><div class="demo-cue" id="demoCue"></div><div class="section-label questions-heading">ВОЗМОЖНЫЕ ВОПРОСЫ</div><div id="qaList"></div></div></dialog>
+<dialog id="codeDialog" class="code-dialog"><div class="dialog-head"><div><span class="eyebrow">GOOGLE COLAB / PYTHON</span><h2 id="codeTitle">Код Python</h2></div><button class="close-btn" data-close="codeDialog" aria-label="Закрывать">×</button></div><div class="dialog-body"><p id="codeDescription" class="micro"></p><pre><code id="codeText"></code></pre><div class="code-actions"><button class="button primary" id="copyCode">Скопируйте код</button><button class="button outline" id="downloadCode">.py скачать ↓</button></div><p class="micro">Готов к работе в Colab. Логистическая регрессия и KNN показаны отдельно в полном коде.</p></div></dialog>
+<dialog id="sourcesDialog"><div class="dialog-head"><div><span class="eyebrow">ИСТОЧНИКИ И МЕТОД</span><h2>Откуда появились отчеты?</h2></div><button class="close-btn" data-close="sourcesDialog" aria-label="Закрывать">×</button></div><div class="dialog-body"><p>Данные радужной оболочки были получены с помощью load_iris() в библиотеке scikit-learn. 150 моделей, 4 марки, 3 класса.</p><p id="versionInfo"></p><p>Обучение/тест: random_state=42, стратификация не применяется. LogisticRegrade(max_iter=1000), остальные параметры — по умолчанию. KNN: k=1…20, cv=5, скоринг="точность". Отметки выполнены в оригинальном сантиметровом масштабе. Масштабирование не применялось.</p><p>Четыре версии тестовой пропорции предварительно вычисляются в Python. Вероятности изменения размеров цветков рассчитываются в браузере с использованием коэффициентов этой модели. Анимации представляют собой визуальные пояснения шагов.</p><ul class="sources-list"><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html" target="_blank" rel="noopener">Данные Ириса ↗</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html" target="_blank" rel="noopener">Logistic Regression ↗</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html" target="_blank" rel="noopener">GridSearchCV ↗</a></li><li><a href="https://scikit-learn.org/stable/modules/multiclass.html" target="_blank" rel="noopener">Мультикласс и мультиметка ↗</a></li></ul></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

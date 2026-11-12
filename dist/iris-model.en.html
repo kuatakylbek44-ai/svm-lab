@@ -3,39 +3,135 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f4f5ef">
-  <title>Iris Lab · ML LAB</title>
-  <link rel="icon" href="hub-icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="hub.css">
-  <link rel="stylesheet" href="course.css?v=workbench">
-  <link rel="stylesheet" href="iris-model.css">
-  <link rel="stylesheet" href="language.css">
-  <link rel="stylesheet" href="site-view.css">
-  <link rel="stylesheet" href="topic-guide.css">
-  <script src="language.js?v=iris-model"></script>
-  <script src="site-view.js?v=iris-model"></script>
-  <script src="topic-guide.js?v=iris-model" defer></script>
-  <script src="iris-model.js" defer></script>
+  <title>IRIS LAB · Akylbek &amp; Almas</title>
+  <meta name="description" content="Understanding Logistic Regression in six interactive sections. Kazakh laboratory of Akylbek and Almas.">
+  <link rel="stylesheet" href="iris-original.css">
+  <link rel="stylesheet" href="language.css"><link rel="stylesheet" href="iris-original-theme.css">
+  <script src="language.js?v=iris-model"></script><script src="site-view.js?v=iris-original"></script>
+  <script src="iris-original-core.js" defer></script><script src="iris-original.en.js" defer></script>
 </head>
 <body>
-<header class="header"><div class="header-inner">
-  <a class="brand" href="index.en.html#topics">ML<span>LAB</span></a>
-  <nav><a href="index.en.html#topics">Topics</a><a href="iris.en.html">Iris dataset</a></nav>
-  <div id="irisModelGuide"></div>
-</div></header>
-<main class="wrap iris-model-main" id="main">
-  <section class="lesson-hero">
-    <div class="lesson-kicker">IRIS LAB</div>
-    <h1 id="irisModelTitle">Logistic regression</h1><p class="lesson-lead">Predict the species of an Iris flower.</p>
-  </section>
-  <nav class="iris-model-tabs" aria-label="Iris Lab">
-    <a class="topic-guide-button" href="#logistic">Logistic regression</a>
-    <a class="topic-guide-button" href="#knn">KNN</a>
+<a class="skip" href="#main">Skip to content</a>
+<aside class="rail">
+  <a class="brand" href="#1" aria-label="Main page"><span class="brand-icon"><i></i><i></i><i></i></span>IRIS<span>LAB</span></a>
+  <div class="rail-title">MACHINE LEARNING / LEARNING</div>
+  <a class="iris-home" href="index.en.html#topics">← ML LAB home</a>
+  <div class="chapter-owner"><span class="avatar">AQ</span><div>Akylbek<small>Pages 1–3 · Basics</small></div></div>
+  <nav aria-label="Akylbek’s chapters">
+    <button class="nav-link active" data-page="1"><span>01</span>Aim and objectives</button>
+    <button class="nav-link" data-page="2"><span>02</span>Data Lab</button>
+    <button class="nav-link" data-page="3"><span>03</span>How the model works</button>
   </nav>
-  <div id="irisExperiment"><p role="status">Loading Iris data…</p></div>
-  <div class="iris-model-links">
-    <a href="lecture.en.html?n=6">Lecture 06</a>
-    <a href="lecture.en.html?n=7">Lecture 07</a>
-    <a href="iris.en.html">Iris dataset</a>
-  </div>
-</main>
-</body></html>
+  <div class="rail-divider"></div>
+  <div class="chapter-owner"><span class="avatar lilac">AL</span><div>Almas<small>Pages 4–6 · Practice</small></div></div>
+  <nav aria-label="Almas’s chapters">
+    <button class="nav-link" data-page="4"><span>04</span>Training and prediction</button>
+    <button class="nav-link" data-page="5"><span>05</span>Analyzing the results</button>
+    <button class="nav-link" data-page="6"><span>06</span>The best k</button>
+  </nav>
+  <div class="rail-bottom"><span class="live-dot"></span>Real Iris data<small>150 samples · 4 features · 3 classes</small><button class="text-btn" id="sourcesBtn">Sources ↗</button></div>
+</aside>
+<div class="workspace">
+  <header class="topbar">
+    <div class="breadcrumb">Laboratory <span>/</span> <strong id="crumb">Aim and objectives</strong></div>
+    <div class="top-actions"><span id="speakerTag" class="speaker-tag">Akylbek · 1/6</span><button class="button small outline" id="notesBtn">Presentation notes <span>↗</span></button></div>
+  </header>
+  <main id="main" tabindex="-1">
+    <section class="page active" id="page1" aria-labelledby="title1">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="live-dot"></span> FROM CODE TO UNDERSTANDING</div>
+          <h1 id="title1">Four measurements.<br>Three flowers.<br><em>One prediction.</em></h1>
+          <p class="hero-desc">How does the computer recognize the type of flower? Let's explore the Logistic Regression model together.</p>
+          <button class="button primary hero-cta" data-page="2">Start the lab <span>↗</span></button>
+          <div class="hero-credits"><span><b>Akylbek</b> 01–03</span><span><b>Almas</b> 04–06</span></div>
+        </div>
+        <div class="hero-visual">
+          <div class="figure-head"><span>IRIS / REAL DATA</span><span class="badge">150 flowers</span></div>
+          <svg id="heroPlot" viewBox="0 0 540 440" role="img" aria-label="Iris flower size distribution"></svg>
+          <div class="legend"><span><i class="dot c0"></i>setosa</span><span><i class="dot c1"></i>versicolor</span><span><i class="dot c2"></i>virginica</span></div>
+          <div class="figure-caption">Each point represents one flower. Its color shows the actual species.</div>
+        </div>
+      </div>
+      <div class="intro-strip"><div><span class="strip-num">01</span><div><b>Collect the features</b><p>Length and width are input to the model.</p></div></div><span class="flow-arrow">→</span><div><span class="strip-num">02</span><div><b>We train the model</b><p>Patterns are learned from data.</p></div></div><span class="flow-arrow">→</span><div><span class="strip-num">03</span><div><b>Predict the class</b><p>Choose one of three types.</p></div></div></div>
+      <div class="bottom-remark">Today's task <span>Classification and analysis of results using Logistic Regression.</span></div>
+    </section>
+
+    <section class="page" id="page2" aria-labelledby="title2" hidden>
+      <div class="page-heading"><div><div class="eyebrow">02 / AKYLBEK · DATA</div><h2 id="title2">What do we give to the model?</h2><p>X is the four dimensions of the flower. y is its actual form.</p></div><button class="button outline small code-toggle" data-code="data">Python code &lt;/&gt;</button></div>
+      <div class="lab-grid">
+        <div class="plot-panel"><div class="plot-toolbar"><span class="section-label">EXPLORE 150 FLOWERS</span><div class="segmented"><button class="selected" id="colorClass">Classes</button><button id="colorSplit">Train / Test</button></div></div>
+          <svg id="dataPlot" viewBox="0 0 640 430" role="img" aria-label="Resizable Iris dot plot"></svg>
+          <div id="dataLegend" class="legend"></div><div class="chart-hint" id="pointInfo" aria-live="polite">Click on the dot and see the size of the flower.</div><label for="dataPoint" class="micro">Or choose a flower from the list</label><select id="dataPoint" aria-label="Select a flower in the chart"></select>
+        </div>
+        <div class="controls-panel">
+          <h3>Change the graph</h3>
+          <label for="xAxis">Horizontal axis · X</label><select id="xAxis"><option value="0">Sepal length</option><option value="1">Sepal width</option><option value="2" selected>Petal length</option><option value="3">Petal width</option></select>
+          <label for="yAxis">Vertical axis · Y</label><select id="yAxis"><option value="0">Sepal length</option><option value="1">Sepal width</option><option value="2">Petal length</option><option value="3" selected>Petal width</option></select>
+          <div class="control-divider"></div>
+          <label for="testRatio" class="range-label">Test share <strong id="testRatioValue">20%</strong></label><input type="range" id="testRatio" min="10" max="40" step="10" value="20"><div class="range-ends"><span>10%</span><span>40%</span></div>
+          <div class="split-bar"><span id="trainBar"></span><span id="testBar"></span></div>
+          <div class="split-figures"><div><span class="train-text">Training / Train</span><b id="trainCount">120</b></div><div><span class="test-text">Check / Test</span><b id="testCount">30</b></div></div>
+          <p class="micro">If the distribution changes, the problems on pages 4–6 will also be updated. Random_state=42 in all versions.</p>
+        </div>
+      </div>
+      <div class="concept-pair"><div><b>Multiclass / multiclass</b><p>One flower → one species. Iris belongs to this account.</p></div><div><b>Multilabel / multilabel</b><p>One video → "knowledge" + "technology". Several categories are presented side by side.</p></div></div>
+    </section>
+
+    <section class="page" id="page3" aria-labelledby="title3" hidden>
+      <div class="page-heading"><div><div class="eyebrow">03 / AKYLBEK · MODEL LOGIC</div><h2 id="title3">How does a number become a probability?</h2><p>Move the sliders. See the graph answer immediately.</p></div></div>
+      <div class="mode-tabs" role="tablist" aria-label="A way to explain the model"><button role="tab" aria-selected="true" id="sigmoidTab" class="active">01 · Sigmoid: 2 classes</button><button role="tab" aria-selected="false" id="softmaxTab">02 · Softmax: three Iris classes</button></div>
+      <div class="lab-grid" id="sigmoidView">
+        <div class="plot-panel"><div class="plot-toolbar"><span class="section-label">S SHAPED CURVE</span><span class="formula">p = 1 / (1 + e⁻ᶻ)</span></div><svg id="sigmoidPlot" viewBox="0 0 640 410" role="img" aria-label="Interactive sigmoid plot"></svg><div class="chart-hint">Dashed line — threshold of 0.5. A point is a selected x value.</div></div>
+        <div class="controls-panel"><h3>Experience with the model</h3>
+          <label class="range-label" for="weight">Weight · w <strong id="weightVal">1.0</strong></label><input id="weight" type="range" min="-3" max="3" value="1" step="0.1">
+          <label class="range-label" for="bias">Bias · b <strong id="biasVal">0.0</strong></label><input id="bias" type="range" min="-4" max="4" value="0" step="0.1">
+          <label class="range-label" for="sampleX">Input value · x <strong id="sampleXVal">1.0</strong></label><input id="sampleX" type="range" min="-5" max="5" value="1" step="0.1">
+          <div class="prob-readout"><span>Class 1 probability</span><strong id="sigProb">73.1<small>%</small></strong><div id="sigDecision">Prediction: class 1</div></div>
+          <div id="zEquation" class="equation">z = 1 × 1 + 0 = 1</div><button class="button outline full" id="sweepBtn">▶ Driving along a curve</button>
+        </div>
+      </div>
+      <div class="lab-grid" id="softmaxView" hidden>
+        <div class="softmax-panel"><div class="section-label">THREE CLASSES, THREE PROBABILITIES</div><div class="softmax-formula">pᵢ = exp(zᵢ) / Σ exp(zⱼ)</div><div id="softmaxBars"></div><div class="softmax-result" id="softmaxResult"></div><p class="micro">Sum of probabilities = 100%. The largest is the assumed class.</p></div>
+        <div class="controls-panel"><h3>Change class scores</h3><p class="micro">This is an experiment that explains softmax logic. Scores are not calculated results from Iris.</p>
+          <label class="range-label" for="logit0">setosa · z₀ <strong id="logit0Val">2.0</strong></label><input id="logit0" type="range" min="-3" max="5" value="2" step="0.1">
+          <label class="range-label" for="logit1">versicolor · z₁ <strong id="logit1Val">1.0</strong></label><input id="logit1" type="range" min="-3" max="5" value="1" step="0.1">
+          <label class="range-label" for="logit2">virginica · z₂ <strong id="logit2Val">0.0</strong></label><input id="logit2" type="range" min="-3" max="5" value="0" step="0.1">
+        </div>
+      </div>
+      <div class="inline-note"><span>Remember</span><p>Sigmoid explains the two-class example. Our Iris model uses softmax for three classes.</p></div>
+    </section>
+
+    <section class="page" id="page4" aria-labelledby="title4" hidden>
+      <div class="page-heading"><div><div class="eyebrow">04 / ALMAS · PRACTICE</div><h2 id="title4">Train the model. Then predict.</h2><p>fit() learns the pattern, predict() determines the type of new flower.</p></div><button class="button outline small code-toggle" data-code="train">Python code &lt;/&gt;</button></div>
+      <div class="training-strip"><div class="training-steps"><button class="train-step active" data-step="0"><span>1</span>Data</button><i>→</i><button class="train-step" data-step="1"><span>2</span>Split</button><i>→</i><button class="train-step" data-step="2"><span>3</span>fit()</button><i>→</i><button class="train-step" data-step="3"><span>4</span>predict()</button></div><button class="button primary small" id="trainPlay">▶ Show steps</button></div>
+      <div class="training-explain"><code id="stageCode">X, y = load_iris(return_X_y=True)</code><p id="stageExplain">We download 150 flowers in four sizes and real classes.</p><div class="step-progress"><span id="stepProgress"></span></div></div>
+      <div class="predict-grid"><div class="flower-inputs"><div class="row-between"><h3>Check your flower</h3><button id="samplePreset" class="text-btn">Sample test ↻</button></div><p class="micro">Change dimensions. The prediction is recalculated with the coefficients of the trained model.</p><div id="flowerSliders"></div></div>
+        <div class="prediction-result"><div class="section-label">MODEL FORECAST</div><div class="flower-emblem" id="flowerEmblem" aria-hidden="true">✳</div><h3 id="predName">setosa</h3><div id="predictionBars"></div><p class="micro" id="predInputNote"></p></div>
+      </div>
+      <div class="inline-note"><span>About the report</span><p id="precomputeNote">Learning outcomes are precomputed using scikit-learn. A step animation shows the learning sequence; The estimate when resizing is calculated in the browser.</p></div>
+    </section>
+
+    <section class="page" id="page5" aria-labelledby="title5" hidden>
+      <div class="page-heading"><div><div class="eyebrow">05 / ALMAS · RESULTS</div><h2 id="title5">How many flowers did the model recognize correctly?</h2><p>We compare the prediction with the actual answers in y_test.</p></div><button class="button outline small code-toggle" data-code="metrics">Python code &lt;/&gt;</button></div>
+      <div class="result-overview"><div class="big-metric"><span>TEST ACCURACY</span><strong id="accuracyBig">100<small>%</small></strong><p id="accuracyFraction">30 out of 30 flowers were correctly identified.</p></div><div class="metric-explain"><div class="equation">Accuracy = correct predictions / all predictions</div><p>This is an indicator <b>in the test data</b> evaluates the result.</p><label for="resultSplit">Compare and contrast the test portion</label><select id="resultSplit"><option value="10">10% · 15 flowers</option><option value="20" selected>20% · 30 flowers</option><option value="30">30% · 45 flowers</option><option value="40">40% · 60 flowers</option></select></div></div>
+      <div class="results-grid"><div class="matrix-panel"><div class="row-between"><h3>Confusion matrix</h3><span class="badge" id="errorCount">0 errors</span></div><div class="matrix-axis">Predicted class →</div><div id="matrix"></div><p class="micro">String is a real class. The column is a prediction. Click on the cell and look at the corresponding flowers.</p><div id="matrixDetail" class="matrix-detail" aria-live="polite">Values ​​on the diagonal are correct guesses.</div></div><div class="metric-panel"><h3>For each class</h3><div class="table-wrap"><table id="metricsTable"><thead><tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1</th></tr></thead><tbody></tbody></table></div><details><summary>What do metrics mean?</summary><p><b>Precision:</b> How many of those predicted to be of this class are correct?</p><p><b>Recall:</b> How many real flowers in this class did we find?</p><p><b>F1:</b> the harmonious environment of precision and recall.</p></details><div class="test-compare"><label for="testSample">Check one test flower</label><select id="testSample"></select><div id="testCompare"></div></div></div></div>
+      <div class="inline-note"><span>Conclusion</span><p>Even if it turns out 100%, it does not mean that all future data will be infallible. The result is related to the selected test part.</p></div>
+    </section>
+
+    <section class="page" id="page6" aria-labelledby="title6" hidden>
+      <div class="page-heading"><div><div class="eyebrow">06 / ALMAS · FOLLOW-UP QUESTION</div><h2 id="title6">The best <em>k</em> how to find</h2><p>This section is about KNN. k is the number of nearest neighbors to be taken into account.</p></div><button class="button outline small code-toggle" data-code="knn">Python code &lt;/&gt;</button></div>
+      <div class="model-difference"><b>Logistic Regression</b><span>coefficients and probabilities</span><i>≠</i><b>KNN</b><span>k nearest neighbor votes</span></div>
+      <div class="lab-grid"><div class="plot-panel"><div class="plot-toolbar"><span class="section-label">k AND CROSS-VALIDATION</span><span class="badge">cv = 5</span></div><svg id="knnPlot" viewBox="0 0 640 410" role="img" aria-label="Five-part cross-validation accuracy as a function of k"></svg><div class="chart-hint">The purple line is the average CV accuracy within the train. Star — selected best_k.</div></div><div class="controls-panel"><h3>Select the number of neighbors</h3><label for="knnK" class="range-label">k <strong id="knnKValue">3</strong></label><input id="knnK" type="range" min="1" max="20" step="1" value="3"><div class="range-ends"><span>1 neighbor</span><span>20 neighbors</span></div><div class="knn-scores"><div><span>CV for selected k</span><b id="knnCV">95.83%</b></div><div><span>Best k</span><b id="bestK">3</b></div></div><button class="button primary full" id="scanK">▶ Comparison of k values</button><p class="micro">k is selected by the CV in the train data. Test is saved for final assessment.</p><div class="best-summary" id="bestSummary"></div></div></div>
+      <div class="final-band"><span class="final-icon">✓</span><div><h3>We have gone through the entire process of creating a model.</h3><p>We crunched, segmented, trained, predicted, and evaluated the data.</p></div><button class="button outline" id="allCodeBtn">Full code &lt;/&gt;</button></div>
+    </section>
+    <div id="loadError" hidden class="load-error" role="alert">Data could not be loaded. Please check the internet and refresh the page. <button onclick="location.reload()">Reload</button></div>
+  </main>
+  <footer class="bottom-nav"><div class="footer-left"><span id="pageCount">01 / 06</span><div class="progress-track"><span id="pageProgress"></span></div><span class="keyboard-hint">← → page switch</span></div><div class="footer-buttons"><button class="button ghost" id="prevBtn" disabled>← Back</button><button class="button primary" id="nextBtn">Next page →</button></div></footer>
+</div>
+<dialog id="notesDialog"><div class="dialog-head"><div><span class="eyebrow" id="notesOwner">AKYLBEK · PAGE 1</span><h2>Presentation preparation</h2></div><button class="close-btn" data-close="notesDialog" aria-label="Close">×</button></div><div class="dialog-body"><div class="section-label">SPEAKER NOTES</div><p class="speaker-script" id="speakerScript"></p><div class="demo-cue" id="demoCue"></div><div class="section-label questions-heading">POSSIBLE QUESTIONS</div><div id="qaList"></div></div></dialog>
+<dialog id="codeDialog" class="code-dialog"><div class="dialog-head"><div><span class="eyebrow">GOOGLE COLAB / PYTHON</span><h2 id="codeTitle">Python code</h2></div><button class="close-btn" data-close="codeDialog" aria-label="Close">×</button></div><div class="dialog-body"><p id="codeDescription" class="micro"></p><pre><code id="codeText"></code></pre><div class="code-actions"><button class="button primary" id="copyCode">Copy the code</button><button class="button outline" id="downloadCode">.py download ↓</button></div><p class="micro">Ready to run in Colab. Logistic Regression and KNN are shown separately in the full code.</p></div></dialog>
+<dialog id="sourcesDialog"><div class="dialog-head"><div><span class="eyebrow">SOURCES AND METHOD</span><h2>Where did the reports come from?</h2></div><button class="close-btn" data-close="sourcesDialog" aria-label="Close">×</button></div><div class="dialog-body"><p>Iris data was obtained using load_iris() in the scikit-learn library. 150 models, 4 brands, 3 classes.</p><p id="versionInfo"></p><p>Train/test: random_state=42, stratify not applied. LogisticRegression(max_iter=1000), other parameters are default. KNN: k=1…20, cv=5, scoring="accuracy". Marks are on the original centimeter scale. No scaling was applied.</p><p>Four versions of the test proportion are precomputed in Python. Probabilities for changing flower sizes are calculated in the browser with the coefficients of that model. Animations are visual explanations of steps.</p><ul class="sources-list"><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html" target="_blank" rel="noopener">Iris data ↗</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html" target="_blank" rel="noopener">Logistic Regression ↗</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html" target="_blank" rel="noopener">GridSearchCV ↗</a></li><li><a href="https://scikit-learn.org/stable/modules/multiclass.html" target="_blank" rel="noopener">Multiclass and multilabel ↗</a></li></ul></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
