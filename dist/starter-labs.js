@@ -105,7 +105,8 @@
         const dx = xs.map(x => x - mean(xs));
         const dy = ys.map(y => y - mean(ys));
         const correlation = mean(dx.map((x, i) => x * dy[i])) / Math.sqrt(mean(dx.map(x => x ** 2)) * mean(dy.map(y => y ** 2)));
-        const summary = `${labels[feature]} → ${labels.score} · Pearson r = ${fmt(correlation)}`;
+        const chartName = view === 'scatter' ? t('Нүктелік', 'Точечный', 'Scatter') : t('Бағандық', 'Столбчатый', 'Bars');
+        const summary = `${chartName} · ${labels[feature]} → ${labels.score} · Pearson r = ${fmt(correlation)}`;
         const x = value => 55 + (value - 1) * 44;
         const y = score => 154 - score * 1.25;
         const buckets = [...new Set(xs)].sort((a, b) => a - b);
@@ -153,7 +154,11 @@
     }
   };
 
-  window.mountStarterLab = (host, week) => {
+  if (window.createAdvancedLabs) {
+    Object.assign(labs, window.createAdvancedLabs({ t, range, select, checkbox, table, chart, fmt, outcome }));
+  }
+
+  window.mountStarterLab = (host, week, onChange = () => {}) => {
     const lab = labs[week];
     host.innerHTML = `<div class="starter-workbench">
       <div class="starter-visual">
@@ -178,9 +183,24 @@
       result.textContent = view.summary;
       details.innerHTML = view.details;
       insight.textContent = view.insight;
+      onChange(view);
     };
     form.addEventListener('submit', event => event.preventDefault());
     form.addEventListener('input', update);
     update();
+    return {
+      apply(values) {
+        Object.entries(values).forEach(([name, value]) => {
+          const control = form.elements.namedItem(name);
+          if (control.type === 'checkbox') control.checked = value;
+          else control.value = value;
+        });
+        update();
+      },
+      reset() {
+        form.reset();
+        update();
+      }
+    };
   };
 })();

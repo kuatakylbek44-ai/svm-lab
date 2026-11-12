@@ -19,6 +19,12 @@
   };
   const number = week => String(week).padStart(2, '0');
   const page = (name, week) => `${name}${suffix}.html?n=${week}`;
+  const dedicatedLabs = new Set(['intro', 'pandas', 'visualization', 'preprocessing', 'linear', 'evaluation', 'neural']);
+  const dedicatedDescriptions = {
+    linear: ['Түзуді жылжытып, қалдықтар мен MSE-нің қалай өзгеретінін көр.', 'Подвигай прямую и посмотри, как меняются остатки и MSE.', 'Move the line and see how residuals and MSE change.'],
+    evaluation: ['Шекті ауыстырып, қателер матрицасы, precision, recall және F1 өзгерісін салыстыр.', 'Меняй порог и сравнивай матрицу ошибок, precision, recall и F1.', 'Move the threshold and compare the confusion matrix, precision, recall, and F1.'],
+    neural: ['Шағын нейрондық желінің XOR ережесін үйренуін бақыла. Loss пен төрт болжамды салыстыр.', 'Проследи, как небольшая сеть учится правилу XOR. Сравни loss и четыре прогноза.', 'Watch a small neural network learn XOR. Compare its loss and four predictions.']
+  };
   const fromTopic = (href, week) => {
     const [path, hash] = href.split('#');
     return `${path}${path.includes('?') ? '&' : '?'}fromTopic=${week}${hash ? '#' + hash : ''}`;
@@ -52,7 +58,7 @@
         desc: lecture.summary[languageIndex],
         label: topic.english,
         lab: labels[lang].practiceLab,
-        href: page('practice', week)
+        href: page('topic-lab', week)
       };
     });
     const topicById = new Map([...starters, ...topics].map(topic => [topic.id, topic]));
@@ -63,6 +69,12 @@
       const cards = (topicIdsByWeek[week.n] || []).map(id => topicById.get(id));
       cards.forEach(topic => {
         topic.num = number(week.n);
+        if (dedicatedLabs.has(topic.id)) {
+          topic.href = page('topic-lab', week.n);
+          topic.lab = labels[lang].practiceLab;
+          topic.desc = dedicatedDescriptions[topic.id]?.[languageIndex] || topic.desc;
+          if (topic.id === 'neural') topic.tags = ['XOR', 'Loss'];
+        }
         orderedTopics.push(topic);
       });
 

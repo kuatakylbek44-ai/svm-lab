@@ -28,7 +28,9 @@
   const labTopics = { svm: 8, penguins: 9, autompg: 9, unsupervised: 10, imbalanced: 10 };
   const originTopic = new URLSearchParams(location.search).get('fromTopic');
   const irisTopic = page === 'iris-model' ? (['#6', '#knn'].includes(location.hash) ? 7 : 6) : null;
-  const returnTopic = /^(?:[1-9]|1[01])$/.test(originTopic) ? originTopic : (irisTopic || labTopics[page]);
+  const standaloneTopic = page === 'topic-lab' ? new URLSearchParams(location.search).get('n') : null;
+  const validTopic = number => /^(?:[1-9]|1[01])$/.test(number);
+  const returnTopic = validTopic(originTopic) ? originTopic : (validTopic(standaloneTopic) ? standaloneTopic : irisTopic || labTopics[page]);
 
   function sameTab() {
     document.querySelectorAll('a[target="_blank"]').forEach((link) => {
