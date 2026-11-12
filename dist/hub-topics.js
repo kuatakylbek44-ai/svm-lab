@@ -15,7 +15,7 @@
     8: ['svm'],
     9: ['penguins', 'autompg'],
     10: ['unsupervised', 'imbalanced'],
-    11: ['digits11', 'neural']
+    11: ['digits11', 'sroj11', 'neural']
   };
   const number = week => String(week).padStart(2, '0');
   const page = (name, week) => `${name}${suffix}.html?n=${week}`;
@@ -38,6 +38,8 @@
   ];
   const axes = '<path d="M42 24v116h240" fill="none" stroke="#8c9c91" stroke-width="2"/>';
   const starterPlots = {
+    sroj11: axes + [[92, 90], [112, 69], [140, 61], [165, 71], [183, 91], [151, 103], [177, 122], [207, 124], [230, 110], [244, 88]].map(([x, y], i) => `<circle class="topic-mark" cx="${x}" cy="${y}" r="6" fill="${i < 5 ? '#56c49d' : '#a68ae0'}"/>`).join('')
+      + '<path d="M64 111l8 8m0-8-8 8M257 48l8 8m0-8-8 8" stroke="#aeb8b0" stroke-width="2"/>',
     digits11: '<rect x="59" y="29" width="202" height="112" rx="12" fill="#182923"/>'
       + ['1111011', '1000010', '1110100', '0010100', '1110100'].map((row, y) => [...row].map((on, x) => on === '1'
         ? `<rect class="topic-mark" x="${97 + x * 19}" y="${42 + y * 17}" width="13" height="13" rx="2" fill="${x < 3 ? '#7bd6ae' : '#b899e3'}"/>` : '').join('')).join(''),
@@ -70,7 +72,13 @@
       href: `week11${suffix}.html`, lab: labels[lang].practiceLab, tags: ['DIGITS', 'MNIST', 'Keras Tuner'],
       desc: ['Екі нейрондық желіні оқытып, қолжазба цифрларын таныдық. Дәлдік, қателер және қорғау мәтіні бір жерде.', 'Две нейронные сети распознают рукописные цифры. Точность, ошибки и текст для защиты.', 'Two neural networks classify handwritten digits. Explore accuracy, errors, and presentation notes.'][languageIndex]
     };
-    const topicById = new Map([...starters, ...topics, digits].map(topic => [topic.id, topic]));
+    const clustering = {
+      id: 'sroj11', name: ['СОӨЖ · Иерархия және DBSCAN', 'СРОП · Иерархия и DBSCAN', 'Assignment · Hierarchy and DBSCAN'][languageIndex],
+      english: 'HIERARCHICAL CLUSTERING / DBSCAN', label: 'WEEK 11',
+      href: `sroj11${suffix}.html`, lab: labels[lang].practiceLab, tags: ['Dendrogram', 'ε', 'MinPts'],
+      desc: ['Бір деректе дендрограмма мен тығыздыққа негізделген кластерлерді салыстыр. Қорғауға дайын мысал.', 'Сравни дендрограмму и кластеризацию по плотности на одних данных. Пример для защиты.', 'Compare a dendrogram and density-based groups on the same dataset. Includes a presentation example.'][languageIndex]
+    };
+    const topicById = new Map([...starters, ...topics, digits, clustering].map(topic => [topic.id, topic]));
     const orderedTopics = [];
     const sections = practice.map(week => {
       const lecture = lectureByWeek.get(week.n);

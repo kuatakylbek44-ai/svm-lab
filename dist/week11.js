@@ -35,6 +35,7 @@
   const notebook = `<a class="topic-lab-button" href="${asset}week11-akylbek-almas.ipynb" download>↓ Colab notebook</a>`;
   const python = `<a class="topic-lab-button" href="${asset}week11-study.py" download>↓ Python</a>`;
   const practice = `<a class="topic-lab-button" href="topic-lab${suffix}.html?n=11&amp;fromTopic=11">XOR ↗</a>`;
+  const clustering = `<a class="topic-lab-button" href="sroj11${suffix}.html?fromTopic=11">${t('СОӨЖ · Кластерлеу', 'СРОП · Кластеризация', 'Assignment · Clustering')} ↗</a>`;
   const heading = (title, desc = '') => `<div class="topic-lab-heading"><div><p class="topic-lab-kicker">11 / ${String(active + 1).padStart(2, '0')}</p><h2 tabindex="-1">${title}</h2>${desc ? `<p class="week11-lead">${desc}</p>` : ''}</div></div>`;
   const toolbar = () => `<div class="topic-lab-actions topic-lab-reference">
     ${chapters[active][2].length ? `<button type="button" class="topic-lab-button" data-dialog="code">&lt;/&gt; ${labels.pageCode}</button>` : ''}
@@ -108,7 +109,7 @@
       <p class="topic-lab-question">${t('Пиксельден болжамға.', 'От пикселей к прогнозу.', 'From pixels to a prediction.')}</p>
       <p class="topic-lab-lead">${t('Ақылбек NumPy желісін ашады. Алмас TensorFlow моделінің нәтижесін және қате таныған цифрларын көрсетеді.', 'Акылбек разбирает сеть NumPy. Алмас показывает результаты TensorFlow и ошибки на цифрах.', 'Akylbek opens up the NumPy network. Almas shows TensorFlow results and misclassified digits.')}</p>
       ${toolbar()}
-      <div class="topic-lab-actions"><a class="topic-lab-button primary" href="#digits">${t('Зертхананы бастау', 'Начать лабораторную', 'Start the lab')} ↗</a>${notebook}${practice}</div>
+      <div class="topic-lab-actions"><a class="topic-lab-button primary" href="#digits">${t('Зертхананы бастау', 'Начать лабораторную', 'Start the lab')} ↗</a>${notebook}${practice}${clustering}</div>
       ${metrics([percent(data.digits.accuracy32), 'DIGITS · NumPy'], [percent(data.mnist.models[0].accuracy), 'MNIST · Dense 128'], [integer.format(data.mnist.testCount), t('MNIST тест кескіні', 'тестовых изображений MNIST', 'MNIST test images')])}</div>
       <figure class="topic-lab-preview"><figcaption>MNIST · 28×28</figcaption><div id="previewDigits"></div></figure></div>`;
   }

@@ -1,0 +1,8 @@
+#sroj11Header { display: contents; }
+.sroj11 .topic-lab-heading h1 { font-size: clamp(30px, 4.5vw, 66px); line-height: 1.08; margin: 10px 0; }
+.sroj11 .week11-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.sroj11-plot [data-point] { cursor: pointer; }
+.sroj11-plot [data-point]:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+@media (max-width: 750px) {
+  .sroj11 .week11-grid { grid-template-columns: 1fr; }
+}
