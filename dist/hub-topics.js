@@ -15,7 +15,8 @@
     8: ['svm'],
     9: ['penguins', 'autompg'],
     10: ['unsupervised', 'imbalanced'],
-    11: ['digits11', 'sroj11', 'neural']
+    11: ['digits11', 'sroj11', 'neural'],
+    12: ['cnn12']
   };
   const number = week => String(week).padStart(2, '0');
   const page = (name, week) => `${name}${suffix}.html?n=${week}`;
@@ -38,6 +39,9 @@
   ];
   const axes = '<path d="M42 24v116h240" fill="none" stroke="#8c9c91" stroke-width="2"/>';
   const starterPlots = {
+    cnn12: '<rect x="62" y="30" width="105" height="105" rx="9" fill="#183b30"/>'
+      + Array.from({length:25},(_,i)=>`<rect class="topic-mark" x="${72+i%5*18}" y="${40+Math.floor(i/5)*18}" width="14" height="14" rx="2" fill="${i%5<3&&i<15?'#77d4ad':'#3f6655'}"/>`).join('')
+      + '<path d="M175 83h30m-9-8 9 8-9 8" stroke="#77d4ad" fill="none" stroke-width="3"/><rect x="217" y="53" width="62" height="62" rx="7" fill="#9c80c5"/>',
     sroj11: axes + [[92, 90], [112, 69], [140, 61], [165, 71], [183, 91], [151, 103], [177, 122], [207, 124], [230, 110], [244, 88]].map(([x, y], i) => `<circle class="topic-mark" cx="${x}" cy="${y}" r="6" fill="${i < 5 ? '#56c49d' : '#a68ae0'}"/>`).join('')
       + '<path d="M64 111l8 8m0-8-8 8M257 48l8 8m0-8-8 8" stroke="#aeb8b0" stroke-width="2"/>',
     digits11: '<rect x="59" y="29" width="202" height="112" rx="12" fill="#182923"/>'
@@ -78,7 +82,13 @@
       href: `sroj11-guide${suffix}.html`, lab: labels[lang].practiceLab, tags: ['Dendrogram', 'ε', 'MinPts'],
       desc: ['Бір деректе дендрограмма мен тығыздыққа негізделген кластерлерді салыстыр. Қорғауға дайын мысал.', 'Сравни дендрограмму и кластеризацию по плотности на одних данных. Пример для защиты.', 'Compare a dendrogram and density-based groups on the same dataset. Includes a presentation example.'][languageIndex]
     };
-    const topicById = new Map([...starters, ...topics, digits, clustering].map(topic => [topic.id, topic]));
+    const cnn = {
+      id:'cnn12', name:['CNN · Суретті түсінетін желі','CNN · Сеть, которая видит','CNN · A network that sees'][languageIndex],
+      english:'CONVOLUTIONAL NEURAL NETWORKS', label:'WEEK 12', href:`week12${suffix}.html`,
+      lab:labels[lang].practiceLab, tags:['Conv2D','Sobel','Pooling','MNIST'],
+      desc:['Сүзгіні жылжытып, әр ұяшықты есепте. CNN-нің нақты оқыту нәтижесін және киім болжамын көр.','Двигай фильтр и вычисляй каждую ячейку. Изучи обученную CNN и прогнозы одежды.','Move the filter and compute every cell. Explore trained CNNs and clothing predictions.'][languageIndex]
+    };
+    const topicById = new Map([...starters, ...topics, digits, clustering, cnn].map(topic => [topic.id, topic]));
     const orderedTopics = [];
     const sections = practice.map(week => {
       const lecture = lectureByWeek.get(week.n);

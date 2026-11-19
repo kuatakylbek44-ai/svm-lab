@@ -8,6 +8,11 @@
   const total = data.practice.length;
   const params = new URLSearchParams(location.search);
   const raw = parseInt(params.get('n'), 10);
+  if (raw === 12) {
+    location.replace('week12' + suffix + '.html' + location.search + location.hash);
+    return;
+  }
+
   const filesWord = { kk: 'файл', ru: 'файла', en: 'files' }[data.lang];
   const esc = value => String(value).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
   const weekLabel = week => ({ kk: `${week}-апта`, ru: `${week}-я неделя`, en: `Week ${week}` })[data.lang];
