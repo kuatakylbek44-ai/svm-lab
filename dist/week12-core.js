@@ -4,8 +4,7 @@
   const kernels = {
     vertical: [[1,0,-1],[1,0,-1],[1,0,-1]],
     sobelX: [[1,0,-1],[2,0,-2],[1,0,-1]],
-    sobelY: [[1,2,1],[0,0,0],[-1,-2,-1]],
-    blur: [[1/9,1/9,1/9],[1/9,1/9,1/9],[1/9,1/9,1/9]]
+    sobelY: [[1,2,1],[0,0,0],[-1,-2,-1]]
   };
   const pooling = [[1,4,2,3],[3,2,8,1],[0,5,7,2],[6,1,4,9]];
   function scan(input, kernel, padding = 0, stride = 1, flip = false) {
@@ -22,10 +21,10 @@
     }));
     return { padded, filter, result, windows };
   }
-  function pool(input, average = false) {
+  function pool(input) {
     return Array.from({length:Math.floor(input.length/2)},(_,r) => Array.from({length:Math.floor(input[0].length/2)},(_,c) => {
       const values=[input[r*2][c*2],input[r*2][c*2+1],input[r*2+1][c*2],input[r*2+1][c*2+1]];
-      return average ? values.reduce((a,b)=>a+b,0)/4 : Math.max(...values);
+      return Math.max(...values);
     }));
   }
   window.CNN_LAB = { image, kernels, pooling, scan, pool };

@@ -18,11 +18,11 @@
       formula:'Y[i,j] = Σᵤ Σᵥ X[i+u,j+v] · K[u,v]'
     },
     {
-      id:'padding', title:'Padding & Stride',sections:['convolution'],
-      lead:t('Padding — шетке қосылатын нөлдер. Stride — терезенің жылжу қадамы. Екеуі шығыс өлшеміне әсер етеді.','Padding — нули вокруг изображения. Stride — шаг движения окна. Оба меняют размер выхода.','Padding adds zeros around the image. Stride is the step between window positions. Both change output size.'),
-      explain:t('N=6, F=3, P=0, S=1 болса шығыс 4×4. P=1 → 6×6, P=2 → 8×8. P=0, S=2 болса 2×2. Жұп сүзгіде same padding екі жаққа тең түспеуі мүмкін. Мұнда тек 3×3 сүзгі қолданылады.','При N=6, F=3, P=0, S=1 получаем 4×4. P=1 даёт 6×6, P=2 — 8×8. P=0, S=2 даёт 2×2. Для чётных фильтров same-padding бывает асимметричным; здесь фильтр 3×3.','For N=6, F=3, P=0, S=1 the output is 4×4. P=1 gives 6×6 and P=2 gives 8×8. P=0, S=2 gives 2×2. Same-padding can be asymmetric for even filters; this lab uses 3×3 filters.'),
-      show:t('Padding мәнін 0-ден 1-ге ауыстыр. Қосылған нөлдерді және шығыс өлшемін көрсет. Сосын stride=2 таңда.','Поменяй padding с 0 на 1. Покажи добавленные нули и размер выхода, затем выбери stride=2.','Switch padding from 0 to 1 and point out the zero border and output size. Then choose stride=2.'),
-      formula:'Nout = floor((N + 2P − F) / S) + 1'
+      id:'padding', title:'Padding: valid / full',sections:['padding'],
+      lead:t('Colab-тағы мысал: 3×3 сурет және 2×2 сүзгі. Padding — суреттің шетіне қосылатын нөлдер.','Пример из Colab: изображение 3×3 и фильтр 2×2. Padding — нули вокруг изображения.','The Colab example uses a 3×3 image and a 2×2 filter. Padding adds zeros around the image.'),
+      explain:t('Сурет [0,1,2;3,4,5;6,7,8], сүзгі [0,1;2,3]. valid режимі нөл қоспайды: нәтиже 2×2. full режимі әр шетке бір нөлдік жол не баған қосады: нәтиже 4×4. Екі режимде де correlate2d қолданылады.','Изображение [0,1,2;3,4,5;6,7,8], фильтр [0,1;2,3]. valid не добавляет нули: выход 2×2. full добавляет по одной нулевой строке или столбцу с каждой стороны: выход 4×4. Оба режима используют correlate2d.','Image [0,1,2;3,4,5;6,7,8], filter [0,1;2,3]. valid adds no zeros and produces 2×2. full adds one zero row or column on each side and produces 4×4. Both modes use correlate2d.'),
+      show:t('valid режимінде бірінші есеп: 0·0 + 1·1 + 3·2 + 4·3 = 19. Сосын full таңда да, шеттегі нөлдерді көрсет.','В valid первый расчёт: 0·0 + 1·1 + 3·2 + 4·3 = 19. Затем выбери full и покажи нули по краям.','In valid mode the first calculation is 0·0 + 1·1 + 3·2 + 4·3 = 19. Then select full and point out the zero border.'),
+      formula:'valid: Nout = N − F + 1 = 2 · full: Nout = N + F − 1 = 4'
     },
     {
       id:'edges', title:t('Sobel және ReLU','Sobel и ReLU','Sobel and ReLU'),sections:['edges'],
@@ -34,9 +34,9 @@
     {
       id:'pooling', title:t('Pooling: маңызды мәнді сақтау','Pooling: сохранить сильный сигнал','Pooling: keep the strongest response'),sections:['edges'],
       lead:t('Әр 2×2 терезеден ең үлкен мәнді алып, картаны 2 есе кішірейтеміз. Pooling-де үйренілетін салмақ жоқ.','Берём максимум каждого окна 2×2 и уменьшаем карту вдвое. У pooling нет обучаемых весов.','Take the maximum from every 2×2 block, halving the map width and height. Pooling has no trainable weights.'),
-      explain:t('Бірінші терезе [1,4;3,2]: Max=4, Average=2,5. MaxPool үшін толық нәтиже [4,8;6,9]. Бұл амал орналасудың шағын өзгерістеріне сезімталдықты азайтады, бірақ кейбір ақпарат жоғалады.','Первое окно [1,4;3,2]: Max=4, Average=2,5. Полный MaxPool даёт [4,8;6,9]. Операция уменьшает чувствительность к небольшим смещениям, но часть информации теряется.','The first patch [1,4;3,2] gives Max=4 and Average=2.5. Full MaxPool is [4,8;6,9]. It reduces sensitivity to small shifts while discarding some information.'),
-      show:t('Терезені қадаммен ауыстыр. MaxPool мен AveragePool нәтижелерін салыстыр.','Перемещай окно по шагам. Сравни MaxPool с AveragePool.','Step through the blocks and compare MaxPool with AveragePool.'),
-      formula:'MaxPool(B) = max(B) · AveragePool(B) = ΣB / 4'
+      explain:t('Colab-тағы MaxPooling2D амалын шағын сандармен көрсетеміз. Бірінші терезе [1,4;3,2]: максимум 4. Толық нәтиже [4,8;6,9]. Амал өлшемді кішірейтеді, кейбір ақпарат жоғалады.','Показываем MaxPooling2D из Colab на небольших числах. Первое окно [1,4;3,2]: максимум 4. Полный результат [4,8;6,9]. Операция уменьшает размер, часть информации теряется.','Small numbers illustrate the Colab MaxPooling2D operation. The first patch [1,4;3,2] has maximum 4. The complete output is [4,8;6,9]. The operation reduces size and discards some information.'),
+      show:t('Терезені қадаммен ауыстыр. Әр 2×2 терезеден ең үлкен санның қалай таңдалатынын түсіндір.','Перемещай окно по шагам и объясняй, как выбирается максимум каждого блока 2×2.','Step through the blocks and explain how the maximum of each 2×2 patch is selected.'),
+      formula:'MaxPool(B) = max(B)'
     },
     {
       id:'architecture', title:t('CNN ішіндегі карталар','Карты внутри CNN','Feature maps inside a CNN'),sections:['datasets'],
@@ -62,7 +62,7 @@
     {
       id:'code', title:t('Толық код және файлдар','Полный код и файлы','Full code and files'),sections:[],
       lead:t('Python скрипті, нәтижелері сақталған notebook және бастапқы тапсырма.','Python-скрипт, notebook с сохранёнными результатами и исходное задание.','Python script, notebook with recorded outputs, and the original assignment.'),
-      explain:t('Notebook ұяшықтарын ретімен орында. Негізгі файл MNIST пен Fashion-MNIST-ті оқытады. --cifar параметрі қосымша CIFAR-10 архитектурасын іске қосады; сайтта оған өлшенген дәлдік берілмейді.','Выполняй ячейки по порядку. Основной файл обучает MNIST и Fashion-MNIST. --cifar запускает дополнительную архитектуру CIFAR-10; её измеренная точность на сайте не заявлена.','Run the notebook cells in order. The main file trains MNIST and Fashion-MNIST. --cifar runs the additional CIFAR-10 architecture; the site does not claim a measured CIFAR score.'),
+      explain:t('Notebook ұяшықтарын ретімен орында. MNIST, Fashion-MNIST және CIFAR-10 — үшеуі де бастапқы Colab-та бар. Негізгі файл MNIST пен Fashion-MNIST-ті оқытады. Colab-тағы CIFAR-10 бөлімін --cifar арқылы іске қосуға болады; сайтта оның өлшенген дәлдігі жоқ.','Выполняй ячейки по порядку. MNIST, Fashion-MNIST и CIFAR-10 есть в исходном Colab. Основной файл обучает MNIST и Fashion-MNIST. Раздел CIFAR-10 из Colab запускается с --cifar; его измеренная точность на сайте не представлена.','Run the notebook cells in order. MNIST, Fashion-MNIST and CIFAR-10 are all in the original Colab. The main file trains MNIST and Fashion-MNIST. Use --cifar to run the Colab CIFAR-10 section; no measured CIFAR score is shown on the site.'),
       show:t('Толық кодтағы convolution, train және architecture функцияларын көрсет.','Покажи раздел convolution и функции train и architecture.','Point out the convolution section and the train and architecture functions.'),
       formula:'python cnn-study.py · python cnn-study.py --cifar'
     }

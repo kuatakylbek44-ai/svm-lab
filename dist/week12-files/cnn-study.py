@@ -2,7 +2,7 @@
 
 pip install tensorflow numpy scipy scikit-learn matplotlib scikit-image
 python cnn-study.py
-Optional large RGB experiment: python cnn-study.py --cifar
+Colab CIFAR-10 section (run separately): python cnn-study.py --cifar
 """
 
 # %% setup
@@ -54,6 +54,9 @@ print("Correlation:\n", correlation)
 print("Convolution (flipped kernel):\n", convolution)
 assert correlation[0, 0] == -5
 assert np.array_equal(convolution, signal.correlate2d(BIG, KERNEL[::-1, ::-1], mode="valid"))
+
+
+# %% padding
 small_image = np.arange(9).reshape(3, 3)
 small_kernel = np.array([[0, 1], [2, 3]])
 print("Padding valid:\n", signal.correlate2d(small_image, small_kernel, mode="valid"))
@@ -217,7 +220,7 @@ print("Saved:", OUT / "cnn-results.json")
 
 # %% cifar
 if "--cifar" in sys.argv:
-    # Optional separate RGB experiment. No measured CIFAR score is claimed in the lab.
+    # CIFAR-10 architecture from the provided Colab. No measured score is claimed in the lab.
     (x, y), (xt, yt) = keras.datasets.cifar10.load_data()
     x, xt = x.astype("float32")/255-.5, xt.astype("float32")/255-.5
     y, yt = y.ravel(), yt.ravel()

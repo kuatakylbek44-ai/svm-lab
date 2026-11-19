@@ -16,7 +16,7 @@
     filter:t('Сүзгі','Фильтр','Filter'),epoch:t('Эпоха','Эпоха','Epoch'),next:t('Келесі бет','Следующая страница','Next page')
   };
   const colors=['#78d5b0','#b193df','#e4b16d','#78aee0','#d58da5','#add478','#9acbc5','#ccab7d','#c3b4e1','#d69777'];
-  const state={filter:'vertical',flip:false,padding:0,stride:1,window:0,relu:false,inverse:false,average:false,poolStep:0,model:0,sample:0,epoch:0,channel:0};
+  const state={filter:'vertical',flip:false,padding:0,window:0,relu:false,inverse:false,poolStep:0,model:0,sample:0,epoch:0,channel:0};
   let active=0,timer,measured,sourceRequest;
   const sourceFile='week12-files/cnn-study.py';
   const panel=(title,body)=>`<section class="week11-panel"><h3>${title}</h3>${body}</section>`;
@@ -48,24 +48,27 @@
   }
   function convControls(){
     if(active===3)return select('edgeDirection',labels.filter,[['sobelX','Sobel X'],['sobelY','Sobel Y']],state.filter==='sobelY'?'sobelY':'sobelX')+toggle('inverse',t('Суретті аудару','Отразить изображение','Flip image'),state.inverse)+toggle('relu','ReLU',state.relu);
-    return select('filter',labels.filter,[['vertical',t('Тік шекара','Вертикальная граница','Vertical edge')],['sobelX','Sobel X'],['sobelY','Sobel Y'],['blur',t('Орташалау','Усреднение','Average')]],state.filter)
-      +select('operation',t('Амал','Операция','Operation'),[['false','Cross-correlation'],['true','Convolution · flip 180°']],state.flip)
-      +(active===2?select('padding','Padding',[[0,'0 · valid'],[1,'1 · same'],[2,'2 · full']],state.padding)+select('stride','Stride',[[1,'1'],[2,'2']],state.stride):'');
+    if(active===2)return select('padding','Padding',[[0,'valid'],[1,'full']],state.padding);
+    return select('operation',t('Амал','Операция','Operation'),[['false','Cross-correlation'],['true','Convolution · flip 180°']],state.flip);
   }
   function drawConv(){
-    let input=core.image,filter=core.kernels[state.filter];
+    let input=core.image,filter=core.kernels.vertical;
+    if(active===2){
+      input=[[0,1,2],[3,4,5],[6,7,8]];
+      filter=[[0,1],[2,3]];
+    }
     if(active===3){
       input=Array.from({length:6},()=>[255,255,255,120,120,120]);
       if(state.inverse)input=input.map(row=>[...row].reverse());
       filter=core.kernels[state.filter==='sobelY'?'sobelY':'sobelX'];
     }
-    const padding=active===2?state.padding:0,stride=active===2?state.stride:1;
-    const result=core.scan(input,filter,padding,stride,active!==3&&state.flip);
+    const padding=active===2?state.padding:0;
+    const result=core.scan(input,filter,padding,1,active===1&&state.flip);
     state.window=Math.min(state.window,result.windows.length-1);
     const w=result.windows[state.window],output=active===3&&state.relu?result.result.map(row=>row.map(v=>Math.max(0,v))):result.result;
     $('cnnCalculation').innerHTML=metrics([[`${result.padded.length} × ${result.padded.length}`,labels.input],[`${output.length} × ${output[0].length}`,labels.output],[fmt(output[w.row][w.col]),`Y[${w.row}, ${w.col}]`]])
-      +`<div class="cnn-calculation">${panel(labels.input+` · ${state.window+1}/${result.windows.length}`,grid(result.padded,{active:(r,c)=>r>=w.top&&r<w.top+3&&c>=w.left&&c<w.left+3}))}${panel(labels.filter,grid(result.filter,{heat:true}))}${panel(labels.output,grid(output,{active:(r,c)=>r===w.row&&c===w.col,visible:(r,c)=>r*output[0].length+c<=state.window,heat:true}))}</div>
-      <section class="week11-panel"><h3>${t('Көбейтеміз → қосамыз','Умножаем → складываем','Multiply → sum')}</h3><p class="cnn-equation">${w.products.flat().map(v=>v<0?'('+fmt(v)+')':fmt(v)).join(' + ')} = <strong>${fmt(w.value)}</strong>${active===3&&state.relu?' → ReLU = '+fmt(output[w.row][w.col]):''}</p><p class="week11-insight">${active===2?`floor((6 + 2·${padding} − 3) / ${stride}) + 1 = ${output.length}`:pages[active].show}</p></section>`;
+      +`<div class="cnn-calculation">${panel(labels.input+` · ${state.window+1}/${result.windows.length}`,grid(result.padded,{active:(r,c)=>r>=w.top&&r<w.top+filter.length&&c>=w.left&&c<w.left+filter[0].length}))}${panel(labels.filter,grid(result.filter,{heat:true}))}${panel(labels.output,grid(output,{active:(r,c)=>r===w.row&&c===w.col,visible:(r,c)=>r*output[0].length+c<=state.window,heat:true}))}</div>
+      <section class="week11-panel"><h3>${t('Көбейтеміз → қосамыз','Умножаем → складываем','Multiply → sum')}</h3><p class="cnn-equation">${w.products.flat().map(v=>v<0?'('+fmt(v)+')':fmt(v)).join(' + ')} = <strong>${fmt(w.value)}</strong>${active===3&&state.relu?' → ReLU = '+fmt(output[w.row][w.col]):''}</p><p class="week11-insight">${active===2?`3 + 2·${padding} − 2 + 1 = ${output.length}`:pages[active].show}</p></section>`;
     if(active===3 && measured?.photo){
       const box=document.createElement('div');box.className='cnn-map-grid cnn-photo';
       box.innerHTML=panel('RGB · 3 channels','<canvas id="photoRGB"></canvas>')+panel('Gray · 1 channel','<canvas id="photoGray"></canvas>')+panel('Sobel · signed','<canvas id="photoSobel"></canvas>')+panel('ReLU','<canvas id="photoRelu"></canvas>');
@@ -82,8 +85,8 @@
     return result.windows.length;
   }
   function drawPool(){
-    const r=Math.floor(state.poolStep/2)*2,c=state.poolStep%2*2,result=core.pool(core.pooling,state.average);
-    $('cnnCalculation').innerHTML=`<div class="cnn-pool-layout">${panel(labels.input,grid(core.pooling,{active:(row,col)=>row>=r&&row<r+2&&col>=c&&col<c+2}))}<div class="cnn-pool-arrow">→</div>${panel(labels.output,grid(result,{active:(row,col)=>row*2+col===state.poolStep,visible:(row,col)=>row*2+col<=state.poolStep}))}</div><p class="week11-insight">${state.average?'Average':'Max'} (${[core.pooling[r][c],core.pooling[r][c+1],core.pooling[r+1][c],core.pooling[r+1][c+1]].join(', ')}) = ${fmt(result[Math.floor(state.poolStep/2)][state.poolStep%2])}</p>`;
+    const r=Math.floor(state.poolStep/2)*2,c=state.poolStep%2*2,result=core.pool(core.pooling);
+    $('cnnCalculation').innerHTML=`<div class="cnn-pool-layout">${panel(labels.input,grid(core.pooling,{active:(row,col)=>row>=r&&row<r+2&&col>=c&&col<c+2}))}<div class="cnn-pool-arrow">→</div>${panel(labels.output,grid(result,{active:(row,col)=>row*2+col===state.poolStep,visible:(row,col)=>row*2+col<=state.poolStep}))}</div><p class="week11-insight">Max (${[core.pooling[r][c],core.pooling[r][c+1],core.pooling[r+1][c],core.pooling[r+1][c+1]].join(', ')}) = ${fmt(result[Math.floor(state.poolStep/2)][state.poolStep%2])}</p>`;
   }
   function mapsPage(){
     return `<p class="week11-insight">${pages[5].explain}</p><div class="week11-controls">${range('channel',t('Сүзгі арнасы','Канал фильтра','Filter channel'),7,state.channel)}</div><div class="cnn-map-grid">${panel(labels.input,'<canvas id="mapInput"></canvas><small>28 × 28 · test #0</small>')}${panel('Kernel','<canvas id="mapKernel"></canvas><small>3 × 3 · learned</small>')}${panel('Conv2D + ReLU','<canvas id="mapConv"></canvas><small>26 × 26</small>')}${panel('MaxPool','<canvas id="mapPool"></canvas><small>13 × 13</small>')}</div><div class="week11-flow cnn-flow"><span>28×28×1</span> → <span>Conv 3×3 · 8</span> → <span>26×26×8</span> → <span>Pool 2×2</span> → <span>13×13×8</span> → <span>Flatten 1352</span> → <span>Dense 10</span></div>`;
@@ -153,11 +156,10 @@
   }
   main.addEventListener('input',event=>{
     const id=event.target.id;stop();
-    if(id==='filter'||id==='edgeDirection')state.filter=event.target.value;
+    if(id==='edgeDirection')state.filter=event.target.value;
     if(id==='operation')state.flip=event.target.value==='true';
-    if(id==='padding'||id==='stride')state[id]=Number(event.target.value);
+    if(id==='padding')state.padding=Number(event.target.value);
     if(id==='relu'||id==='inverse')state[id]=event.target.checked;
-    if(id==='average')state.average=event.target.checked;
     if(id==='channel'){state.channel=Number(event.target.value);drawMaps();return;}
     if(id==='model'){state.model=Number(event.target.value);state.sample=0;state.epoch=0;render();return;}
     if(id==='sample')state.sample=Number(event.target.value);
@@ -181,7 +183,7 @@
     let body;
     if(active===0)body=overview();
     if([1,2,3].includes(active))body=head+`<div class="week11-controls">${convControls()}</div>${buttons()}<div id="cnnCalculation"></div>`;
-    if(active===4)body=head+`<div class="week11-controls">${toggle('average','AveragePool',state.average)}</div>${buttons()}<div id="cnnCalculation"></div>`;
+    if(active===4)body=head+`${buttons()}<div id="cnnCalculation"></div>`;
     if(active===5)body=head+(measured?mapsPage():loading());
     if(active===6)body=head+(measured?trainingPage():loading());
     if(active===7)body=head+(measured?defense():loading());
