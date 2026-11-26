@@ -8,8 +8,8 @@
   const total = data.practice.length;
   const params = new URLSearchParams(location.search);
   const raw = parseInt(params.get('n'), 10);
-  if (raw === 12) {
-    location.replace('week12' + suffix + '.html' + location.search + location.hash);
+  if (raw === 12 || raw === 13) {
+    location.replace('week' + raw + suffix + '.html' + location.search + location.hash);
     return;
   }
 

@@ -16,7 +16,8 @@
     9: ['penguins', 'autompg'],
     10: ['unsupervised', 'imbalanced'],
     11: ['digits11', 'sroj11', 'neural'],
-    12: ['cnn12']
+    12: ['cnn12'],
+    13: ['cnn13']
   };
   const number = week => String(week).padStart(2, '0');
   const page = (name, week) => `${name}${suffix}.html?n=${week}`;
@@ -39,6 +40,9 @@
   ];
   const axes = '<path d="M42 24v116h240" fill="none" stroke="#8c9c91" stroke-width="2"/>';
   const starterPlots = {
+    cnn13: '<path d="M35 88H285M162 88V37H266V88" fill="none" stroke="#98bba9" stroke-width="2"/>'
+      + [[40,64,34,49],[95,50,36,77],[155,43,38,91],[218,57,38,63],[274,69,15,39]].map(([x,y,w,h],i)=>`<rect class="topic-mark" x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="${i%2?'#a78bc9':'#68c9a4'}"/>`).join('')
+      + '<circle class="topic-mark" cx="266" cy="37" r="8" fill="#e4b16d"/><path d="M262 37h8m-4-4v8" stroke="#183b30" stroke-width="2"/>',
     cnn12: '<rect x="62" y="30" width="105" height="105" rx="9" fill="#183b30"/>'
       + Array.from({length:25},(_,i)=>`<rect class="topic-mark" x="${72+i%5*18}" y="${40+Math.floor(i/5)*18}" width="14" height="14" rx="2" fill="${i%5<3&&i<15?'#77d4ad':'#3f6655'}"/>`).join('')
       + '<path d="M175 83h30m-9-8 9 8-9 8" stroke="#77d4ad" fill="none" stroke-width="3"/><rect x="217" y="53" width="62" height="62" rx="7" fill="#9c80c5"/>',
@@ -88,7 +92,13 @@
       lab:labels[lang].practiceLab, tags:['Conv2D','Sobel','Pooling','MNIST'],
       desc:['Сүзгіні жылжытып, әр ұяшықты есепте. CNN-нің нақты оқыту нәтижесін және киім болжамын көр.','Двигай фильтр и вычисляй каждую ячейку. Изучи обученную CNN и прогнозы одежды.','Move the filter and compute every cell. Explore trained CNNs and clothing predictions.'][languageIndex]
     };
-    const topicById = new Map([...starters, ...topics, digits, clustering, cnn].map(topic => [topic.id, topic]));
+    const architectures = {
+      id:'cnn13', name:['СӨЖ · CNN архитектуралары','СРС · Архитектуры CNN','Self-study · CNN architectures'][languageIndex],
+      english:'CNN ARCHITECTURES', label:'WEEK 13', href:`week13${suffix}.html`,
+      lab:labels[lang].practiceLab, tags:['LeNet','VGG','Inception','ResNet'],
+      desc:['Қабаттар жолын анимациямен зертте. LeNet, AlexNet, VGG, Inception және ResNet құрылымдарын салыстыр.','Изучи движение по слоям в анимации. Сравни устройство LeNet, AlexNet, VGG, Inception и ResNet.','Follow the animated layer path. Compare the structure of LeNet, AlexNet, VGG, Inception and ResNet.'][languageIndex]
+    };
+    const topicById = new Map([...starters, ...topics, digits, clustering, cnn, architectures].map(topic => [topic.id, topic]));
     const orderedTopics = [];
     const sections = practice.map(week => {
       const lecture = lectureByWeek.get(week.n);
