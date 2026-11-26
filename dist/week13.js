@@ -7,16 +7,18 @@
  const labels={explanation:t('Түсіндірме','Объяснение','Explanation'),formulas:t('Формулалар','Формулы','Formulas'),code:t('Осы беттің коды','Код страницы','Page code'),full:t('Толық код','Полный код','Full code'),play:t('Анимацияны қарау','Смотреть анимацию','Play animation'),pause:t('Кідірту','Пауза','Pause'),step:t('Бір қадам','Один шаг','One step'),reset:t('Басынан','Сначала','Reset'),input:t('Кіріс','Вход','Input'),output:t('Шығыс','Выход','Output'),next:t('Келесі бет','Следующая страница','Next page'),layer:t('Қабат / блок','Слой / блок','Layer / block')};
  const fmt=n=>new Intl.NumberFormat(lang==='en'?'en-US':'ru-RU',{maximumFractionDigits:1}).format(n);
  const shape=s=>s.join(' × ');
- const state={channels:64,bottleneck:true,residualX:3,residualF:-1,shortcut:true,compareA:'vgg',compareB:'resnet'};
- let active=0,timer,sourceRequest;
+ const state={channels:64,bottleneck:true,residualX:3,residualF:-1,shortcut:true,compareA:'vgg',compareB:'resnet',sample:0,epoch:5,errorsOnly:false,sourceChoice:'week13-files/cnn-architectures.py'};
+ let active=0,timer,comparisonTimer,comparisonData,comparisonError=false;
+ const sourceRequests=new Map();
  const sourceFile='week13-files/cnn-architectures.py';
+ const trainingFile='week13-files/mnist-compare.py';
  const panel=(title,body)=>`<section class="week11-panel"><h3>${title}</h3>${body}</section>`;
  const metrics=items=>`<div class="week11-metrics">${items.map(([value,label])=>`<div><strong>${value}</strong><small>${label}</small></div>`).join('')}</div>`;
  const select=(id,label,options,value)=>`<label>${label}<select id="${id}">${options.map(([v,name])=>`<option value="${v}" ${v===value?'selected':''}>${name}</option>`).join('')}</select></label>`;
  const range=(id,label,min,max,value)=>`<label for="${id}">${label} <output id="${id}Value">${value}</output><input id="${id}" type="range" min="${min}" max="${max}" value="${value}"></label>`;
  const check=(id,label,value)=>`<label><span><input type="checkbox" id="${id}" ${value?'checked':''}> ${label}</span></label>`;
  const stack=()=>'<div class="arch-stack" aria-hidden="true"><i></i><i></i><i></i></div>';
- const downloads=()=>`<div class="topic-lab-actions"><a class="topic-lab-button" href="week13-files/cnn-architectures.ipynb" download>↓ Colab notebook</a><a class="topic-lab-button" href="${sourceFile}" download>↓ Python</a></div>`;
+ const downloads=(file=sourceFile)=>`<div class="topic-lab-actions"><a class="topic-lab-button" href="${file.replace(/\.py$/,'.ipynb')}" download>↓ Colab notebook</a><a class="topic-lab-button" href="${file}" download>↓ Python</a></div>`;
  const toolbar=()=>`<div class="topic-lab-actions topic-lab-reference"><button class="topic-lab-button" data-dialog="code">&lt;/&gt; ${labels.code}</button><button class="topic-lab-button" data-dialog="formulas">ƒ ${labels.formulas}</button><button class="topic-lab-button" data-dialog="explanation">${labels.explanation}</button>${active===8?'':`<a class="topic-lab-button" href="#code">${labels.full}</a>`}</div>`;
  const idea=key=>({
    lenet:t('Қарапайым тізбек: сүзгі, кішірейту, тану.','Простая цепочка: фильтр, уменьшение, распознавание.','A simple chain: filter, reduce, classify.'),
@@ -81,28 +83,72 @@
  function comparisonCard(id,key){
    const m=core.models[key];return `<section>${select(id,t('Архитектура','Архитектура','Architecture'),modelOptions,key)}<h3>${m.name}</h3><p>${idea(key)}</p><p>${labels.input}: <strong>${m.input}</strong></p><p>${t('Жарияланған тереңдік','Заявленная глубина','Reported depth')}: <strong>${m.depth}</strong></p><p>${t('Қарастырылатын жыл','Год работы','Paper year')}: ${m.year}</p><a class="topic-lab-button" href="#${key}">${t('Құрылымын ашу','Открыть структуру','Explore structure')}</a></section>`;
  }
- function comparison(){
+ function structuralComparison(){
    return `<div class="arch-compare">${comparisonCard('compareA',state.compareA)}${comparisonCard('compareB',state.compareB)}</div><p class="arch-lab-notice">${t('Тереңдік — бастапқы архитектураның белгіленуі, сызбадағы карточка саны емес. LeNet-5 санағына үйренілетін subsampling қабаттары кіреді; VGG16 — 13 Conv + 3 Dense, ResNet-50 — 49 Conv + 1 Dense. ResNet жылы — 2015 препринті (CVPR 2016).','Глубина относится к исходной архитектуре, а не числу карточек. LeNet-5 учитывает обучаемый subsampling; VGG16 — 13 Conv + 3 Dense, ResNet-50 — 49 Conv + 1 Dense. ResNet: препринт 2015, CVPR 2016.','Depth describes the original architecture, not the number of diagram cards. LeNet-5 includes learned subsampling; VGG16 has 13 Conv + 3 Dense, ResNet-50 has 49 Conv + 1 Dense. ResNet year is the 2015 preprint (CVPR 2016).')}</p><p class="arch-insight">${pages[6].show}</p>`;
  }
+ function variantName(id){
+   const name={lenet:'LeNet',alexnet:'AlexNet',vgg:'VGG',inception:'Inception',resnet:'ResNet'}[id];
+   return name+' · '+t('шағын','мини','mini');
+ }
+ function trainingDownloads(){
+   return `<div class="topic-lab-actions"><a class="topic-lab-button" href="week13-files/mnist-compare.ipynb" download>↓ MNIST · Colab notebook</a><a class="topic-lab-button" href="${trainingFile}" download>↓ MNIST · Python</a></div><p class="arch-lab-notice">MNIST © Yann LeCun & Corinna Cortes · <a href="https://keras.io/api/datasets/mnist/">${t('Дереккөз','Источник','Dataset source')}</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> · ${t('Сурет пиксельдері өзгертілмеген.','Пиксели изображений не изменены.','Image pixels are unmodified.')}</p>`;
+ }
+ function allowedSamples(){
+   if(!comparisonData)return [];
+   return comparisonData.samples.flatMap((sample,i)=>!state.errorsOnly||comparisonData.models.some(model=>{
+     const p=model.probabilities[comparisonData.dataset.epochs][i];
+     return p.indexOf(Math.max(...p))!==sample.label;
+   })?[i]:[]);
+ }
+ function mnistTable(){
+   const d=comparisonData,ds=d.dataset;
+   return `<h2>${t('Бірдей тест · бес нәтиже','Один тест · пять результатов','Same test · five results')}</h2><p>${t('Соңғы эпохадан кейінгі барлық 2 000 тест суреті. Бұл кесте сурет немесе эпоха таңдағанда өзгермейді.','Все 2 000 тестовых изображений после последней эпохи. Эта таблица не меняется при выборе изображения или эпохи.','All 2,000 test images after the final epoch. This table does not change with the selected image or epoch.')}</p><div class="mnist-table-wrap"><table id="mnistTable"><thead><tr><th>${t('Оқу нұсқасы','Учебный вариант','Teaching variant')}</th><th>${t('Тест дәлдігі','Точность теста','Test accuracy')}</th><th>${t('Дұрыс жауап','Верных ответов','Correct answers')}</th><th>${t('Параметр саны','Параметры','Parameters')}</th></tr></thead><tbody>${d.models.map(m=>`<tr data-model="${m.id}"><th scope="row">${variantName(m.id)}</th><td>${(m.accuracy*100).toFixed(2)}%</td><td>${fmt(m.correct)} / ${fmt(ds.test)}</td><td>${fmt(m.parameters)}</td></tr>`).join('')}</tbody></table></div><p class="arch-insight">${t('Бұл — бір шағын MNIST тәжірибесінің нәтижесі. Модельдер бастапқы LeNet-5, AlexNet, VGG16, GoogLeNet немесе ResNet-50 желілерінің дәл көшірмесі емес. Кесте олардың барлық тапсырмадағы үздігін анықтамайды.','Это один небольшой опыт на MNIST. Модели не являются точными копиями LeNet-5, AlexNet, VGG16, GoogLeNet или ResNet-50. Таблица не определяет лучшую архитектуру для всех задач.','This is one small MNIST experiment. The models are not exact LeNet-5, AlexNet, VGG16, GoogLeNet or ResNet-50 networks. This table does not establish the best architecture for every task.')}</p>`;
+ }
+ function comparison(){
+   const structure=`<details class="mnist-details"><summary>${t('Түпнұсқа архитектуралардың құрылымын салыстыру','Сравнить структуры исходных архитектур','Compare the original architecture structures')}</summary>${structuralComparison()}</details>`;
+   if(!comparisonData)return `<p role="${comparisonError?'alert':'status'}">${comparisonError?t('Деректер жүктелмеді. Бетті жаңартып көр.','Данные не загрузились. Обнови страницу.','Data could not load. Refresh the page.'):t('MNIST нәтижелері жүктелуде…','Загружаются результаты MNIST…','Loading MNIST results…')}</p>${structure}`;
+   const d=comparisonData,ds=d.dataset,allowed=allowedSamples();
+   if(!allowed.includes(state.sample)&&allowed.length)state.sample=allowed[0];
+   return `<section class="mnist-demo"><p class="arch-insight">${t('MNIST — қолмен жазылған 0–9 цифрлары. Әр сурет 28×28 пиксель, бір қара-ақ арна. Бір суретті бес шағын CNN-ге беріп, жауаптарын салыстырамыз.','MNIST — рукописные цифры 0–9. Каждое изображение: 28×28 пикселей, один серый канал. Подадим одно изображение пяти небольшим CNN и сравним ответы.','MNIST contains handwritten digits 0–9. Each image is 28×28 pixels with one grayscale channel. Compare how five small CNNs classify the same image.')}</p>${metrics([[fmt(ds.train),t('Оқыту суреті','Обучающих изображений','Training images')],[fmt(ds.validation),t('Тексеру · validation','Проверка · validation','Validation images')],[fmt(ds.test),t('Тест суреті','Тестовых изображений','Test images')]])}<p class="arch-lab-notice">${t('Барлығына бірдей: 5 эпоха · batch 64 · Adam 0,001 · seed 13 · пиксель / 255. Әр кластан бірдей сурет саны алынды.','Одинаково для всех: 5 эпох · batch 64 · Adam 0,001 · seed 13 · пиксель / 255. Число изображений каждого класса одинаково.','Same for all: 5 epochs · batch 64 · Adam 0.001 · seed 13 · pixel / 255. Each class has the same number of images.')}</p><div class="arch-controls">${check('mnistErrors',t('Кемінде бір модель қателескен мысалдар','Примеры с ошибкой хотя бы одной модели','Examples where at least one model was wrong'),state.errorsOnly)}</div>${allowed.length?`<div class="mnist-input"><figure><canvas id="mnistImage" width="28" height="28"></canvas><figcaption id="mnistActual"></figcaption></figure><div><h2>${t('Бір цифр · бес болжам','Одна цифра · пять прогнозов','One digit · five predictions')}</h2><p>${t('Төменнен цифрды таңда немесе тізімнен басқа жазылуын аш. Барлық модельге бір сурет беріледі.','Выбери цифру ниже или другое написание из списка. Все модели получают одно изображение.','Choose a digit below or another handwriting sample from the list. Every model receives the same image.')}</p><div class="mnist-digits" id="mnistDigits">${Array.from({length:10},(_,digit)=>{const index=allowed.find(i=>d.samples[i].label===digit);return index===undefined?'':`<button data-mnist-sample="${index}" aria-pressed="false" aria-label="${t('Цифр','Цифра','Digit')} ${digit}">${digit}</button>`;}).join('')}</div>${select('mnistSample',t('Тест суретін таңда','Выбери тестовое изображение','Choose a test image'),allowed.map(i=>[String(i),`#${d.samples[i].index} · ${t('нақты','истинная','actual')} ${d.samples[i].label}`]),String(state.sample))}</div></div><div class="arch-controls"><button class="topic-lab-button primary" id="mnistPlay">▶ ${labels.play}</button><button class="topic-lab-button" id="mnistStep">${labels.step}</button><button class="topic-lab-button" id="mnistReset">${labels.reset}</button>${range('mnistEpoch',t('Эпоха','Эпоха','Epoch'),0,ds.epochs,state.epoch)}</div><p class="mnist-epoch-label">${t('0 — оқытылмаған модель. Анимация бұрын орындалған оқытудың сақталған болжамдарын көрсетеді.','0 — необученная модель. Анимация показывает сохранённые прогнозы уже выполненного обучения.','0 is the untrained model. Animation replays saved predictions from completed training.')}</p><div id="mnistResults" class="mnist-predictions" aria-live="polite"></div><p class="arch-lab-notice">${t('Карточкадағы пайыз — осы суретке болжанған цифрдың ықтималдығы. Жалпы тест дәлдігі төмендегі кестеде көрсетілген.','Процент в карточке — вероятность предсказанной цифры для этого изображения. Общая точность теста показана в таблице ниже.','Each card’s percentage is the probability of its predicted digit for this image. Overall test accuracy appears in the table below.')}</p>`:`<p class="mnist-empty">${t('Көрсетілетін 60 мысал арасында соңғы эпохада қате табылмады. Барлық суретті көру үшін сүзгіні өшір.','Среди 60 примеров нет ошибок последней эпохи. Отключи фильтр, чтобы увидеть все изображения.','None of the 60 shown examples has a final-epoch error. Disable the filter to see all images.')}</p>`}${mnistTable()}${trainingDownloads()}</section>${structure}`;
+ }
+ function drawMnist(){
+   if(!comparisonData||!$('mnistImage'))return;
+   const d=comparisonData,sample=d.samples[state.sample],canvas=$('mnistImage'),ctx=canvas.getContext('2d'),image=ctx.createImageData(28,28);
+   sample.pixels.forEach((v,i)=>image.data.set([v,v,v,255],i*4));ctx.putImageData(image,0,0);
+   canvas.setAttribute('aria-label',t('Қолжазба цифры','Рукописная цифра','Handwritten digit')+' '+sample.label);
+   $('mnistActual').textContent=t('Нақты цифр','Истинная цифра','Actual digit')+': '+sample.label;
+   $('mnistSample').value=state.sample;$('mnistEpoch').value=state.epoch;$('mnistEpochValue').value=state.epoch+' / '+d.dataset.epochs;
+   $('mnistStep').disabled=state.epoch===d.dataset.epochs;
+   document.querySelectorAll('[data-mnist-sample]').forEach(button=>button.setAttribute('aria-pressed',String(d.samples[Number(button.dataset.mnistSample)].label===sample.label)));
+   $('mnistResults').innerHTML=d.models.map(model=>{
+     const p=model.probabilities[state.epoch][state.sample],predicted=p.indexOf(Math.max(...p)),correct=predicted===sample.label;
+     return `<article class="mnist-prediction ${correct?'correct':'wrong'}" data-model="${model.id}"><h3>${variantName(model.id)}</h3><span class="mnist-variant">${t('Оқу нұсқасы','Учебный вариант','Teaching variant')}</span><small>${t('Болжам','Прогноз','Prediction')}</small><strong class="mnist-answer">${predicted}</strong><meter min="0" max="1" value="${p[predicted]}" aria-label="${(p[predicted]*100).toFixed(1)}%"></meter><p>${(p[predicted]*100).toFixed(1)}%</p><p class="mnist-status">${correct?'✓ '+t('Дұрыс','Верно','Correct'):'× '+t('Қате','Ошибка','Wrong')}</p></article>`;
+   }).join('');
+ }
+ function nextMnist(){
+   state.epoch=Math.min(comparisonData.dataset.epochs,state.epoch+1);drawMnist();
+   if(state.epoch===comparisonData.dataset.epochs)stop();
+ }
  function defense(){
-   return `<div class="topic-lab-defense"><section><h3>${t('Ақылбек','Акылбек','Akylbek')} · LeNet / AlexNet / VGG</h3><p>${t('Алдымен архитектураның не екенін айтамын. LeNet арқылы қабат пен өлшемді көрсетемін. AlexNet-тегі ReLU мен Dropout-ты, VGG-дегі шағын сүзгілерді түсіндіремін.','Сначала объясню архитектуру. На LeNet покажу слои и размеры. Затем ReLU и Dropout в AlexNet и маленькие фильтры VGG.','I will define architecture and show layers and shapes using LeNet. Then I will explain AlexNet’s ReLU and dropout and VGG’s small filters.')}</p></section><section><h3>${t('Алмас','Алмас','Almas')} · Inception / ResNet</h3><p>${t('Inception-да төрт тармақты және 1×1 сүзгінің үнемін көрсетемін. ResNet-те x пен F(x)-ті өзгертіп, қосу амалын түсіндіремін.','Покажу четыре ветви Inception и экономию от 1×1. В ResNet изменю x и F(x) и объясню сложение.','I will show Inception’s four branches and 1×1 savings. In ResNet I will change x and F(x) and explain addition.')}</p></section><section><h3>${t('Нұрдаулет · Салыстыру / Код','Нурдаулет · Сравнение / Код','Nurdaulet · Comparison / Code')}</h3><p>${t('Бес архитектураның негізгі айырмасын салыстырамын. Python-да модель құруды, model.summary ішіндегі өлшемдер мен параметрлер санын түсіндіремін. Соңында жұмысымызды қорытындылаймын.','Сравню основные различия пяти архитектур. Покажу создание модели в Python, объясню формы данных и число параметров в model.summary. В конце подведу итоги работы.','I will compare the five architectures, demonstrate model construction in Python, and explain shapes and parameter counts in model.summary. I will close with our conclusions.')}</p></section></div>`+
+   return `<div class="topic-lab-defense"><section><h3>${t('Ақылбек','Акылбек','Akylbek')} · LeNet / AlexNet / VGG</h3><p>${t('Алдымен архитектураның не екенін айтамын. LeNet арқылы қабат пен өлшемді көрсетемін. AlexNet-тегі ReLU мен Dropout-ты, VGG-дегі шағын сүзгілерді түсіндіремін.','Сначала объясню архитектуру. На LeNet покажу слои и размеры. Затем ReLU и Dropout в AlexNet и маленькие фильтры VGG.','I will define architecture and show layers and shapes using LeNet. Then I will explain AlexNet’s ReLU and dropout and VGG’s small filters.')}</p></section><section><h3>${t('Алмас','Алмас','Almas')} · Inception / ResNet</h3><p>${t('Inception-да төрт тармақты және 1×1 сүзгінің үнемін көрсетемін. ResNet-те x пен F(x)-ті өзгертіп, қосу амалын түсіндіремін.','Покажу четыре ветви Inception и экономию от 1×1. В ResNet изменю x и F(x) и объясню сложение.','I will show Inception’s four branches and 1×1 savings. In ResNet I will change x and F(x) and explain addition.')}</p></section><section><h3>${t('Нұрдаулет · MNIST / Код','Нурдаулет · MNIST / Код','Nurdaulet · MNIST / Code')}</h3><p>${t('MNIST-тегі бір цифрды бес шағын модельге беріп, болжамдары мен тест дәлдігін салыстырамын. Python кодын және параметрлер санын түсіндіріп, жұмысымызды қорытындылаймын.','Покажу одну цифру MNIST пяти небольшим моделям, сравню прогнозы и точность теста. Объясню Python-код и число параметров, затем подведу итоги.','I will show one MNIST digit to five small models and compare predictions and test accuracy. I will explain the Python code and parameter counts, then present our conclusions.')}</p></section></div>`+
    [
      [t('Архитектура деген не?','Что такое архитектура?','What is an architecture?'),t('Қабаттардың түрі, саны, реті және байланыстары.','Типы, число, порядок и связи слоёв.','The types, count, order and connections of layers.')],
      [t('VGG16-дағы 16 нені білдіреді?','Что означает 16 в VGG16?','What does 16 in VGG16 mean?'),t('13 конволюциялық және 3 толық байланысқан қабат. Pooling бұл санға кірмейді.','13 свёрточных и 3 полносвязных слоя. Pooling в это число не входит.','13 convolutional and 3 fully connected layers; pooling is not counted.')],
      [t('Inception мен ResNet қалай біріктіреді?','Как объединяют Inception и ResNet?','How do Inception and ResNet merge?'),t('Inception арналарды concatenate арқылы қатар жинайды. ResNet мәндерді элемент бойынша қосады.','Inception соединяет каналы через concatenate. ResNet складывает значения поэлементно.','Inception concatenates channels. ResNet adds values elementwise.')],
      [t('1×1 сүзгі не үшін?','Зачем фильтр 1×1?','Why a 1×1 filter?'),t('Әр пиксель орнында арналарды араластырып, олардың санын өзгертуге болады. Аз арнамен келесі үлкен сүзгіге аз салмақ керек.','Он смешивает каналы в каждой позиции и меняет их число. Меньше каналов — меньше весов у следующего большого фильтра.','It mixes channels at each spatial position and changes their count. Fewer channels need fewer weights in the next large filter.')],
-     [t('Код оқытылған модель бере ме?','Код даёт обученную модель?','Does the code provide a trained model?'),t('Жоқ. Бұл жұмыс құрылымды құрып, summary мен бір алға өтудің өлшемін тексереді. Дәлдікті білу үшін дерекпен оқытып, бөлек тест керек.','Нет. Код строит структуру, печатает summary и проверяет форму одного прямого прохода. Точность требует обучения и отдельного теста.','No. The code builds a structure, prints its summary and checks one forward-pass shape. Accuracy requires training and a separate test.')]
+     [t('Екі код файлының айырмасы қандай?','Чем отличаются два файла кода?','How do the two code files differ?'),t('cnn-architectures.py архитектураны құрып, өлшемдерін тексереді. mnist-compare.py бес шағын CNN-ді нақты MNIST дерегімен оқытып, бөлек тестте салыстырады.','cnn-architectures.py строит архитектуру и проверяет формы. mnist-compare.py обучает пять небольших CNN на реальных данных MNIST и сравнивает их на отдельном тесте.','cnn-architectures.py builds structures and checks shapes. mnist-compare.py trains five small CNNs on real MNIST data and compares them on a separate test set.')]
    ].map(([q,a])=>`<details class="arch-q"><summary>${q}</summary><p>${a}</p></details>`).join('');
  }
  function sources(){
    return `<div class="arch-sources"><h3>${t('Бастапқы мақалалар мен құжаттама','Оригинальные статьи и документация','Original papers and documentation')}</h3>${window.CNN13_SOURCES.map(s=>`<a href="${s.url}">${s.title}</a>`).join('')}</div>`;
  }
  async function codeInto(target,full=false){
-   target.innerHTML=`<p>${t('Үзіндіні notebook-тағы алдыңғы ұяшықтардан кейін орында: кітапханалар мен модель құру функциялары қажет. Толық файл бір модельді таңдап, құрылымы мен шығыс өлшемін тексереді.','Выполни фрагмент после предыдущих ячеек notebook: нужны библиотеки и функции создания моделей. Полный файл выбирает одну модель и проверяет структуру и форму выхода.','Run the excerpt after preceding notebook cells: imports and model builders must be defined. The full file selects one model and checks its structure and output shape.')}</p>${downloads()}<p><button class="topic-lab-button" disabled>${t('Көшіру','Копировать','Copy')}</button> <span role="status"></span></p><pre class="topic-code"><code></code></pre>`;
+   const file=full||active===8?state.sourceChoice:(pages[active].codeFile||sourceFile);
+   target.innerHTML=`<p>${file===trainingFile?t('Бұл толық код бес шағын CNN-ді бірдей MNIST бөлігінде оқытып, тест нәтижелері мен анимация деректерін сақтайды.','Этот полный код обучает пять небольших CNN на одной части MNIST и сохраняет тестовые результаты и данные анимации.','This complete script trains five small CNNs on the same MNIST subset and saves test results and animation data.'):t('Үзіндіні notebook-тағы алдыңғы ұяшықтардан кейін орында: кітапханалар мен модель құру функциялары қажет. Бұл құрылым коды модельді оқытпайды.','Выполни фрагмент после предыдущих ячеек notebook: нужны библиотеки и функции создания моделей. Этот структурный код не обучает модель.','Run the excerpt after preceding notebook cells: imports and model builders must be defined. This structural script does not train a model.')}</p>${downloads(file)}<p><button class="topic-lab-button" disabled>${t('Көшіру','Копировать','Copy')}</button> <span role="status"></span></p><pre class="topic-code"><code></code></pre>`;
    const code=target.querySelector('code'),button=target.querySelector('button'),status=target.querySelector('[role=status]'),sections=[...pages[active].sections];
-   sourceRequest ||= fetch(sourceFile).then(r=>{if(!r.ok)throw Error();return r.text();}).catch(e=>{sourceRequest=undefined;throw e;});
+   if(!sourceRequests.has(file))sourceRequests.set(file,fetch(file).then(r=>{if(!r.ok)throw Error();return r.text();}).catch(e=>{sourceRequests.delete(file);throw e;}));
    try{
-     const source=await sourceRequest,parts=source.split(/^# %% ([a-z]+)[ \t]*\r?$/gm);
+     const source=await sourceRequests.get(file),parts=source.split(/^# %% ([a-z]+)[ \t]*\r?$/gm);
      code.textContent=full||!sections.length?source:sections.map(key=>{const i=parts.indexOf(key);return i<0?'# '+key:`# %% ${key}${parts[i+1]}`;}).join('\n');
      button.disabled=false;button.onclick=async()=>{try{await navigator.clipboard.writeText(code.textContent);status.textContent=t('Көшірілді','Скопировано','Copied');}catch{const range=document.createRange();range.selectNodeContents(code);const selection=getSelection();selection.removeAllRanges();selection.addRange(range);status.textContent='Ctrl+C';}};
    }catch{status.textContent=t('Код жүктелмеді. Python файлын жүктеп ал.','Код не загрузился. Скачай Python-файл.','Code could not load. Download the Python file.');}
@@ -115,7 +161,7 @@
    else body.innerHTML=`<p class="week11-lead">${p.lead}</p>${p.explain.map(text=>`<p>${text}</p>`).join('')}<p class="arch-insight">${p.show}</p>`;
    $('archDialog').showModal();
  }
- function stop(){clearInterval(timer);timer=undefined;document.body.classList.remove('is-playing');if($('archPlay'))$('archPlay').textContent='▶ '+labels.play;}
+ function stop(){clearInterval(timer);clearInterval(comparisonTimer);timer=undefined;comparisonTimer=undefined;document.body.classList.remove('is-playing');if($('archPlay'))$('archPlay').textContent='▶ '+labels.play;if($('mnistPlay'))$('mnistPlay').textContent='▶ '+labels.play;}
  function advance(){
    const key=pages[active].id,last=core.models[key].stages.length-1;
    steps[key]=Math.min(last,steps[key]+1);drawStage(true);if(steps[key]===last)stop();
@@ -123,8 +169,10 @@
  function render(){
    stop();active=Math.max(0,pages.findIndex(p=>'#'+p.id===location.hash));
    const p=pages[active],head=`<div class="topic-lab-heading"><div><p class="topic-lab-kicker">13 / ${t('СӨЖ','СРС','ASSIGNMENT')} · ${String(active+1).padStart(2,'0')}</p><h1 tabindex="-1">${p.title}</h1><p class="week11-lead">${p.lead}</p></div></div>${toolbar()}`;
-   main.innerHTML=active===0?overview():core.models[p.id]?architecturePage(p.id,head):active===6?head+comparison():active===7?head+defense():head+`<p class="arch-insight">${p.show}</p><div id="archFullCode"></div>${sources()}`;
-   if(core.models[p.id])drawStage();if(p.id==='vgg')drawVgg();if(p.id==='inception')drawInception();if(p.id==='resnet')drawResidual();if(active===8)codeInto($('archFullCode'),true);
+   if(core.models[p.id])state.sourceChoice=sourceFile;if(active===6)state.sourceChoice=trainingFile;
+   main.innerHTML=active===0?overview():core.models[p.id]?architecturePage(p.id,head):active===6?head+comparison():active===7?head+defense():head+`<p class="arch-insight">${p.show}</p><div class="arch-controls">${select('archSource',t('Код түрі','Вид кода','Code type'),[[sourceFile,t('Архитектура құрылымы','Структура архитектур','Architecture structure')],[trainingFile,t('MNIST · бес модельді оқыту','MNIST · обучение пяти моделей','MNIST · train five models')]],state.sourceChoice)}</div><div id="archFullCode"></div>${sources()}`;
+   if(core.models[p.id])drawStage();if(p.id==='vgg')drawVgg();if(p.id==='inception')drawInception();if(p.id==='resnet')drawResidual();if(active===6)drawMnist();if(active===8)codeInto($('archFullCode'),true);
+   const download=$('archRail').querySelector('.topic-lab-return');download.href=(active===6?trainingFile:state.sourceChoice).replace(/\.py$/,'.ipynb');
    document.querySelectorAll('#archRail nav a').forEach((link,i)=>{if(i===active)link.setAttribute('aria-current','step');else link.removeAttribute('aria-current');});
    $('archCrumb').textContent=p.title;$('archProgress').textContent=`${String(active+1).padStart(2,'0')} / ${pages.length}`;
    $('archPrev').hidden=active===0;$('archPrev').href='#'+pages[Math.max(0,active-1)].id;
@@ -138,11 +186,22 @@
    if(id==='residualX'||id==='residualF'){state[id]=Number(event.target.value);$(id+'Value').value=state[id];drawResidual();}
    if(id==='shortcut'){state.shortcut=event.target.checked;drawResidual();}
    if(id==='compareA'||id==='compareB'){state[id]=event.target.value;const focus=id;render();$(focus).focus();}
+   if(id==='mnistSample'){state.sample=Number(event.target.value);drawMnist();}
+   if(id==='mnistEpoch'){state.epoch=Number(event.target.value);drawMnist();}
+   if(id==='mnistErrors'){state.errorsOnly=event.target.checked;render();$('mnistErrors').focus();}
+   if(id==='archSource'){state.sourceChoice=event.target.value;codeInto($('archFullCode'),true);$('archRail').querySelector('.topic-lab-return').href=state.sourceChoice.replace(/\.py$/,'.ipynb');}
  });
  main.addEventListener('click',event=>{
    const button=event.target.closest('button');if(!button)return;
    if(button.dataset.dialog){showDialog(button.dataset.dialog);return;}
    const key=pages[active].id;
+   if(button.dataset.mnistSample!==undefined){stop();state.sample=Number(button.dataset.mnistSample);drawMnist();return;}
+   if(button.id==='mnistStep'){stop();nextMnist();return;}
+   if(button.id==='mnistReset'){stop();state.epoch=0;drawMnist();return;}
+   if(button.id==='mnistPlay'){
+     if(comparisonTimer){stop();return;}stop();state.epoch=0;drawMnist();button.textContent='Ⅱ '+labels.pause;
+     comparisonTimer=setInterval(nextMnist,850);return;
+   }
    if(button.dataset.stage!==undefined){stop();steps[key]=Number(button.dataset.stage);drawStage();return;}
    if(button.id==='archStep'){stop();advance();}
    if(button.id==='archReset'){stop();steps[key]=0;drawStage(true);}
@@ -159,5 +218,6 @@
  window.addEventListener('hashchange',()=>{render();scrollTo({top:0,behavior:'instant'});});
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();});
  render();
+ fetch('week13-files/mnist-comparison.json?v=mnist13').then(response=>{if(!response.ok)throw Error();return response.json();}).then(data=>{comparisonData=data;state.epoch=data.dataset.epochs;if(active===6)render();}).catch(()=>{comparisonError=true;if(active===6)render();});
 })();
 
