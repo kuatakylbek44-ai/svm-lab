@@ -1,4 +1,4 @@
-"""Week 13 SÖJ: CNN architectures — Akylbek and Almas.
+"""Week 13 SÖJ: CNN architectures — Akylbek, Almas and Nurdaulet.
 
 Install: pip install tensorflow numpy
 Run: python cnn-architectures.py --model lenet

@@ -68,6 +68,7 @@
 .arch-compare select {width:100%}
 .arch select {background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--ink);font:inherit;padding:10px}
 .arch p {line-height:1.7}
+.arch .topic-lab-defense {grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
 .arch-sources {padding:20px 0;display:grid;gap:12px}
 .arch-sources a {color:var(--green);text-decoration:underline;text-underline-offset:4px;overflow-wrap:anywhere}
 .arch .topic-code {max-height:65vh;overflow:auto;line-height:1.7;font-size:14px;padding:20px}
